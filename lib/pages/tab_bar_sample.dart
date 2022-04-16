@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -12,9 +13,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return  MaterialApp(
       title: _title,
       home: MyStatefulWidget(),
+      theme: ThemeData.light(),
+      darkTheme: ThemeData.dark(),
     );
   }
 }
