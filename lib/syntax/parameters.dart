@@ -19,6 +19,16 @@ void optionalParamFunc({bool? param1, bool? param2}) {
   optionalParamFunc(param2: true);
 }
 
+/// オプショナルパラメータ(デフォルト引数あり)
+// デフォルト引数ありの場合は、引数の型をnull非許容型として定義できる。
+void optionalParamWithDefaultPramFunc({bool param1 = true, bool param2 = true}) {
+  //　全てオプショナルなので引数なしで実行可能
+  optionalParamFunc();
+
+  // オプショナル関数の場合は、引数名の指定が必ず必要
+  optionalParamFunc(param2: true);
+}
+
 /// オプショナル位置パラメータ
 void optionalPositionParamFunc(bool param1, [bool? param2]) {
 

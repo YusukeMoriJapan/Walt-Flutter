@@ -16,6 +16,7 @@ dependencies:
   hooks_riverpod: ^1.0.3
 
   webview_flutter: ^3.0.2
+  palette_generator: ^0.3.3
 
 dev_dependencies:
   flutter_test:
