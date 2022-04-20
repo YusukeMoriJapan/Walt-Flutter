@@ -49,12 +49,12 @@ void optionalNotPositionParamFunc(bool param1, {bool? param2}) {
 /// 関数オブジェクトを引数にとる場合
 /// 1と2両方とも、関数オブジェクトを引数にとる
 //　引数指定パターン1
-String? invokeFunctionObject1(String computation()?) {
-  return computation?.call();
+String? invokeFunctionObject1(String computation(int,String)?) {
+  return computation?.call(1,"param");
 }
 //　引数指定パターン2
-String? invokeFunctionObject2(String Function()? computation) {
-  return computation?.call();
+String? invokeFunctionObject2(String Function(int,String)? computation) {
+  return computation?.call(1,"param");
 }
 
 
