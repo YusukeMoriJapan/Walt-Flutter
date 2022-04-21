@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-final _flexibleSpaceBerKey = GlobalKey();
-
-final _appBarHeight = StateNotifierProvider<AppBarHeightNotifier, double>(
-    (ref) => AppBarHeightNotifier());
+final flexAppBarKey = GlobalKey();
+final appBarHeightStateProvider = StateProvider((ref) => 0.0);
 
 void main() {
   runApp(ProviderScope(child: MyApp()));
 }
 
-class MyApp extends HookConsumerWidget {
+launchFlexAppBar(){
+  runApp(ProviderScope(child: MyApp()));
+}
+
+class MyApp extends StatelessWidget {
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
@@ -37,15 +40,7 @@ class MyApp extends HookConsumerWidget {
               stretch: true,
               expandedHeight: 300.0,
               flexibleSpace: RiverpodFlexAppBar(),
-              // flexibleSpace: Builder(builder: (context) {
-              //   final watchedAppBarHeight = ref.watch(_appBarHeight);
-              //   return _flexibleSpaceBar(ref, watchedAppBarHeight);
-              // }),
               actions: <Widget>[
-                Consumer(builder:
-                    (BuildContext context, WidgetRef ref, Widget? child) {
-                  return Text(ref.watch(_appBarHeight).toString());
-                }),
                 IconButton(
                   icon: const Icon(Icons.add_circle),
                   tooltip: 'Add new entry',
@@ -68,11 +63,11 @@ class MyApp extends HookConsumerWidget {
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                                 colors: <Color>[
-                              Color(0xE6FFC0A2),
-                              Colors.white,
-                            ])),
+                                  Color(0xE6FFC0A2),
+                                  Colors.white,
+                                ])),
                       ),
-                      Text(""),
+                      // Text(ref.watch(appBarHeightStateProvider).toString()),
                       Text(
                           "ウィキペディア（英: Wikipedia）とは、世界中のボランティアの共同作業によって執筆及び作成されるフリーの多言語[4]インターネット百科事典である[5]。収録されている全ての内容がオープンコンテントで商業広告が存在しないということを特徴とし、主に寄付に依って活動している非営利団体「ウィキメディア財団」が所有・運営している[6][7][8][9]。「ウィキペディア（Wikipedia）」という名前は、ウェブブラウザ上でウェブページを編集することができる「ウィキ（Wiki）」というシステムを使用した「百科事典」（英: Encyclopedia）であることに由来する造語である[10]。設立者の1人であるラリー・サンガーにより命名された[11][12]。"),
                       Text(
@@ -96,53 +91,38 @@ class MyApp extends HookConsumerWidget {
 class RiverpodFlexAppBar extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return NotificationListener<SizeChangedLayoutNotification>(
-        onNotification: (layout) {
-          print(_flexibleSpaceBerKey.currentContext?.size?.height);
-
-          Future.delayed(Duration(milliseconds: 0), () {
-            ref.read(_appBarHeight.notifier).updateheight(
-                _flexibleSpaceBerKey.currentContext?.size?.height ?? 0);
-          });
-
-          return false;
-        },
-        child: SizeChangedLayoutNotifier(
-            child: FlexibleSpaceBar(
-                key: _flexibleSpaceBerKey,
-                stretchModes: <StretchMode>[
-                  StretchMode.zoomBackground,
-                  StretchMode.blurBackground,
-                  StretchMode.fadeTitle,
-                ],
-                collapseMode: CollapseMode.parallax,
-                centerTitle: true,
-                title: const Text(
-                  '4 Walls',
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+    WidgetsBinding.instance!.addTimingsCallback((timeStamp) {
+      print(flexAppBarKey.currentContext?.size?.height.toString());
+      ref.read(appBarHeightStateProvider.notifier).update(
+              (state) => flexAppBarKey.currentContext?.size?.height ?? -1.0);
+    });
+    return FlexibleSpaceBar(
+        key: flexAppBarKey,
+        stretchModes: <StretchMode>[
+          StretchMode.zoomBackground,
+          StretchMode.blurBackground,
+          StretchMode.fadeTitle,
+        ],
+        collapseMode: CollapseMode.parallax,
+        centerTitle: true,
+        title: const Text(
+          '4 Walls',
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.normal),
+        ),
+        background: Stack(alignment: Alignment.center, children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0, 32, 0, 56),
+            child: Consumer(builder: (context, ref, child) {
+              return AnimatedContainer(
+                duration: Duration(milliseconds: 100),
+                width: ref.watch(appBarHeightStateProvider) * 0.7,
+                height: ref.watch(appBarHeightStateProvider) * 0.7,
+                child: Image.network(
+                  "https://is2-ssl.mzstatic.com/image/thumb/Music125/v4/62/15/02/62150210-5b5e-46fa-bd5c-37da1e8e5653/B.jpg/1000x1000bb.webp",
                 ),
-                background: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 32, 0, 56),
-                    child: Container(
-                      width: ref.watch(_appBarHeight) * 0.7,
-                      height: ref.watch(_appBarHeight) * 0.7,
-                      child: Image.network(
-                          "https://is2-ssl.mzstatic.com/image/thumb/Music125/v4/62/15/02/62150210-5b5e-46fa-bd5c-37da1e8e5653/B.jpg/1000x1000bb.webp"),
-                    ),
-                  ),
-                ]))));
-  }
-}
-
-class AppBarHeightNotifier extends StateNotifier<double> {
-  AppBarHeightNotifier() : super(double.infinity);
-
-  void updateheight(double height) {
-    print("updateHeight" + height.toString());
-    state = height;
+              );
+            }),
+          ),
+        ]));
   }
 }
