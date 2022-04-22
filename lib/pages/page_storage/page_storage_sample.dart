@@ -1,11 +1,15 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:walt/utils/navigation_history_observer.dart';
+
+import '../../navigation/page_storage_manager.dart';
 
 void main() => runApp(
       MaterialApp(
         debugShowCheckedModeBanner: false,
         home: MyApp(),
+        navigatorObservers: [NavigationHistoryObserver()],
       ),
     );
 
@@ -61,16 +65,11 @@ class Page1Params {
   int counter2 = 0;
 }
 
-PageStorageBucket? bucket1;
-
 class _Page1State extends State<Page1> {
   Page1Params? _params;
 
   @override
   void didChangeDependencies() {
-    // このメソッドをオーバーライド
-    bucket1 = PageStorage.of(context);
-
     Page1Params? p =
         PageStorage.of(context)?.readState(context, identifier: "su-ji");
     if (p != null) {
@@ -83,6 +82,9 @@ class _Page1State extends State<Page1> {
 
   @override
   Widget build(BuildContext context) {
+    // このメソッドをオーバーライド
+    PageStorageManager().registerPageStorage("su-ji", context);
+
     return Container(
       padding: EdgeInsets.all(20.0),
       child: SingleChildScrollView(

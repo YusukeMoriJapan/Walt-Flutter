@@ -3,10 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:walt/constants/constants.dart';
 import 'package:walt/pages/bottom_sheet_sample_page.dart';
-import 'package:walt/pages/sliver_app_bar/page_storage_sample.dart';
+import 'package:walt/pages/page_storage/page_storage_sample.dart';
 import 'package:walt/pages/sliver_app_bar/sliver_app_bar_flexible_space_expanded_height.dart';
 import 'package:walt/pages/top_page/top_page.dart';
-import 'package:navigation_history_observer/navigation_history_observer.dart';
+import 'package:walt/utils/navigation_history_observer.dart';
 
 main() async {
   launchWaltApp();
@@ -26,10 +26,10 @@ launchWaltApp() {
   runApp(ProviderScope(
     child: MaterialApp(
       title: appName,
-      home: BottomSheetDemoPage(),
+      home: SliverAppBarFlexSpaceExpandedHeightPage(),
       navigatorObservers: [NavigationHistoryObserver()],
       routes: <String, WidgetBuilder> {
-        '/sliver_app_page': (BuildContext context) => SliverAppBarFlexSpaceExpandedHeightPage(),
+        '/bottomSheetDemo': (BuildContext context) => BottomSheetDemoPage(),
       },
     ),
   ));

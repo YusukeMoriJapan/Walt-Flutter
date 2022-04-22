@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:navigation_history_observer/navigation_history_observer.dart';
 import 'package:walt/pages/sliver_app_bar/sliver_app_bar_flexible_space_expanded_height.dart';
 import 'package:walt/pages/top_page/states/top_page_providers.dart';
 
@@ -140,7 +139,12 @@ class _BottomSheetDemoPageState extends State<BottomSheetDemoPage> {
           children: [
             ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, '/sliver_app_page');
+                  Navigator.pop(context);
+                },
+                child: Text("戻る")),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/');
                 },
                 child: Text("次の画面に遷移")),
             RaisedButton(

@@ -4,15 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:navigation_history_observer/navigation_history_observer.dart';
+
+import '../../utils/navigation_history_observer.dart';
 
 final _flexibleSpaceBerKey = GlobalKey();
 final _textKey = GlobalKey();
 
 final _appBarHeight = StateNotifierProvider<AppBarHeightNotifier, double>(
     (ref) => AppBarHeightNotifier());
-
-final storageKey = PageStorageKey("fe");
 
 void main() {
   runApp(ProviderScope(child: MyApp()));
@@ -22,7 +21,7 @@ class MyApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // PageStorage.of(context).readState(context)
-    
+
     SystemChrome.setSystemUIOverlayStyle(
       SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
@@ -33,7 +32,10 @@ class MyApp extends HookConsumerWidget {
           systemNavigationBarIconBrightness: Brightness.light),
     );
 
-    return MaterialApp(home: SliverAppBarFlexSpaceExpandedHeightPage());
+    return const MaterialApp(
+        home: SliverAppBarFlexSpaceExpandedHeightPage(
+      key: PageStorageKey("test"),
+    ));
   }
 }
 
@@ -56,7 +58,7 @@ class SliverAppBarFlexSpaceExpandedHeightPage extends HookConsumerWidget {
             backgroundColor: Color(0xE6FFC0A2),
             leading: IconButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pushNamed(context, "/bottomSheetDemo");
                 },
                 icon: Icon(Icons.arrow_back_ios)),
             pinned: true,
@@ -76,7 +78,7 @@ class SliverAppBarFlexSpaceExpandedHeightPage extends HookConsumerWidget {
                 icon: const Icon(Icons.add_circle),
                 tooltip: 'Add new entry',
                 onPressed: () {
-                  /* ... */
+                  Navigator.pushReplacementNamed(context, "/bottomSheetDemo");
                 },
               ),
             ],
