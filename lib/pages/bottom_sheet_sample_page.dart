@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:navigation_history_observer/navigation_history_observer.dart';
+import 'package:walt/pages/sliver_app_bar/sliver_app_bar_flexible_space_expanded_height.dart';
 import 'package:walt/pages/top_page/states/top_page_providers.dart';
 
 class BottomSheetDemoPage extends StatefulWidget {
@@ -94,8 +96,7 @@ class _BottomSheetDemoPageState extends State<BottomSheetDemoPage> {
                       Container(
                           alignment: Alignment.center, child: _controlsIcons()),
                       _bottomSheetColumnWidget(
-                          child: _bottomSheetTextButton(
-                              "いいね!", null, () {})),
+                          child: _bottomSheetTextButton("いいね!", null, () {})),
                       _bottomSheetColumnWidget(
                           child: _bottomSheetTextButton(
                               "この曲を非表示にする", null, () {})),
@@ -135,13 +136,22 @@ class _BottomSheetDemoPageState extends State<BottomSheetDemoPage> {
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: Center(
-            child: RaisedButton(
-          color: Colors.teal[100],
-          onPressed: _showPersistantBottomSheetCallBack,
-          child: Text(
-            "Show Persistent BottomSheet",
-            style: TextStyle(color: Colors.black),
-          ),
+            child: Column(
+          children: [
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.pushNamed(context, '/sliver_app_page');
+                },
+                child: Text("次の画面に遷移")),
+            RaisedButton(
+              color: Colors.teal[100],
+              onPressed: _showPersistantBottomSheetCallBack,
+              child: Text(
+                "Show Persistent BottomSheet",
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+          ],
         )),
       ),
     );

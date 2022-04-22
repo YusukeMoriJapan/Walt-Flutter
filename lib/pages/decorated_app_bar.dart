@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(const MyApp());
@@ -29,23 +30,15 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        title: Text(
-          'How to Flutter',
-          style: TextStyle(color: Colors.black87, fontSize: 28),
-        ),
-        centerTitle: true,
-        flexibleSpace: Column(
-          children: [
-            Divider(height: 5, thickness: 5, color: Colors.orangeAccent),
-            Spacer(),
-            Divider(height: 5, thickness: 5, color: Colors.orangeAccent)
-          ],
-        ),
+      extendBodyBehindAppBar: true,
+      appBar: CupertinoNavigationBar(
         backgroundColor: Colors.transparent,
       ),
-      body: Center(child: Text('You have pressed the button $_count times.')),
+      body: SingleChildScrollView(
+        child: Column(children: [
+          Container(color: Colors.orange,height: 10000,width: double.infinity,),
+        ],),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => setState(() => _count++),
         tooltip: 'Increment Counter',
