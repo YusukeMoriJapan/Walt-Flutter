@@ -15,6 +15,9 @@ abstract class TmdbConfigRepository {
   Future<TmdbConfig> getTmdbConfig({required int apiVersion});
 }
 
+/// 追加予定
+/// GET /genre/movie/list (ジャンル一覧取得)
+/// 
 class TmdbConfigRepositoryImpl implements TmdbConfigRepository {
   final Reader read;
 

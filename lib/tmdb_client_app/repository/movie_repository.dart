@@ -12,8 +12,15 @@ import 'client/tmdb_client.dart';
 final movieRepository =
     Provider<MovieRepository>((ref) => MovieRepositoryImpl(ref.read));
 
+///　追加予定API
+/// now_playing (上映中)
+/// latest(最近追加された映画)
+/// similar(指定映画とよく似た映画)、
+/// recommendations(指定映画と似ている映画)
+/// discover(特定条件に一致する映画)
+///
 abstract class MovieRepository {
-  Future<List<Movie>?> getPopularMovies(
+  Future<List<Movie>> getPopularMovies(
       {required Language language,
       required int page,
       required int apiVersion,
@@ -25,6 +32,18 @@ abstract class MovieRepository {
       required int apiVersion,
       required String region,
       required TimeWindow timeWindow});
+
+  Future<List<Movie>> getTopRatedMovies(
+      {required Language language,
+      required int page,
+      required int apiVersion,
+      required String region});
+
+  Future<List<Movie>> getUpComingMovies(
+      {required Language language,
+      required int page,
+      required int apiVersion,
+      required String region});
 }
 
 class MovieRepositoryImpl implements MovieRepository {
@@ -33,7 +52,7 @@ class MovieRepositoryImpl implements MovieRepository {
   MovieRepositoryImpl(this.read);
 
   @override
-  Future<List<Movie>?> getPopularMovies(
+  Future<List<Movie>> getPopularMovies(
       {required Language language,
       required int page,
       required int apiVersion,
@@ -43,12 +62,17 @@ class MovieRepositoryImpl implements MovieRepository {
       final response = await read(tmdbClientProvider).get(
           '/3/tv/popular?api_key=${getTmdbApiKey()}',
           cancelToken: cancelToken);
-      return GetMoviesResult.fromJson(response.data).results;
+      final movies = GetMoviesResult.fromJson(response.data).results;
+
+      if (movies == null) {
+        throw HttpException("failed to fetch Trending movies.");
+      }
+      return movies;
     } on DioError catch (error) {
-      // throw DataException.fromDioError(error);
+      rethrow;
+
       /// 何らかの例外を出す
     }
-    return null;
   }
 
   @override
@@ -72,6 +96,57 @@ class MovieRepositoryImpl implements MovieRepository {
       return movies;
     } on DioError catch (error) {
       rethrow;
+
+      /// 何らかの例外を出す
+    }
+  }
+
+  @override
+  Future<List<Movie>> getTopRatedMovies(
+      {required Language language,
+      required int page,
+      required int apiVersion,
+      required String region,
+      CancelToken? cancelToken}) async {
+    try {
+      final response = await read(tmdbClientProvider).get(
+          '/3/movie/top_rated?api_key=${getTmdbApiKey()}',
+          cancelToken: cancelToken);
+
+      final movies = GetMoviesResult.fromJson(response.data).results;
+
+      if (movies == null) {
+        throw HttpException("failed to fetch Trending movies.");
+      }
+      return movies;
+    } on DioError catch (error) {
+      rethrow;
+
+      /// 何らかの例外を出す
+    }
+  }
+
+  @override
+  Future<List<Movie>> getUpComingMovies(
+      {required Language language,
+      required int page,
+      required int apiVersion,
+      required String region,
+      CancelToken? cancelToken}) async {
+    try {
+      final response = await read(tmdbClientProvider).get(
+          '/3/movie/upcoming?api_key=${getTmdbApiKey()}',
+          cancelToken: cancelToken);
+
+      final movies = GetMoviesResult.fromJson(response.data).results;
+
+      if (movies == null) {
+        throw HttpException("failed to fetch Trending movies.");
+      }
+      return movies;
+    } on DioError catch (error) {
+      rethrow;
+
       /// 何らかの例外を出す
     }
   }

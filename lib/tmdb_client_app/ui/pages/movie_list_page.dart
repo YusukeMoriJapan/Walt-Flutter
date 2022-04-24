@@ -52,7 +52,6 @@ Widget _movieList(List<Movie>? movies) {
 
 Widget _movieItem(BuildContext context, Movie movie) {
   final imageUrl = movie.posterPath;
-
   if (imageUrl != null) {
     return Image.network(
       "https://image.tmdb.org/t/p/w500/" + imageUrl,
