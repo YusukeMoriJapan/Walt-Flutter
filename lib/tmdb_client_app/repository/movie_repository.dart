@@ -18,6 +18,13 @@ abstract class MovieRepository {
       required int page,
       required int apiVersion,
       required String region});
+
+  Future<List<Movie>> getTrendingMovies(
+      {required Language language,
+      required int page,
+      required int apiVersion,
+      required String region,
+      required TimeWindow timeWindow});
 }
 
 class MovieRepositoryImpl implements MovieRepository {
@@ -33,14 +40,40 @@ class MovieRepositoryImpl implements MovieRepository {
       required String region,
       CancelToken? cancelToken}) async {
     try {
-      final response = await read(tmdbClientProvider)
-          .get('/3/tv/popular?api_key=${getTmdbApiKey()}', cancelToken: cancelToken);
+      final response = await read(tmdbClientProvider).get(
+          '/3/tv/popular?api_key=${getTmdbApiKey()}',
+          cancelToken: cancelToken);
       return GetMoviesResult.fromJson(response.data).results;
     } on DioError catch (error) {
       // throw DataException.fromDioError(error);
       /// 何らかの例外を出す
     }
     return null;
+  }
+
+  @override
+  Future<List<Movie>> getTrendingMovies(
+      {required Language language,
+      required int page,
+      required int apiVersion,
+      required String region,
+      required TimeWindow timeWindow,
+      CancelToken? cancelToken}) async {
+    try {
+      final response = await read(tmdbClientProvider).get(
+          '/3/trending/movie/${timeWindow.name}?api_key=${getTmdbApiKey()}',
+          cancelToken: cancelToken);
+
+      final movies = GetMoviesResult.fromJson(response.data).results;
+
+      if (movies == null) {
+        throw HttpException("failed to fetch Trending movies.");
+      }
+      return movies;
+    } on DioError catch (error) {
+      rethrow;
+      /// 何らかの例外を出す
+    }
   }
 }
 
@@ -53,6 +86,19 @@ extension LanguageEx on Language {
         return 'en-US';
       case Language.japanese:
         return 'ja';
+    }
+  }
+}
+
+enum TimeWindow { day, week }
+
+extension TimeWondowEx on TimeWindow {
+  String get name {
+    switch (this) {
+      case TimeWindow.day:
+        return 'day';
+      case TimeWindow.week:
+        return 'week';
     }
   }
 }
