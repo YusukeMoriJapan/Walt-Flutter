@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-
 ///非同期で値を提供するときはFutureProviderを使用する
 final configProvider = FutureProvider<Map<String, Object?>>((ref) async {
   final jsonString = await rootBundle.loadString('assets/config.json');
@@ -25,5 +24,17 @@ class FutureProviderSample extends HookConsumerWidget {
             return Text(config['host'] as String);
           }),
     );
+  }
+}
+
+/// 省略記法
+class FutureProviderSample2 extends HookConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final Map<String, Object?>? config = ref.watch(configProvider).value;
+
+    return Scaffold(
+        // Nullチェックは必要になるが、記述は簡略化できる
+        body: Text(config?['host'] as String? ?? 'loading...'));
   }
 }
