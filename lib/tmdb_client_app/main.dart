@@ -12,7 +12,7 @@ main() async {
   runApp(ProviderScope(child: HookConsumer(builder: (context, ref, child) {
     return ref.watch(tmdbConfigProvider).when(
         data: (data) {
-          return const MaterialApp(home: VideoDetailPageBase());
+          return const MaterialApp(home: MovieListPage());
         },
         error: (error, stack) {
           print(stack);

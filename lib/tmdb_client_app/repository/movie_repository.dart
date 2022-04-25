@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:walt/constants/constants.dart';
+import 'package:walt/tmdb_client_app/utils/network/result.dart';
 import 'package:walt/tmdb_client_app/utils/utils.dart';
 
-import '../models/responses/get_movies_result.dart';
-import 'client/tmdb_client.dart';
+import '../models/entity/movie.dart';
+import '../models/responses/get_movie_result.dart';
+import '../providers/tmdb_client_provider.dart';
 
 final movieRepository =
     Provider<MovieRepository>((ref) => MovieRepositoryImpl(ref.read));
@@ -20,30 +20,34 @@ final movieRepository =
 /// discover(特定条件に一致する映画)
 ///
 abstract class MovieRepository {
-  Future<List<Movie>> getPopularMovies(
-      {required Language language,
-      required int page,
-      required int apiVersion,
-      required String region});
-
-  Future<List<Movie>> getTrendingMovies(
+  Future<Result<List<Movie>>> getPopularMovies(
       {required Language language,
       required int page,
       required int apiVersion,
       required String region,
-      required TimeWindow timeWindow});
+      required CancelToken cancelToken});
 
-  Future<List<Movie>> getTopRatedMovies(
+  Future<Result<List<Movie>>> getTrendingMovies(
       {required Language language,
       required int page,
       required int apiVersion,
-      required String region});
+      required String region,
+      required TimeWindow timeWindow,
+      required CancelToken cancelToken});
 
-  Future<List<Movie>> getUpComingMovies(
+  Future<Result<List<Movie>>> getTopRatedMovies(
       {required Language language,
       required int page,
       required int apiVersion,
-      required String region});
+      required String region,
+      required CancelToken cancelToken});
+
+  Future<Result<List<Movie>>> getUpComingMovies(
+      {required Language language,
+      required int page,
+      required int apiVersion,
+      required String region,
+      required CancelToken cancelToken});
 }
 
 class MovieRepositoryImpl implements MovieRepository {
@@ -52,103 +56,60 @@ class MovieRepositoryImpl implements MovieRepository {
   MovieRepositoryImpl(this.read);
 
   @override
-  Future<List<Movie>> getPopularMovies(
+  Future<Result<List<Movie>>> getPopularMovies(
       {required Language language,
       required int page,
       required int apiVersion,
       required String region,
-      CancelToken? cancelToken}) async {
-    try {
-      final response = await read(tmdbClientProvider).get(
-          '/3/tv/popular?api_key=${getTmdbApiKey()}',
-          cancelToken: cancelToken);
-      final movies = GetMoviesResult.fromJson(response.data).results;
-
-      if (movies == null) {
-        throw HttpException("failed to fetch Trending movies.");
-      }
-      return movies;
-    } on DioError catch (error) {
-      rethrow;
-
-      /// 何らかの例外を出す
-    }
+      required CancelToken cancelToken}) {
+    return read(tmdbClientProvider)
+        .getPopularMovies(3, getTmdbApiKey(), cancelToken)
+        .then((response) {
+      return response.toMoviesResult();
+    });
   }
 
   @override
-  Future<List<Movie>> getTrendingMovies(
+  Future<Result<List<Movie>>> getTrendingMovies(
       {required Language language,
       required int page,
       required int apiVersion,
       required String region,
       required TimeWindow timeWindow,
-      CancelToken? cancelToken}) async {
-    try {
-      final response = await read(tmdbClientProvider).get(
-          '/3/trending/movie/${timeWindow.name}?api_key=${getTmdbApiKey()}',
-          cancelToken: cancelToken);
-
-      final movies = GetMoviesResult.fromJson(response.data).results;
-
-      if (movies == null) {
-        throw HttpException("failed to fetch Trending movies.");
-      }
-      return movies;
-    } on DioError catch (error) {
-      rethrow;
-
-      /// 何らかの例外を出す
-    }
+      required CancelToken cancelToken}) {
+    return read(tmdbClientProvider)
+        .getTrendingMovies(3, timeWindow.name, getTmdbApiKey(), cancelToken)
+        .then((response) {
+      return response.toMoviesResult();
+    });
   }
 
   @override
-  Future<List<Movie>> getTopRatedMovies(
+  Future<Result<List<Movie>>> getTopRatedMovies(
       {required Language language,
       required int page,
       required int apiVersion,
       required String region,
-      CancelToken? cancelToken}) async {
-    try {
-      final response = await read(tmdbClientProvider).get(
-          '/3/movie/top_rated?api_key=${getTmdbApiKey()}',
-          cancelToken: cancelToken);
-
-      final movies = GetMoviesResult.fromJson(response.data).results;
-
-      if (movies == null) {
-        throw HttpException("failed to fetch Trending movies.");
-      }
-      return movies;
-    } on DioError catch (error) {
-      rethrow;
-
-      /// 何らかの例外を出す
-    }
+      required CancelToken cancelToken}) {
+    return read(tmdbClientProvider)
+        .getTopRatedMovies(3, getTmdbApiKey(), cancelToken)
+        .then((response) {
+      return response.toMoviesResult();
+    });
   }
 
   @override
-  Future<List<Movie>> getUpComingMovies(
+  Future<Result<List<Movie>>> getUpComingMovies(
       {required Language language,
       required int page,
       required int apiVersion,
       required String region,
-      CancelToken? cancelToken}) async {
-    try {
-      final response = await read(tmdbClientProvider).get(
-          '/3/movie/upcoming?api_key=${getTmdbApiKey()}',
-          cancelToken: cancelToken);
-
-      final movies = GetMoviesResult.fromJson(response.data).results;
-
-      if (movies == null) {
-        throw HttpException("failed to fetch Trending movies.");
-      }
-      return movies;
-    } on DioError catch (error) {
-      rethrow;
-
-      /// 何らかの例外を出す
-    }
+      required CancelToken cancelToken}) {
+    return read(tmdbClientProvider)
+        .getUpComingMovies(3, getTmdbApiKey(), cancelToken)
+        .then((response) {
+      return response.toMoviesResult();
+    });
   }
 }
 

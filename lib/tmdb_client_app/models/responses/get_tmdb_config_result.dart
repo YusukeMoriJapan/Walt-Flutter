@@ -1,62 +1,17 @@
-class GetTmdbConfigResult {
-  TmdbImageConfig? images;
-  List<String>? changeKeys;
+import '../config/tmdb_config.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  GetTmdbConfigResult({this.images, this.changeKeys});
+part 'get_tmdb_config_result.freezed.dart';
+part 'get_tmdb_config_result.g.dart';
 
-  GetTmdbConfigResult.fromJson(Map<String, dynamic> json) {
-    images =
-    json['images'] != null ? TmdbImageConfig.fromJson(json['images']) : null;
-    changeKeys = json['change_keys'].cast<String>();
-  }
+@freezed
+class GetTmdbConfigResult with _$GetTmdbConfigResult {
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    if (images != null) {
-      data['images'] = images!.toJson();
-    }
-    data['change_keys'] = changeKeys;
-    return data;
-  }
-}
+  const factory GetTmdbConfigResult({
+    required TmdbImageConfig? images,
+    required List<String>? changeKeys
+  }) = _GetTmdbConfigResult;
 
-class TmdbImageConfig {
-  String? baseUrl;
-  String? secureBaseUrl;
-  List<String>? backdropSizes;
-  List<String>? logoSizes;
-  List<String>? posterSizes;
-  List<String>? profileSizes;
-  List<String>? stillSizes;
-
-  TmdbImageConfig(
-      {this.baseUrl,
-        this.secureBaseUrl,
-        this.backdropSizes,
-        this.logoSizes,
-        this.posterSizes,
-        this.profileSizes,
-        this.stillSizes});
-
-  TmdbImageConfig.fromJson(Map<String, dynamic> json) {
-    baseUrl = json['base_url'];
-    secureBaseUrl = json['secure_base_url'];
-    backdropSizes = json['backdrop_sizes'].cast<String>();
-    logoSizes = json['logo_sizes'].cast<String>();
-    posterSizes = json['poster_sizes'].cast<String>();
-    profileSizes = json['profile_sizes'].cast<String>();
-    stillSizes = json['still_sizes'].cast<String>();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['base_url'] = baseUrl;
-    data['secure_base_url'] = secureBaseUrl;
-    data['backdrop_sizes'] = backdropSizes;
-    data['logo_sizes'] = logoSizes;
-    data['poster_sizes'] = posterSizes;
-    data['profile_sizes'] = profileSizes;
-    data['still_sizes'] = stillSizes;
-    return data;
-  }
+  factory GetTmdbConfigResult.fromJson(Map<String, dynamic> json) =>
+      _$GetTmdbConfigResultFromJson(json);
 }
