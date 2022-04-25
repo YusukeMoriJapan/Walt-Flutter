@@ -1,7 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/dio.dart';
 import 'package:retrofit/http.dart';
-import 'package:walt/tmdb_client_app/models/responses/get_movie_result.dart';
+import 'package:walt/tmdb_client_app/models/responses/get_movie_response.dart';
+import 'package:walt/tmdb_client_app/models/responses/get_watch_provider_response.dart';
 
 import '../../models/config/tmdb_config.dart';
 
@@ -44,6 +45,14 @@ abstract class TmdbClient {
   Future<TmdbConfig> getTmdbConfig(
     @Path("version") int version,
     @Query("api_key") String apiKey,
+    @CancelRequest() CancelToken cancelToken,
+  );
+
+  @GET("/{version}/movie/{movie_id}/watch/providers")
+  Future<GetWatchProviderResponse> getMovieWatchProvider(
+    @Path("version") int version,
+    @Query("api_key") String apiKey,
+    @Path("movie_id") int movieId,
     @CancelRequest() CancelToken cancelToken,
   );
 }

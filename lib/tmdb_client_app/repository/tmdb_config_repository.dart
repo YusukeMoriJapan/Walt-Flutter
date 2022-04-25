@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:walt/tmdb_client_app/models/config/tmdb_config.dart';
-import 'package:walt/tmdb_client_app/models/responses/get_tmdb_config_result.dart';
+import 'package:walt/tmdb_client_app/models/responses/get_tmdb_config_response.dart';
 import 'package:walt/tmdb_client_app/utils/utils.dart';
 
 import '../providers/tmdb_client_provider.dart';

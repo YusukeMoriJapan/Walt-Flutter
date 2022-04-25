@@ -1,8 +1,8 @@
 import '../config/tmdb_config.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'get_tmdb_config_result.freezed.dart';
-part 'get_tmdb_config_result.g.dart';
+part 'get_tmdb_config_response.freezed.dart';
+part 'get_tmdb_config_response.g.dart';
 
 @freezed
 class GetTmdbConfigResult with _$GetTmdbConfigResult {

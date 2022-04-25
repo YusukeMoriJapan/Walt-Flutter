@@ -5,9 +5,9 @@ import 'package:walt/tmdb_client_app/utils/network/result.dart';
 
 import '../entity/movie.dart';
 
-part 'get_movie_result.freezed.dart';
+part 'get_movie_response.freezed.dart';
 
-part 'get_movie_result.g.dart';
+part 'get_movie_response.g.dart';
 
 @freezed
 class GetMoviesResponse with _$GetMoviesResponse {
