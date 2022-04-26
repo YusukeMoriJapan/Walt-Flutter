@@ -1,0 +1,1 @@
+enum NavigationBarEvent { forYou, discover, favorite }
