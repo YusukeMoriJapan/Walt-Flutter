@@ -41,6 +41,33 @@ abstract class TmdbClient {
     @CancelRequest() CancelToken cancelToken,
   );
 
+  /// 追加予定
+  /// ・初回リリース年で絞り込み
+  /// ・一番リリース日の範囲で絞り込み
+  /// ・公開日で範囲絞り込み
+  /// ・vote数絞り込み
+  /// ・with_people
+  /// ・with_crew
+  /// ・with_cast
+  @GET("/{version}//discover/movie")
+  Future<GetMoviesResponse> getDiscoveredMovies(
+    @Path("version") int version,
+    @Query("api_key") String apiKey,
+    @Query("language") String language,
+    @Query("region") String region,
+    @Query("include_adult") String includeAdult,
+    @Query("sort_by") String sortBy,
+    @CancelRequest() CancelToken cancelToken, {
+    @Query("vote_average.gte") double? voteAverageGte,
+    @Query("vote_average.lte") double? voteAverageLte,
+    @Query("year") int? year,
+    @Query("with_genres") String? withGenres,
+    @Query("with_keywords") String? withKeywords,
+    @Query("with_original_language") String? withOriginalLanguage,
+    @Query("with_watch_monetization_types") String? withWatchMonetizationTypes,
+    @Query("watch_region") String? watchRegion,
+  });
+
   @GET("/{version}/configuration")
   Future<TmdbConfig> getTmdbConfig(
     @Path("version") int version,

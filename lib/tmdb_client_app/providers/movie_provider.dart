@@ -13,7 +13,7 @@ final movieProvider =
   final token = CancelToken();
   ref.onDispose(() => token.cancel());
 
-  return await ref.read(movieRepository).getPopularMovies(
+  return await ref.read(movieRepository).getDiscoveredMovies(
       language: request.language,
       page: request.page,
       apiVersion: request.apiVersion ?? 3,

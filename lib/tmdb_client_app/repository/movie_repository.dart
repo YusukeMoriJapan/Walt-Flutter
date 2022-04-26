@@ -48,6 +48,13 @@ abstract class MovieRepository {
       required int apiVersion,
       required String region,
       required CancelToken cancelToken});
+
+  Future<Result<List<Movie>>> getDiscoveredMovies(
+      {required Language language,
+      required int page,
+      required int apiVersion,
+      required String region,
+      required CancelToken cancelToken});
 }
 
 class MovieRepositoryImpl implements MovieRepository {
@@ -107,6 +114,21 @@ class MovieRepositoryImpl implements MovieRepository {
       required CancelToken cancelToken}) {
     return read(tmdbClientProvider)
         .getUpComingMovies(3, getTmdbApiKey(), cancelToken)
+        .then((response) {
+      return response.toMoviesResult();
+    });
+  }
+
+  @override
+  Future<Result<List<Movie>>> getDiscoveredMovies(
+      {required Language language,
+      required int page,
+      required int apiVersion,
+      required String region,
+      required CancelToken cancelToken}) {
+    return read(tmdbClientProvider)
+        .getDiscoveredMovies(apiVersion, getTmdbApiKey(), language.name, region,
+            false.toString(), "popularity.desc", cancelToken)
         .then((response) {
       return response.toMoviesResult();
     });

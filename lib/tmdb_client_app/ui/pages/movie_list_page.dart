@@ -20,7 +20,7 @@ class MovieListPage extends HookConsumerWidget {
               page: 1,
               apiVersion: 3,
               // cancelToken: CancelToken(),
-              region: "JA")))
+              region: "JP")))
           .value;
 
       return moviesResult?.when<Widget>(success: (data) {
