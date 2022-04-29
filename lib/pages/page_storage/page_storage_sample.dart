@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:walt/utils/navigation_history_observer.dart';
@@ -23,7 +22,7 @@ class TabInfo {
 class MyApp extends StatelessWidget {
   final List<TabInfo> _tabs = [
     TabInfo("FIRST",
-        Page1(key: PageStorageKey<String>("key_Page1"))), // ここでキーを渡している
+        const Page1(key: PageStorageKey<String>("key_Page1"))), // ここでキーを渡している
     TabInfo("SECOND", Page2()),
     TabInfo("THIRD", Page3()),
   ];
@@ -34,7 +33,7 @@ class MyApp extends StatelessWidget {
       length: _tabs.length,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Tab Controller'),
+          title: const Text('Tab Controller'),
           bottom: PreferredSize(
             child: TabBar(
               isScrollable: true,
@@ -42,7 +41,7 @@ class MyApp extends StatelessWidget {
                 return Tab(text: tab.label);
               }).toList(),
             ),
-            preferredSize: Size.fromHeight(30.0),
+            preferredSize: const Size.fromHeight(30.0),
           ),
         ),
         body: TabBarView(children: _tabs.map((tab) => tab.widget).toList()),
@@ -52,7 +51,7 @@ class MyApp extends StatelessWidget {
 }
 
 class Page1 extends StatefulWidget {
-  Page1({required Key key}) : super(key: key); //この行を追加
+  const Page1({required Key key}) : super(key: key); //この行を追加
 
   @override
   State<StatefulWidget> createState() {
@@ -86,14 +85,14 @@ class _Page1State extends State<Page1> {
     PageStorageManager().registerPageStorage("su-ji", context);
 
     return Container(
-      padding: EdgeInsets.all(20.0),
+      padding: const EdgeInsets.all(20.0),
       child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
             Text(
               '${_params?.counter1}',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 48,
               ),
             ),
@@ -101,7 +100,7 @@ class _Page1State extends State<Page1> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 IconButton(
-                  icon: Icon(Icons.remove, size: 32.0),
+                  icon: const Icon(Icons.remove, size: 32.0),
                   onPressed: () {
                     setState(() {
                       _params?.counter1--;
@@ -111,7 +110,7 @@ class _Page1State extends State<Page1> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.add, size: 32.0),
+                  icon: const Icon(Icons.add, size: 32.0),
                   onPressed: () {
                     setState(() {
                       _params?.counter1++;
@@ -124,7 +123,7 @@ class _Page1State extends State<Page1> {
             ),
             Text(
               '${_params?.counter2}',
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 48,
               ),
             ),
@@ -132,7 +131,7 @@ class _Page1State extends State<Page1> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 IconButton(
-                  icon: Icon(Icons.remove, size: 32.0),
+                  icon: const Icon(Icons.remove, size: 32.0),
                   onPressed: () {
                     setState(() {
                       _params?.counter2--;
@@ -142,7 +141,7 @@ class _Page1State extends State<Page1> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.add, size: 32.0),
+                  icon: const Icon(Icons.add, size: 32.0),
                   onPressed: () {
                     setState(() {
                       _params?.counter2++;
@@ -153,36 +152,36 @@ class _Page1State extends State<Page1> {
                 ),
               ],
             ),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
-            Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
+            const Text("赤沙汰な"),
             ElevatedButton(
                 onPressed: () {
                   PageStorage.of(context)?.writeState(context, null);
                 },
-                child: Text("Clear"))
+                child: const Text("Clear"))
           ],
         ),
       ),

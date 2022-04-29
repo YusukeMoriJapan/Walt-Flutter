@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:walt/tmdb_client_app/ui/navigation/navigation_bar_event.dart';
 import 'package:walt/tmdb_client_app/ui/pages/discover/discover_page.dart';
 import 'package:walt/tmdb_client_app/ui/pages/favorite/favorite_page.dart';
 import 'package:walt/tmdb_client_app/ui/pages/for_you/for_you_page.dart';
@@ -23,6 +23,7 @@ class AppHome extends HookConsumerWidget {
           key: Keys.NAV_BAR,
           currentIndex: navigation.index,
           backgroundColor: Colors.transparent,
+          unselectedItemColor: _getUnSelectedItemColor(navigation),
           elevation: 0,
           onTap: (index) {
             ref.read(navigationProvider.notifier).selectPage(index);
@@ -42,13 +43,21 @@ class AppHome extends HookConsumerWidget {
   Widget currentScreen(int index) {
     switch (index) {
       case 0:
-        return ForYouPage();
+        return const ForYouPage();
       case 1:
-        return DiscoverPage();
+        return const DiscoverPage();
       case 2:
-        return FavoritePage();
+        return const FavoritePage();
       default:
-        return ForYouPage();
+        return const ForYouPage();
+    }
+  }
+
+  Color? _getUnSelectedItemColor(PageModel pageModel) {
+    if (pageModel.page == NavigationBarEvent.forYou) {
+      return Colors.white;
+    } else {
+      return null;
     }
   }
 }

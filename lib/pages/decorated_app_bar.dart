@@ -31,7 +31,7 @@ class _MyStatefulWidgetState extends State<MyStatefulWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: CupertinoNavigationBar(
+      appBar: const CupertinoNavigationBar(
         backgroundColor: Colors.transparent,
       ),
       body: SingleChildScrollView(

@@ -1,11 +1,8 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:walt/tmdb_client_app/models/config/tmdb_config.dart';
 import 'package:walt/tmdb_client_app/models/entity/watch_provider/provider_metadata.dart';
-import 'package:walt/tmdb_client_app/models/responses/get_tmdb_config_response.dart';
 import 'package:walt/tmdb_client_app/utils/utils.dart';
 
 import '../models/region/region.dart';

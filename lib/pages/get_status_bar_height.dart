@@ -5,7 +5,7 @@ void main(){
   runApp(MyApp());
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge, overlays: []);
   SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle(
+    const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.light,
         statusBarBrightness: Brightness.light,
@@ -24,14 +24,14 @@ class GetStatusBarHeight extends StatelessWidget {
     double statusBarHeight = MediaQuery.of(context).padding.top;
 
     return Text('Status Bar Height = ' + statusBarHeight.toString(),
-        style: TextStyle(fontSize: 30));
+        style: const TextStyle(fontSize: 30));
   }
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
         home: Scaffold(body: Center(child: GetStatusBarHeight())));
   }
 }

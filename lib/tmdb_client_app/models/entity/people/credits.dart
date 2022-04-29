@@ -54,11 +54,7 @@ class Credits {
 
   @override
   String toString() {
-    return 'GetMovieCreditsResponse{' +
-        ' id: $id,' +
-        ' cast: $cast,' +
-        ' crew: $crew,' +
-        '}';
+    return 'GetMovieCreditsResponse{' ' id: $id,' ' cast: $cast,' ' crew: $crew,' '}';
   }
 
   Credits copyWith({

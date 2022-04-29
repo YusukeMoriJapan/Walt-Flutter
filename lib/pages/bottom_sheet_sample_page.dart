@@ -1,12 +1,11 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:walt/pages/sliver_app_bar/sliver_app_bar_flexible_space_expanded_height.dart';
 import 'package:walt/pages/top_page/states/top_page_providers.dart';
 
 class BottomSheetDemoPage extends StatefulWidget {
   @override
-  _BottomSheetDemoPageState createState() => new _BottomSheetDemoPageState();
+  _BottomSheetDemoPageState createState() => _BottomSheetDemoPageState();
 }
 
 class _BottomSheetDemoPageState extends State<BottomSheetDemoPage> {
@@ -21,7 +20,7 @@ class _BottomSheetDemoPageState extends State<BottomSheetDemoPage> {
 
   Widget _bottomSheetColumnWidget({required Widget child}) {
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 0, horizontal: 0),
+      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 0),
       width: double.infinity,
       child: child,
     );
@@ -31,15 +30,15 @@ class _BottomSheetDemoPageState extends State<BottomSheetDemoPage> {
       String text, Widget? icon, void Function() onClick) {
     return TextButton(
       onPressed: () {},
-      style: ButtonStyle(
+      style: const ButtonStyle(
         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
       ),
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         alignment: Alignment.centerLeft,
         child: Text(
           text,
-          style: TextStyle(fontSize: 16, color: Colors.black87),
+          style: const TextStyle(fontSize: 16, color: Colors.black87),
           textAlign: TextAlign.start,
         ),
       ),
@@ -50,9 +49,9 @@ class _BottomSheetDemoPageState extends State<BottomSheetDemoPage> {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        IconButton(onPressed: () {}, icon: Icon(Icons.apps)),
-        IconButton(onPressed: () {}, icon: Icon(Icons.repeat)),
-        IconButton(onPressed: () {}, icon: Icon(Icons.waves)),
+        IconButton(onPressed: () {}, icon: const Icon(Icons.apps)),
+        IconButton(onPressed: () {}, icon: const Icon(Icons.repeat)),
+        IconButton(onPressed: () {}, icon: const Icon(Icons.waves)),
       ],
     );
   }
@@ -141,16 +140,16 @@ class _BottomSheetDemoPageState extends State<BottomSheetDemoPage> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text("戻る")),
+                child: const Text("戻る")),
             ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(context, '/');
                 },
-                child: Text("次の画面に遷移")),
+                child: const Text("次の画面に遷移")),
             RaisedButton(
               color: Colors.teal[100],
               onPressed: _showPersistantBottomSheetCallBack,
-              child: Text(
+              child: const Text(
                 "Show Persistent BottomSheet",
                 style: TextStyle(color: Colors.black),
               ),

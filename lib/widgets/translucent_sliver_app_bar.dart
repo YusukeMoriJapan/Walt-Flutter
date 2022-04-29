@@ -41,15 +41,14 @@ class _TranslucentSliverAppBarDelegate extends SliverPersistentHeaderDelegate {
                 color: Colors.white,
                 // Use Stack and Positioned to create the toolbar slide up effect when scrolled up
                 child: Stack(
-                  overflow: Overflow.clip,
-                  children: <Widget>[
+                  clipBehavior: Clip.hardEdge, children: <Widget>[
                     Positioned(
                       bottom: 0, left: 0, right: 0,
                       child: AppBar(
                         primary: false,
                         elevation: 0,
                         backgroundColor: Colors.transparent,
-                        title: Text("Translucent App Bar"),
+                        title: const Text("Translucent App Bar"),
                       ),
                     )
                   ],

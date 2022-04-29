@@ -2,11 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:walt/tmdb_client_app/models/entity/people/credits.dart';
 
-import '../models/entity/movie.dart';
 import '../providers/tmdb_client_provider.dart';
 import '../utils/network/result.dart';
 import '../utils/utils.dart';
-import 'movie_repository.dart';
 
 final creditsRepository =
     Provider<CreditsRepository>((ref) => CreditsRepositoryImpl(ref.read));

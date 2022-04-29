@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -15,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return  MaterialApp(
       title: _title,
-      home: MyStatefulWidget(),
+      home: const MyStatefulWidget(),
       theme: ThemeData.light(),
       darkTheme: ThemeData.dark(),
     );

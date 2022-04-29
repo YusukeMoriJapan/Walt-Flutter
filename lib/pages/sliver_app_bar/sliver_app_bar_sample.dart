@@ -35,18 +35,18 @@ class _MyAppState extends State<MyApp> with SingleTickerProviderStateMixin {
           slivers: <Widget>[
             SliverAppBar(
               floating: true,
-              title: Text('Sample'),
+              title: const Text('Sample'),
               leading:
-                  RaisedButton(onPressed: () {}, child: Icon(Icons.settings)),
+                  RaisedButton(onPressed: () {}, child: const Icon(Icons.settings)),
               actions: <Widget>[
-                RaisedButton(onPressed: () {}, child: Icon(Icons.add)),
-                RaisedButton(onPressed: () {}, child: Icon(Icons.list)),
+                RaisedButton(onPressed: () {}, child: const Icon(Icons.add)),
+                RaisedButton(onPressed: () {}, child: const Icon(Icons.list)),
               ],
               bottom: PreferredSize(
-                preferredSize: Size(60.0, 60.0),
+                preferredSize: const Size(60.0, 60.0),
                 child: Container(
                   child: TabBar(
-                    tabs: <Widget>[
+                    tabs: const <Widget>[
                       Tab(text: 'Car', icon: Icon(Icons.directions_car)),
                       Tab(text: 'Bicycle', icon: Icon(Icons.directions_bike)),
                       Tab(text: 'Boat', icon: Icon(Icons.directions_boat)),

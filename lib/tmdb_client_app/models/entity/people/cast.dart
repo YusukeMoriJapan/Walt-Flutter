@@ -96,11 +96,7 @@ class Cast {
 
   @override
   String toString() {
-    return 'Cast{' +
-        ' adult: $adult,' +
-        ' gender: $gender,' +
-        ' id: $id,' +
-        ' knownForDepartment: $knownForDepartment,' +
+    return 'Cast{' ' adult: $adult,' ' gender: $gender,' ' id: $id,' ' knownForDepartment: $knownForDepartment,' +
         ' name: $name,' +
         ' originalName: $originalName,' +
         ' popularity: $popularity,' +

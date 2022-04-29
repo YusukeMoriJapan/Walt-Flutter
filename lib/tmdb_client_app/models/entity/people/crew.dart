@@ -90,11 +90,7 @@ class Crew {
 
   @override
   String toString() {
-    return 'Crew{' +
-        ' adult: $adult,' +
-        ' gender: $gender,' +
-        ' id: $id,' +
-        ' knownForDepartment: $knownForDepartment,' +
+    return 'Crew{' ' adult: $adult,' ' gender: $gender,' ' id: $id,' ' knownForDepartment: $knownForDepartment,' +
         ' name: $name,' +
         ' originalName: $originalName,' +
         ' popularity: $popularity,' +

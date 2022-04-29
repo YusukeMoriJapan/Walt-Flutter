@@ -1,8 +1,4 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/physics.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:preload_page_view/preload_page_view.dart';
@@ -61,11 +57,11 @@ class ForYouPagerContent extends HookConsumerWidget {
         Container(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             alignment: Alignment.centerLeft,
-            child: const Icon(Icons.arrow_back_ios,color: Colors.white)),
+            child: const Icon(Icons.arrow_back_ios, color: Colors.white60)),
         Container(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             alignment: Alignment.centerRight,
-            child: const Icon(Icons.arrow_forward_ios,color: Colors.white)),
+            child: const Icon(Icons.arrow_forward_ios, color: Colors.white60)),
       ],
     );
   }
@@ -83,37 +79,80 @@ class MovieContentPage extends HookConsumerWidget {
 
     return Stack(
       children: [
-        PreloadPageView.builder(
-            controller: controller,
-            preloadPagesCount: 3,
-            itemCount: movies.length,
-            scrollDirection: Axis.vertical,
-            onPageChanged: (i) {
-              pagerIndicatorActiveIndex.value = i;
-            },
-            itemBuilder: (BuildContext context, int index) {
-              return Center(
-                child: Image.network(
-                  /// nullハンドリング必要
-                  movies[index].posterPath ?? "",
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: double.infinity,
-                ),
-              );
-            }),
+        Container(
+          foregroundDecoration: const BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: <Color>[
+                Color(0xCB000000),
+                Color(0x4D000000),
+                Color(0x0a000000),
+                Color(0x00000000),
+                Color(0x0a000000),
+                Color(0x4D000000),
+                Color(0xCC000000),
+              ])),
+          child: PreloadPageView.builder(
+              controller: controller,
+              preloadPagesCount: 3,
+              itemCount: movies.length,
+              scrollDirection: Axis.vertical,
+              onPageChanged: (i) {
+                pagerIndicatorActiveIndex.value = i;
+              },
+              itemBuilder: (BuildContext context, int index) {
+                return Center(
+                  child: Image.network(
+                    /// nullハンドリング必要
+                    movies[index].posterPath ?? "",
+                    fit: BoxFit.cover,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
+                );
+              }),
+        ),
         SafeArea(
-          child: Container(
-            alignment: Alignment.bottomRight,
-            padding: const EdgeInsets.fromLTRB(0, 0, 16, 40),
-            child: AnimatedSmoothIndicator(
-                activeIndex: pagerIndicatorActiveIndex.value,
-                effect: const SlideEffect(
-                    dotWidth: 8, dotHeight: 8, spacing: 16),
-                count: movies.length,
-                axisDirection: Axis.vertical),
+          child: Stack(
+            children: [
+              Container(
+                alignment: Alignment.bottomRight,
+                padding: const EdgeInsets.fromLTRB(0, 0, 16, 40),
+                child: AnimatedSmoothIndicator(
+                    activeIndex: pagerIndicatorActiveIndex.value,
+                    effect: const SlideEffect(
+                        dotWidth: 8, dotHeight: 8, spacing: 16),
+                    count: movies.length,
+                    axisDirection: Axis.vertical),
+              ),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 16,horizontal: 8),
+                alignment: Alignment.topCenter,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text("Trending      Popular      High Rated",
+                        // textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w300,
+                          color: Theme.of(context).primaryColor,
+                        )),
+                    const SizedBox(height: 8),
+                    Text(movies[pagerIndicatorActiveIndex.value].name ?? "",
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          // fontWeight: FontWeight.w300,
+                          color: Color.fromARGB(255, 255, 255, 255),
+                        ))
+                  ],
+                ),
+              )
+            ],
           ),
-        )
+        ),
       ],
     );
   }

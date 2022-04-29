@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter/widgets.dart';
-import 'package:walt/navigation/page_storage_manager.dart';
 
 class NavigationHistoryObserver extends NavigatorObserver {
   /// A list of all the past routes

@@ -13,7 +13,7 @@ class SampleRiverpodProviderWidget extends HookConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: Text(appName)),
       body: ListView(
-        children: [],
+        children: const [],
       ),
     );
   }

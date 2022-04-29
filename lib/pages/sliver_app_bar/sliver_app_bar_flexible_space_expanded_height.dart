@@ -1,4 +1,3 @@
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,7 +22,7 @@ class MyApp extends HookConsumerWidget {
     // PageStorage.of(context).readState(context)
 
     SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
+      const SystemUiOverlayStyle(
           statusBarColor: Colors.transparent,
           statusBarIconBrightness: Brightness.light,
           statusBarBrightness: Brightness.light,
@@ -45,9 +44,10 @@ class SliverAppBarFlexSpaceExpandedHeightPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     useEffect(() {
-      NavigationHistoryObserver().history.forEach((route) {
+      for (var route in NavigationHistoryObserver().history) {
         print(route.navigator?.widget.toString());
-      });
+      }
+      return null;
     }, [Object()]);
 
     return Scaffold(
@@ -55,12 +55,12 @@ class SliverAppBarFlexSpaceExpandedHeightPage extends HookConsumerWidget {
         slivers: <Widget>[
           SliverAppBar(
             elevation: 0,
-            backgroundColor: Color(0xE6FFC0A2),
+            backgroundColor: const Color(0xE6FFC0A2),
             leading: IconButton(
                 onPressed: () {
                   Navigator.pushNamed(context, "/bottomSheetDemo");
                 },
-                icon: Icon(Icons.arrow_back_ios)),
+                icon: const Icon(Icons.arrow_back_ios)),
             pinned: true,
             stretch: true,
             expandedHeight: 300.0,
@@ -99,7 +99,7 @@ class SliverAppBarFlexSpaceExpandedHeightPage extends HookConsumerWidget {
                         children: [
                           Container(
                             height: 100,
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                                 gradient: LinearGradient(
                                     begin: Alignment.topCenter,
                                     end: Alignment.bottomCenter,
@@ -108,16 +108,16 @@ class SliverAppBarFlexSpaceExpandedHeightPage extends HookConsumerWidget {
                                   Colors.white,
                                 ])),
                           ),
-                          MyMetricsText(),
+                          const MyMetricsText(),
                           Text(
                             "ウィキペディア（英: Wikipedia）とは、世界中のボランティアの共同作業によって執筆及び作成されるフリーの多言語[4]インターネット百科事典である[5]。収録されている全ての内容がオープンコンテントで商業広告が存在しないということを特徴とし、主に寄付に依って活動している非営利団体「ウィキメディア財団」が所有・運営している[6][7][8][9]。「ウィキペディア（Wikipedia）」という名前は、ウェブブラウザ上でウェブページを編集することができる「ウィキ（Wiki）」というシステムを使用した「百科事典」（英: Encyclopedia）であることに由来する造語である[10]。設立者の1人であるラリー・サンガーにより命名された[11][12]。",
                             key: _textKey,
                           ),
-                          Text(
+                          const Text(
                               "ウィキペディア（英: Wikipedia）とは、世界中のボランティアの共同作業によって執筆及び作成されるフリーの多言語[4]インターネット百科事典である[5]。収録されている全ての内容がオープンコンテントで商業広告が存在しないということを特徴とし、主に寄付に依って活動している非営利団体「ウィキメディア財団」が所有・運営している[6][7][8][9]。「ウィキペディア（Wikipedia）」という名前は、ウェブブラウザ上でウェブページを編集することができる「ウィキ（Wiki）」というシステムを使用した「百科事典」（英: Encyclopedia）であることに由来する造語である[10]。設立者の1人であるラリー・サンガーにより命名された[11][12]。"),
-                          Text(
+                          const Text(
                               "ウィキペディア（英: Wikipedia）とは、世界中のボランティアの共同作業によって執筆及び作成されるフリーの多言語[4]インターネット百科事典である[5]。収録されている全ての内容がオープンコンテントで商業広告が存在しないということを特徴とし、主に寄付に依って活動している非営利団体「ウィキメディア財団」が所有・運営している[6][7][8][9]。「ウィキペディア（Wikipedia）」という名前は、ウェブブラウザ上でウェブページを編集することができる「ウィキ（Wiki）」というシステムを使用した「百科事典」（英: Encyclopedia）であることに由来する造語である[10]。設立者の1人であるラリー・サンガーにより命名された[11][12]。"),
-                          Text(
+                          const Text(
                               "ウィキペディア（英: Wikipedia）とは、世界中のボランティアの共同作業によって執筆及び作成されるフリーの多言語[4]インターネット百科事典である[5]。収録されている全ての内容がオープンコンテントで商業広告が存在しないということを特徴とし、主に寄付に依って活動している非営利団体「ウィキメディア財団」が所有・運営している[6][7][8][9]。「ウィキペディア（Wikipedia）」という名前は、ウェブブラウザ上でウェブページを編集することができる「ウィキ（Wiki）」というシステムを使用した「百科事典」（英: Encyclopedia）であることに由来する造語である[10]。設立者の1人であるラリー・サンガーにより命名された[11][12]。"),
                         ],
                       ),
@@ -140,7 +140,7 @@ class RiverpodFlexAppBar extends HookConsumerWidget {
         onNotification: (layout) {
           // print(_flexibleSpaceBerKey.currentContext?.size?.height);
 
-          Future.delayed(Duration(milliseconds: 0), () {
+          Future.delayed(const Duration(milliseconds: 0), () {
             ref.read(_appBarHeight.notifier).updateheight(
                 _flexibleSpaceBerKey.currentContext?.size?.height ?? 0);
           });
@@ -150,7 +150,7 @@ class RiverpodFlexAppBar extends HookConsumerWidget {
         child: SizeChangedLayoutNotifier(
             child: FlexibleSpaceBar(
                 key: _flexibleSpaceBerKey,
-                stretchModes: <StretchMode>[
+                stretchModes: const <StretchMode>[
                   StretchMode.zoomBackground,
                   StretchMode.blurBackground,
                   StretchMode.fadeTitle,
@@ -165,7 +165,7 @@ class RiverpodFlexAppBar extends HookConsumerWidget {
                 background: Stack(alignment: Alignment.center, children: [
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 32, 0, 56),
-                    child: Container(
+                    child: SizedBox(
                       width: ref.watch(_appBarHeight) * 0.7,
                       height: ref.watch(_appBarHeight) * 0.7,
                       child: Image.network(
@@ -196,7 +196,7 @@ class MyMetricsText extends StatefulWidget {
 
 class _MyMetricsTextState extends State<MyMetricsText>
     with WidgetsBindingObserver {
-  GlobalKey _key = GlobalKey();
+  final GlobalKey _key = GlobalKey();
 
   @override
   void initState() {

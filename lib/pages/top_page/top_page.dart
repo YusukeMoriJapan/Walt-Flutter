@@ -9,7 +9,7 @@ class TopPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final title = ref.watch(topPageTitleProvider);
-    return Scaffold(
+    return const Scaffold(
       body: McGridMenuPage(),
       bottomSheet: TopPageBottomSheet(),
     );

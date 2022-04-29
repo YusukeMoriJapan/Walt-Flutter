@@ -12,13 +12,13 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Build scheduled during frame', key: Key ("something"),),
+      home: const MyHomePage(title: 'Build scheduled during frame', key: Key ("something"),),
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({required Key key, required this.title}) : super(key: key);
+  const MyHomePage({required Key key, required this.title}) : super(key: key);
 
   final String title;
 
@@ -56,7 +56,7 @@ class _MyHomePageState extends State<MyHomePage>
                         _isBottomWidgetShow = true;
                       });
                     });
-                    Timer(Duration(milliseconds: 3000), () {
+                    Timer(const Duration(milliseconds: 3000), () {
                       WidgetsBinding.instance!.addPostFrameCallback((_) {
                         print("timer");
                         setState(() {
@@ -69,7 +69,7 @@ class _MyHomePageState extends State<MyHomePage>
                   return true;
                 },
                 child: ListView.builder(
-                  physics: BouncingScrollPhysics(),
+                  physics: const BouncingScrollPhysics(),
                   padding: EdgeInsets.zero,
                   shrinkWrap: true,
                   itemCount: 10,

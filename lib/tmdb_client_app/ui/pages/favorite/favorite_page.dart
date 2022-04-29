@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class FavoritePage extends HookConsumerWidget {
@@ -7,6 +6,6 @@ class FavoritePage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Center(child: Text("This is FAVORITE PAGE"));
+    return const Center(child: Text("This is FAVORITE PAGE"));
   }
 }
