@@ -25,6 +25,7 @@ abstract class TmdbClient {
     @Path("version") int version,
     @Path("timeWindow") String timeWindow,
     @Query("api_key") String apiKey,
+    @Query("page") int page,
     @CancelRequest() CancelToken cancelToken,
   );
 

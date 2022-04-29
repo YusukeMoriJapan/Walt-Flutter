@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:walt/tmdb_client_app/utils/network/result.dart';
@@ -84,7 +83,8 @@ class MovieRepositoryImpl implements MovieRepository {
       required TimeWindow timeWindow,
       required CancelToken cancelToken}) {
     return read(tmdbClientProvider)
-        .getTrendingMovies(3, timeWindow.name, getTmdbApiKey(), cancelToken)
+        .getTrendingMovies(
+            3, timeWindow.name, getTmdbApiKey(), page, cancelToken)
         .then((response) {
       return response.toMoviesResult();
     });

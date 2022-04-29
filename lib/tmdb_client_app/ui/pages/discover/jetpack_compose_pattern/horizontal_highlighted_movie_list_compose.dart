@@ -3,18 +3,17 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:walt/tmdb_client_app/models/entity/movie.dart';
 import 'package:walt/tmdb_client_app/utils/throwable/not_provided_exception.dart';
 
-final moviesHorizontalListParams = Provider<MoviesHorizontalMiniListParams>(
-    (ref) =>
-        throw NotProvidedException("Must override values in parent widget."));
+final highlightedMoviesHorizontalListParams = Provider<HighlightedMoviesHorizontalMiniListParams>(
+        (ref) =>
+    throw NotProvidedException("Must override values in parent widget."));
 
-class MoviesHorizontalList extends HookConsumerWidget {
-  const MoviesHorizontalList({Key? key}) : super(key: key);
+class HighlightedMoviesHorizontalListCompose extends HookConsumerWidget {
+  const HighlightedMoviesHorizontalListCompose({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dependencies = ref.watch(moviesHorizontalListParams);
+    final dependencies = ref.watch(highlightedMoviesHorizontalListParams);
     final movies = dependencies.movies;
-
 
     return ListView.builder(
       itemCount: movies.length,
@@ -30,9 +29,9 @@ class MoviesHorizontalList extends HookConsumerWidget {
   }
 }
 
-class MoviesHorizontalMiniListParams {
+class HighlightedMoviesHorizontalMiniListParams {
   final void Function(int id) onClickMovieImage;
   final List<Movie> movies;
 
-  const MoviesHorizontalMiniListParams(this.onClickMovieImage, this.movies);
+  const HighlightedMoviesHorizontalMiniListParams(this.onClickMovieImage, this.movies);
 }
