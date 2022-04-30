@@ -76,6 +76,7 @@ class MovieContentPage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pagerIndicatorActiveIndex = useState(0);
+    final selectedMovie = movies[pagerIndicatorActiveIndex.value];
 
     return Stack(
       children: [
@@ -113,9 +114,12 @@ class MovieContentPage extends HookConsumerWidget {
                 );
               }),
         ),
+
+        /// 映画ポスターの上に表示するWidget群
         SafeArea(
           child: Stack(
             children: [
+              /// Pager Indicator
               Container(
                 alignment: Alignment.bottomRight,
                 padding: const EdgeInsets.fromLTRB(0, 0, 16, 40),
@@ -126,8 +130,45 @@ class MovieContentPage extends HookConsumerWidget {
                     count: movies.length,
                     axisDirection: Axis.vertical),
               ),
+
+              /// VoteAverage
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      SizedBox(
+                        width: 72,
+                        height: 72,
+                        child: CircularProgressIndicator(
+                            strokeWidth: 4,
+                            backgroundColor: Color.fromARGB(178, 158, 158, 158),
+                            value: selectedMovie.getVoteAverageForIndicator()),
+                      ),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            selectedMovie.getVoteAverageForText().toString(),
+                            style: TextStyle(fontSize: 24, color: Colors.white),
+                          ),
+                          Text(
+                            "%",
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+
+              /// Tabインジケータ
               Container(
-                padding: const EdgeInsets.symmetric(vertical: 16,horizontal: 8),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
                 alignment: Alignment.topCenter,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -140,6 +181,8 @@ class MovieContentPage extends HookConsumerWidget {
                           color: Theme.of(context).primaryColor,
                         )),
                     const SizedBox(height: 8),
+
+                    /// 映画タイトル
                     Text(movies[pagerIndicatorActiveIndex.value].name ?? "",
                         textAlign: TextAlign.center,
                         style: const TextStyle(

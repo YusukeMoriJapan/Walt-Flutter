@@ -16,7 +16,7 @@ final mock007MoviesProvider = Provider((ref) {
         popularity: null,
         posterPath:
             "https://www.themoviedb.org/t/p/original/2kExe7ImkVP4emxWGoJnraxthWd.jpg",
-        voteAverage: 8.5,
+        voteAverage:  5.0,
         voteCount: null),
     const Movie(
         backdropPath: null,
@@ -31,7 +31,7 @@ final mock007MoviesProvider = Provider((ref) {
         popularity: null,
         posterPath:
         "https://www.themoviedb.org/t/p/original/9E7zIF2tR8RHID63CyuI6eSoHJk.jpg",
-        voteAverage: 8.5,
+        voteAverage: 4.2,
         voteCount: null),
     const Movie(
         backdropPath: null,
@@ -61,7 +61,7 @@ final mock007MoviesProvider = Provider((ref) {
         popularity: null,
         posterPath:
         "https://www.themoviedb.org/t/p/original/lVA3GA9AQJbC9YH96snHciERq5i.jpg",
-        voteAverage: 8.5,
+        voteAverage: 3.2,
         voteCount: null),
     const Movie(
         backdropPath: null,
@@ -76,7 +76,7 @@ final mock007MoviesProvider = Provider((ref) {
         popularity: null,
         posterPath:
         "https://www.themoviedb.org/t/p/original/kxdMGRsZQCWZb3RqiYpxqGHkZuo.jpg",
-        voteAverage: 8.5,
+        voteAverage: 1,
         voteCount: null),
   ];
 });
