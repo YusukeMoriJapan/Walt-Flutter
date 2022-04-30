@@ -1,10 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../utils/navigation_history_observer.dart';
+import '../bottom_sheet_sample_page.dart';
 
 final _flexibleSpaceBerKey = GlobalKey();
 final _textKey = GlobalKey();
@@ -31,10 +31,15 @@ class MyApp extends HookConsumerWidget {
           systemNavigationBarIconBrightness: Brightness.light),
     );
 
-    return const MaterialApp(
-        home: SliverAppBarFlexSpaceExpandedHeightPage(
-      key: PageStorageKey("test"),
-    ));
+    return MaterialApp(
+        routes: <String, WidgetBuilder>{
+          '/bottomSheetDemo': (BuildContext context) =>
+              const BottomSheetDemoPage(
+                  key: PageStorageKey("BottomSheetDemoPage")),
+        },
+        home: const SliverAppBarFlexSpaceExpandedHeightPage(
+            // key: PageStorageKey("test"),
+            ));
   }
 }
 

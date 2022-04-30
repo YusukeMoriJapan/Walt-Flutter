@@ -5,6 +5,10 @@ import 'package:walt/tmdb_client_app/ui/app_home.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 main() async {
+  launchTmdbApp();
+}
+
+launchTmdbApp() async {
   await dotenv.load(fileName: ".env");
 
   runApp(ProviderScope(child: HookConsumer(builder: (context, ref, child) {

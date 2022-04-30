@@ -44,42 +44,48 @@ class DiscoverPage extends HookConsumerWidget {
       }
     }, [true]);
 
-    return ListView(
-      itemExtent: 400,
-      children: [
-        showHighLightedPageContent(
-            const ValueKey("trending"),
-            movieViewModel.trendingMovieStream,
-            movieViewModel.getCurrentTrendingMovies(), (id) {
-          movieViewModel.requestNextPageTrendingMovies();
-        }, () {
-          movieViewModel.requestNextPageTrendingMovies();
-        }),
-        showHighLightedPageContent(
-            const ValueKey("upComing"),
-            movieViewModel.upComingMovieStream,
-            movieViewModel.getCurrentUpComingMovies(), (id) {
-          // movieViewModel.requestNextPageUpComingMovies();
-        }, () {
-          // movieViewModel.requestNextPageUpComingMovies();
-        }),
-        showHighLightedPageContent(
-            const ValueKey("topRated"),
-            movieViewModel.topRatedMovieStream,
-            movieViewModel.getCurrentTopRatedMovies(), (id) {
-          // movieViewModel.requestNextPageTrendingMovies();
-        }, () {
-          // movieViewModel.requestNextPageTrendingMovies();
-        }),
-        showHighLightedPageContent(
-            const ValueKey("popular"),
-            movieViewModel.popularMovieStream,
-            movieViewModel.getCurrentPopularMovies(), (id) {
-          // movieViewModel.requestNextPageTrendingMovies();
-        }, () {
-          // movieViewModel.requestNextPageTrendingMovies();
-        })
-      ],
+    return PageStorage(
+      bucket: PageStorageBucket(),
+      child: ListView(
+        children: [
+          showHighLightedPageContent(
+              const PageStorageKey("trending"),
+              const ValueKey("trendingList"),
+              movieViewModel.trendingMovieStream,
+              movieViewModel.getCurrentTrendingMovies(), (id) {
+            movieViewModel.requestNextPageTrendingMovies();
+          }, () {
+            movieViewModel.requestNextPageTrendingMovies();
+          }),
+          showHighLightedPageContent(
+              const PageStorageKey("upComing"),
+              const ValueKey("upComingList"),
+              movieViewModel.upComingMovieStream,
+              movieViewModel.getCurrentUpComingMovies(), (id) {
+            // movieViewModel.requestNextPageUpComingMovies();
+          }, () {
+            // movieViewModel.requestNextPageUpComingMovies();
+          }),
+          showHighLightedPageContent(
+              const PageStorageKey("topRated"),
+              const ValueKey("topRatedList"),
+              movieViewModel.topRatedMovieStream,
+              movieViewModel.getCurrentTopRatedMovies(), (id) {
+            // movieViewModel.requestNextPageTrendingMovies();
+          }, () {
+            // movieViewModel.requestNextPageTrendingMovies();
+          }),
+          showHighLightedPageContent(
+              const PageStorageKey("popular"),
+              const ValueKey("popularList"),
+              movieViewModel.popularMovieStream,
+              movieViewModel.getCurrentPopularMovies(), (id) {
+            // movieViewModel.requestNextPageTrendingMovies();
+          }, () {
+            // movieViewModel.requestNextPageTrendingMovies();
+          })
+        ],
+      ),
     );
   }
 }
