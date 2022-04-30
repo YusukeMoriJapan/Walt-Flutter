@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:walt/tmdb_client_app/models/region/region.dart';
 import 'package:walt/tmdb_client_app/utils/network/result.dart';
 import 'package:walt/tmdb_client_app/utils/utils.dart';
 
@@ -22,14 +23,13 @@ abstract class MovieRepository {
       {required Language language,
       required int page,
       required int apiVersion,
-      required String region,
+      required Region region,
       required CancelToken cancelToken});
 
   Future<Result<List<Movie>>> getTrendingMovies(
       {required Language language,
       required int page,
       required int apiVersion,
-      required String region,
       required TimeWindow timeWindow,
       required CancelToken cancelToken});
 
@@ -37,14 +37,14 @@ abstract class MovieRepository {
       {required Language language,
       required int page,
       required int apiVersion,
-      required String region,
+      required Region region,
       required CancelToken cancelToken});
 
   Future<Result<List<Movie>>> getUpComingMovies(
       {required Language language,
       required int page,
       required int apiVersion,
-      required String region,
+      required Region region,
       required CancelToken cancelToken});
 
   Future<Result<List<Movie>>> getDiscoveredMovies(
@@ -65,10 +65,11 @@ class MovieRepositoryImpl implements MovieRepository {
       {required Language language,
       required int page,
       required int apiVersion,
-      required String region,
+      required Region region,
       required CancelToken cancelToken}) {
     return read(tmdbClientProvider)
-        .getPopularMovies(3, getTmdbApiKey(), cancelToken)
+        .getPopularMovies(page, language.name, apiVersion, region.name,
+            getTmdbApiKey(), cancelToken)
         .then((response) {
       return response.toMoviesResult();
     });
@@ -79,12 +80,11 @@ class MovieRepositoryImpl implements MovieRepository {
       {required Language language,
       required int page,
       required int apiVersion,
-      required String region,
       required TimeWindow timeWindow,
       required CancelToken cancelToken}) {
     return read(tmdbClientProvider)
-        .getTrendingMovies(
-            3, timeWindow.name, getTmdbApiKey(), page, cancelToken)
+        .getTrendingMovies(apiVersion, timeWindow.name, getTmdbApiKey(),
+            language.name, page, cancelToken)
         .then((response) {
       return response.toMoviesResult();
     });
@@ -95,10 +95,11 @@ class MovieRepositoryImpl implements MovieRepository {
       {required Language language,
       required int page,
       required int apiVersion,
-      required String region,
+      required Region region,
       required CancelToken cancelToken}) {
     return read(tmdbClientProvider)
-        .getTopRatedMovies(3, getTmdbApiKey(), cancelToken)
+        .getTopRatedMovies(apiVersion, getTmdbApiKey(), language.name,
+            region.name, page, cancelToken)
         .then((response) {
       return response.toMoviesResult();
     });
@@ -109,10 +110,11 @@ class MovieRepositoryImpl implements MovieRepository {
       {required Language language,
       required int page,
       required int apiVersion,
-      required String region,
+      required Region region,
       required CancelToken cancelToken}) {
     return read(tmdbClientProvider)
-        .getUpComingMovies(3, getTmdbApiKey(), cancelToken)
+        .getUpComingMovies(page, language.name, apiVersion, region.name,
+            getTmdbApiKey(), cancelToken)
         .then((response) {
       return response.toMoviesResult();
     });

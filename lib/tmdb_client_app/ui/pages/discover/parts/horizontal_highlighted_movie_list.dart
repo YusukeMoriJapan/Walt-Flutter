@@ -16,7 +16,7 @@ class HighlightedMoviesHorizontalList extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox(
-      height: 300,
+      height: 400,
       child: ListView.builder(
         itemCount: movies.length,
         scrollDirection: Axis.horizontal,

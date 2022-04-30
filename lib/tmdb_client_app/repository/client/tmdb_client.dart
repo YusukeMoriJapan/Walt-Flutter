@@ -15,7 +15,10 @@ abstract class TmdbClient {
 
   @GET("/{version}/movie/popular")
   Future<GetMoviesResponse> getPopularMovies(
+    @Query("page") int page,
+    @Query("language") String language,
     @Path("version") int version,
+    @Query("region") String region,
     @Query("api_key") String apiKey,
     @CancelRequest() CancelToken cancelToken,
   );
@@ -25,13 +28,17 @@ abstract class TmdbClient {
     @Path("version") int version,
     @Path("timeWindow") String timeWindow,
     @Query("api_key") String apiKey,
+    @Query("language") String language,
     @Query("page") int page,
     @CancelRequest() CancelToken cancelToken,
   );
 
   @GET("/{version}/movie/upcoming")
   Future<GetMoviesResponse> getUpComingMovies(
+    @Query("page") int page,
+    @Query("language") String language,
     @Path("version") int version,
+    @Query("region") String region,
     @Query("api_key") String apiKey,
     @CancelRequest() CancelToken cancelToken,
   );
@@ -40,6 +47,9 @@ abstract class TmdbClient {
   Future<GetMoviesResponse> getTopRatedMovies(
     @Path("version") int version,
     @Query("api_key") String apiKey,
+    @Query("language") String language,
+    @Query("region") String region,
+    @Query("page") int page,
     @CancelRequest() CancelToken cancelToken,
   );
 
