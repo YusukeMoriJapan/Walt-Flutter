@@ -102,4 +102,13 @@ abstract class TmdbClient {
     @Query("api_key") String apiKey,
     @CancelRequest() CancelToken cancelToken,
   );
+
+  @GET("/{version}/movie/{movie_id}/videos")
+  Future<Credits> getMovieVideo(
+    @Path("version") int version,
+    @Path("movie_id") int movieId,
+    @Query("api_key") String apiKey,
+    @Query("language") String language,
+    @CancelRequest() CancelToken cancelToken,
+  );
 }
