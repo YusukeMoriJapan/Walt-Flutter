@@ -31,13 +31,22 @@ class ForYouPage extends HookConsumerWidget {
   }
 }
 
-class ForYouPagerContent extends HookConsumerWidget {
+class ForYouPagerContent extends StatefulHookConsumerWidget {
   const ForYouPagerContent({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final controllerParent = PreloadPageController();
+  createState() {
+    return ForYouPagerContentState();
+  }
+}
 
+class ForYouPagerContentState extends ConsumerState<ConsumerStatefulWidget>
+    with TickerProviderStateMixin {
+  final controllerParent = PreloadPageController();
+
+  @override
+  Widget build(BuildContext context) {
+    final tabController = useRef(TabController(length: 3, vsync: this));
     return Stack(
       children: [
         PreloadPageView.builder(
@@ -46,6 +55,9 @@ class ForYouPagerContent extends HookConsumerWidget {
             itemCount: 3,
             controller: controllerParent,
             preloadPagesCount: 3,
+            onPageChanged: (i) {
+              tabController.value.index = i;
+            },
             itemBuilder: (BuildContext context, int indexParent) {
               switch (indexParent) {
                 case 0:
@@ -63,6 +75,34 @@ class ForYouPagerContent extends HookConsumerWidget {
                   return const Text("何か投げる");
               }
             }),
+
+        /// Tabインジケータ
+        SafeArea(
+          child: ColoredTabBar(
+              Colors.transparent,
+              TabBar(
+                controller: tabController.value,
+                tabs: [
+                  Tab(text: 'Trending'),
+                  Tab(text: 'Popular'),
+                  Tab(text: 'High Rated'),
+                ],
+                onTap: (i) {
+                controllerParent.animateToPage(i, duration: Duration(milliseconds:250), curve: Curves.ease);
+                },
+              )),
+        ),
+        // Container(
+        //   alignment: Alignment.topCenter,
+        //   padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
+        //   child: Text("Trending      Popular      High Rated",
+        //       // textAlign: TextAlign.center,
+        //       style: TextStyle(
+        //         fontSize: 16,
+        //         fontWeight: FontWeight.w300,
+        //         color: Theme.of(context).primaryColor,
+        //       )),
+        // ),
         Container(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             alignment: Alignment.centerLeft,
@@ -96,11 +136,11 @@ class MovieContentPage extends HookConsumerWidget {
                   end: Alignment.bottomCenter,
                   colors: <Color>[
                 Color(0xCB000000),
-                Color(0x4D000000),
+                Color(0x80000000),
                 Color(0x0a000000),
                 Color(0x00000000),
                 Color(0x0a000000),
-                Color(0x4D000000),
+                Color(0x80000000),
                 Color(0xCC000000),
               ])),
           child: PreloadPageView.builder(
@@ -144,8 +184,11 @@ class MovieContentPage extends HookConsumerWidget {
                 padding: const EdgeInsets.fromLTRB(0, 0, 16, 40),
                 child: AnimatedSmoothIndicator(
                     activeIndex: pagerIndicatorActiveIndex.value,
-                    effect: const SlideEffect(
-                        dotWidth: 8, dotHeight: 8, spacing: 16),
+                    effect: SlideEffect(
+                        activeDotColor: Theme.of(context).primaryColor,
+                        dotWidth: 8,
+                        dotHeight: 8,
+                        spacing: 16),
                     count: movies.length,
                     axisDirection: Axis.vertical),
               ),
@@ -190,24 +233,15 @@ class MovieContentPage extends HookConsumerWidget {
                   ),
                 ),
               ),
+              /// 映画タイトル
+              /// TODO FIX 何らかのNotifierを使い、画面上部のPagerIndicatorを避けるPaddingを動的に設定するコードに変更する必要あり
               Container(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                padding: const EdgeInsets.fromLTRB(8, 48, 8, 8),
                 alignment: Alignment.topCenter,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    /// Tabインジケータ
-                    Text("Trending      Popular      High Rated",
-                        // textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w300,
-                          color: Theme.of(context).primaryColor,
-                        )),
                     const SizedBox(height: 8),
-
-                    /// 映画タイトル
                     Text(selectedMovie.name ?? "",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
@@ -375,6 +409,11 @@ class WatchProviderDetail extends HookConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: [
+          const Text(
+            "Watch Now",
+            style: const TextStyle(
+                fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold),
+          ),
           const Padding(
             padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
             child: Text(
@@ -426,6 +465,23 @@ class WatchProviderDetail extends HookConsumerWidget {
       ),
     );
   }
+}
+
+class ColoredTabBar extends Container implements PreferredSizeWidget {
+  ColoredTabBar(this.color, this.tabBar, {Key? key}) : super(key: key);
+
+  @override
+  final Color color;
+  final TabBar tabBar;
+
+  @override
+  Size get preferredSize => tabBar.preferredSize;
+
+  @override
+  Widget build(BuildContext context) => Container(
+        color: color,
+        child: tabBar,
+      );
 }
 
 // return Center(
