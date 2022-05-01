@@ -7,7 +7,7 @@ final mock007MoviesProvider = Provider((ref) {
         backdropPath: null,
         firstAirDate: null,
         genreIds: null,
-        id: 0,
+        id: 36557,
         name: "Casino Royale",
         originCountry: null,
         originalLanguage: null,
@@ -31,7 +31,7 @@ final mock007MoviesProvider = Provider((ref) {
         popularity: null,
         posterPath:
         "https://www.themoviedb.org/t/p/original/9E7zIF2tR8RHID63CyuI6eSoHJk.jpg",
-        voteAverage: 4.2,
+        voteAverage: 7.5,
         voteCount: null),
     const Movie(
         backdropPath: null,

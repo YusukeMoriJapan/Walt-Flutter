@@ -1,12 +1,21 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:preload_page_view/preload_page_view.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:walt/tmdb_client_app/models/mock/mock_movie.dart';
+import 'package:walt/tmdb_client_app/models/region/region.dart';
+import 'package:walt/tmdb_client_app/ui/view_model/movie_view_model.dart';
+import 'package:walt/tmdb_client_app/ui/view_model/watch_provider_view_model.dart';
+import 'package:walt/tmdb_client_app/use_cases/get_watch_provider_use_case.dart';
 import 'package:walt/tmdb_client_app/utils/hooks/system_hooks.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../models/entity/movie.dart';
+import '../../../models/entity/watch_provider/provider_metadata.dart';
 import '../../../utils/ui/hard_spring_page_view_scroll_physics.dart';
 
 class ForYouPage extends HookConsumerWidget {
@@ -104,12 +113,22 @@ class MovieContentPage extends HookConsumerWidget {
               },
               itemBuilder: (BuildContext context, int index) {
                 return Center(
-                  child: Image.network(
-                    /// nullハンドリング必要
-                    movies[index].posterPath ?? "",
-                    fit: BoxFit.cover,
-                    width: double.infinity,
-                    height: double.infinity,
+                  child: InkWell(
+                    onTap: () {
+                      final movieId = selectedMovie.id;
+                      if (movieId != null) {
+                        _showWatchProviderBottomSheet(context, ref, movieId);
+                      } else {
+                        ///TODO FIX スナックバーで読み込めないことを通知する
+                      }
+                    },
+                    child: Image.network(
+                      /// nullハンドリング必要
+                      movies[index].posterPath ?? "",
+                      fit: BoxFit.cover,
+                      width: double.infinity,
+                      height: double.infinity,
+                    ),
                   ),
                 );
               }),
@@ -135,7 +154,7 @@ class MovieContentPage extends HookConsumerWidget {
               Align(
                 alignment: Alignment.bottomLeft,
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.fromLTRB(24, 8, 8, 16),
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
@@ -144,7 +163,8 @@ class MovieContentPage extends HookConsumerWidget {
                         height: 72,
                         child: CircularProgressIndicator(
                             strokeWidth: 4,
-                            backgroundColor: Color.fromARGB(178, 158, 158, 158),
+                            backgroundColor:
+                                const Color.fromARGB(102, 158, 158, 158),
                             value: selectedMovie.getVoteAverageForIndicator()),
                       ),
                       Row(
@@ -152,11 +172,17 @@ class MovieContentPage extends HookConsumerWidget {
                         children: [
                           Text(
                             selectedMovie.getVoteAverageForText().toString(),
-                            style: TextStyle(fontSize: 24, color: Colors.white),
+                            style: const TextStyle(
+                              fontSize: 24,
+                              color: Colors.white,
+                            ),
                           ),
-                          Text(
+                          const Text(
                             "%",
-                            style: TextStyle(fontSize: 16, color: Colors.white),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white,
+                            ),
                           ),
                         ],
                       )
@@ -164,8 +190,6 @@ class MovieContentPage extends HookConsumerWidget {
                   ),
                 ),
               ),
-
-              /// Tabインジケータ
               Container(
                 padding:
                     const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
@@ -173,6 +197,7 @@ class MovieContentPage extends HookConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    /// Tabインジケータ
                     Text("Trending      Popular      High Rated",
                         // textAlign: TextAlign.center,
                         style: TextStyle(
@@ -183,7 +208,7 @@ class MovieContentPage extends HookConsumerWidget {
                     const SizedBox(height: 8),
 
                     /// 映画タイトル
-                    Text(movies[pagerIndicatorActiveIndex.value].name ?? "",
+                    Text(selectedMovie.name ?? "",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 24,
@@ -197,6 +222,208 @@ class MovieContentPage extends HookConsumerWidget {
           ),
         ),
       ],
+    );
+  }
+
+  _showWatchProviderBottomSheet(
+      BuildContext context, WidgetRef ref, num movieId) {
+    showModalBottomSheet(
+        context: context,
+        backgroundColor: Colors.transparent,
+        isScrollControlled: true,
+        builder: (BuildContext context) {
+          return Container(
+            height: double.infinity,
+            color: Colors.transparent,
+            child: Stack(
+              children: [
+                BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+
+                  /// Opacity適用するため、Stack x BackdropFilterを組み合わせている
+                  child: HookConsumer(builder:
+                      (BuildContext context, WidgetRef ref, Widget? child) {
+                    final viewModel = ref.read(watchProviderViewModelProvider);
+                    final snapshot = useFuture(useMemoized(() =>
+                        viewModel.getMovieWatchProvider(movieId.toInt())));
+
+                    ///TODO FIX エラーハンドリング専用の拡張関数を追加する
+                    final data = snapshot.data;
+                    if (data != null) {
+                      return data.when(
+                          success: (providers) =>
+                              WatchProviderDetail(providers),
+
+                          ///TODO FIX エラーハンドリング
+                          failure: (e) => Text(e.toString()));
+                    } else {
+                      ///TODO FIX 読み込み中インジケータ表示する
+                      return const Text("読み込み中");
+                    }
+                  }),
+                ),
+              ],
+            ),
+          );
+        });
+  }
+}
+
+class WatchProviderDetail extends HookConsumerWidget {
+  const WatchProviderDetail(this.providerMetadataList, {Key? key})
+      : super(key: key);
+
+  final ProviderMetadataList providerMetadataList;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    /// flatrate
+    final Iterable<Widget>? flatrateLogoList =
+        providerMetadataList.flatrate?.map((provider) {
+      final logo = provider.logoPath;
+      if (logo != null) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: InkWell(
+            onTap: () {
+              final tmdbLink = providerMetadataList.link;
+              if (tmdbLink != null) {
+                launch(tmdbLink);
+              } else {
+                ///TODO FIX エラーハンドリング snackbar表示する
+              }
+            },
+            child: Image.network(
+              "https://www.themoviedb.org/t/p/original/" + logo,
+              width: 50,
+              height: 50,
+            ),
+          ),
+        );
+      } else {
+        return const SizedBox(
+          width: 0,
+          height: 0,
+        );
+      }
+    });
+
+    /// buy
+    final Iterable<Widget>? buyLogoList =
+        providerMetadataList.buy?.map((provider) {
+      final logo = provider.logoPath;
+      if (logo != null) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: InkWell(
+            onTap: () {
+              final tmdbLink = providerMetadataList.link;
+              if (tmdbLink != null) {
+                launch(tmdbLink);
+              } else {
+                ///TODO FIX エラーハンドリング snackbar表示する
+              }
+            },
+            child: Image.network(
+              "https://www.themoviedb.org/t/p/original/" + logo,
+              width: 50,
+              height: 50,
+            ),
+          ),
+        );
+      } else {
+        return const SizedBox(
+          width: 0,
+          height: 0,
+        );
+      }
+    });
+
+    /// rent
+    final Iterable<Widget>? rentLogoList =
+        providerMetadataList.rent?.map((provider) {
+      final logo = provider.logoPath;
+      if (logo != null) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: InkWell(
+            onTap: () {
+              final tmdbLink = providerMetadataList.link;
+              if (tmdbLink != null) {
+                launch(tmdbLink);
+              } else {
+                ///TODO FIX エラーハンドリング snackbar表示する
+              }
+            },
+            child: Image.network(
+              "https://www.themoviedb.org/t/p/original/" + logo,
+              width: 50,
+              height: 50,
+            ),
+          ),
+        );
+      } else {
+        return const SizedBox(
+          width: 0,
+          height: 0,
+        );
+      }
+    });
+
+    return Center(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Padding(
+            padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
+            child: Text(
+              "Flatrate",
+              style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w300),
+            ),
+          ),
+          Align(
+            child: Wrap(
+              children: [
+                ...?flatrateLogoList,
+              ],
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
+            child: Text(
+              "Buy",
+              style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w300),
+            ),
+          ),
+          Wrap(
+            children: [
+              ...?buyLogoList,
+            ],
+          ),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
+            child: Text(
+              "Rent",
+              style: TextStyle(
+                  fontSize: 24,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w300),
+            ),
+          ),
+          Wrap(
+            children: [
+              ...?rentLogoList,
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
