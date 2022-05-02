@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:walt/tmdb_client_app/models/entity/movie.dart';
+import 'package:walt/tmdb_client_app/models/entity/movie/movie.dart';
 import 'package:walt/tmdb_client_app/utils/throwable/not_provided_exception.dart';
 
 final highlightedMoviesHorizontalListParams = Provider<HighlightedMoviesHorizontalMiniListParams>(

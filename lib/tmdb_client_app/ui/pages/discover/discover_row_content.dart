@@ -1,4 +1,4 @@
-import '../../../models/entity/movie.dart';
+import '../../../models/entity/movie/movie.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'discover_row_content.freezed.dart';

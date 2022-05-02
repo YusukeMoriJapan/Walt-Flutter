@@ -14,7 +14,7 @@ import 'package:walt/tmdb_client_app/use_cases/get_watch_provider_use_case.dart'
 import 'package:walt/tmdb_client_app/utils/hooks/system_hooks.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-import '../../../models/entity/movie.dart';
+import '../../../models/entity/movie/movie.dart';
 import '../../../models/entity/watch_provider/provider_metadata.dart';
 import '../../../utils/ui/hard_spring_page_view_scroll_physics.dart';
 

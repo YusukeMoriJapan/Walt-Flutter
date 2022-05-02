@@ -3,7 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:walt/tmdb_client_app/utils/network/async_snapshot.dart';
 import 'package:walt/tmdb_client_app/utils/ui/scroll_detector.dart';
 
-import '../../../../../models/entity/movie.dart';
+import '../../../../../models/entity/movie/movie.dart';
 import '../../../../../utils/network/paging/paging_result.dart';
 import '../horizontal_highlighted_movie_list.dart';
 

@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:walt/tmdb_client_app/repository/movie_repository.dart';
 
-import '../models/entity/movie.dart';
+import '../models/entity/movie/movie.dart';
 import '../models/region/region.dart';
 import '../utils/network/paging/paging_result.dart';
 import '../utils/network/result.dart';

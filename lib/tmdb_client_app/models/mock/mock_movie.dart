@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:walt/tmdb_client_app/models/entity/movie.dart';
+import 'package:walt/tmdb_client_app/models/entity/movie/movie.dart';
 
 final mock007MoviesProvider = Provider((ref) {
   return [

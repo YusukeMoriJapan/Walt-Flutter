@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:walt/tmdb_client_app/utils/network/result.dart';
 
-import '../entity/movie.dart';
+import '../entity/movie/movie.dart';
 
 part 'get_movie_response.freezed.dart';
 

@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:walt/tmdb_client_app/models/entity/movie_list/MovieListBase.dart';
 import 'package:walt/tmdb_client_app/repository/movie_repository.dart';
 import 'package:walt/tmdb_client_app/ui/pages/discover/parts/builder/show_discover_page_content.dart';
 import 'package:walt/tmdb_client_app/ui/view_model/movie_view_model.dart';
@@ -13,7 +12,7 @@ import 'package:walt/tmdb_client_app/use_cases/get_movies_use_case.dart';
 import 'package:walt/tmdb_client_app/utils/network/async_snapshot.dart';
 import 'package:walt/tmdb_client_app/utils/network/result.dart';
 
-import '../../../models/entity/movie.dart';
+import '../../../models/entity/movie/movie.dart';
 import '../../../utils/network/paging/paging_result.dart';
 import 'parts/horizontal_highlighted_movie_list.dart';
 

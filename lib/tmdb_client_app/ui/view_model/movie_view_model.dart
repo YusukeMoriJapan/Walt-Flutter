@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:walt/tmdb_client_app/models/entity/movie_list/MovieListBase.dart';
 import 'package:walt/tmdb_client_app/models/region/region.dart';
 
-import '../../models/entity/movie.dart';
+import '../../models/entity/movie/movie.dart';
+import '../../models/entity/movie/movie_list.dart';
 import '../../repository/movie_repository.dart';
 import '../../use_cases/get_movies_use_case.dart';
 import '../../utils/network/paging/paging_result.dart';

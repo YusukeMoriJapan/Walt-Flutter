@@ -4,7 +4,7 @@ import 'package:walt/tmdb_client_app/models/region/region.dart';
 import 'package:walt/tmdb_client_app/utils/network/result.dart';
 import 'package:walt/tmdb_client_app/utils/utils.dart';
 
-import '../models/entity/movie.dart';
+import '../models/entity/movie/movie.dart';
 import '../models/responses/get_movie_response.dart';
 import '../providers/tmdb_client_provider.dart';
 

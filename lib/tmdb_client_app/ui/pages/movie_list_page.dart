@@ -3,7 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:walt/tmdb_client_app/repository/movie_repository.dart';
 import 'package:walt/tmdb_client_app/utils/network/requests/get_movie_request.dart';
 
-import '../../models/entity/movie.dart';
+import '../../models/entity/movie/movie.dart';
 import '../../providers/movie_provider.dart';
 
 class MovieListPage extends HookConsumerWidget {
