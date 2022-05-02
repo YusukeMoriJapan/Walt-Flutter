@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:walt/tmdb_client_app/utils/network/async_snapshot.dart';
+import 'package:walt/tmdb_client_app/utils/ui/scroll_detector.dart';
 
 import '../../../../../models/entity/movie.dart';
 import '../../../../../utils/network/paging/paging_result.dart';
@@ -23,11 +24,17 @@ Widget showHighLightedPageContent(
         builder: (context, AsyncSnapshot<PagingResult<Movie>> snapshot) {
           if (snapshot.isWaiting || snapshot.isNothing) {
             if (oldMovies != null) {
-              return HighlightedMoviesHorizontalList(
-                oldMovies,
-                onClickMovieImage,
-                onNextPageRequested,
-                key: listKey,
+              return ScrollDetector(
+                builder: (context, scrollController) {
+                  return HighlightedMoviesHorizontalList(
+                    oldMovies,
+                    onClickMovieImage,
+                    scrollController,
+                    key: listKey,
+                  );
+                },
+                threshold: 0.8,
+                onThresholdExceeded: onNextPageRequested,
               );
             } else {
               return const Center(child: CircularProgressIndicator());
@@ -36,11 +43,17 @@ Widget showHighLightedPageContent(
 
           if (snapshot.hasError) {
             if (oldMovies != null) {
-              return HighlightedMoviesHorizontalList(
-                oldMovies,
-                onClickMovieImage,
-                onNextPageRequested,
-                key: listKey,
+              return ScrollDetector(
+                builder: (context, scrollController) {
+                  return HighlightedMoviesHorizontalList(
+                    oldMovies,
+                    onClickMovieImage,
+                    scrollController,
+                    key: listKey,
+                  );
+                },
+                threshold: 0.8,
+                onThresholdExceeded: onNextPageRequested,
               );
             } else {
               return Text(snapshot.error.toString());
@@ -50,19 +63,31 @@ Widget showHighLightedPageContent(
           final data = snapshot.data;
           if (data != null) {
             return data.when(
-                success: (movies) => HighlightedMoviesHorizontalList(
-                      movies,
-                      onClickMovieImage,
-                      onNextPageRequested,
-                      key: listKey,
+                success: (movies) => ScrollDetector(
+                      builder: (context, scrollController) {
+                        return HighlightedMoviesHorizontalList(
+                          movies,
+                          onClickMovieImage,
+                          scrollController,
+                          key: listKey,
+                        );
+                      },
+                      threshold: 0.8,
+                      onThresholdExceeded: onNextPageRequested,
                     ),
                 failure: (reason, oldList) {
                   if (oldList != null) {
-                    return HighlightedMoviesHorizontalList(
-                      oldList,
-                      onClickMovieImage,
-                      onNextPageRequested,
-                      key: listKey,
+                    return ScrollDetector(
+                      builder: (context, scrollController) {
+                        return HighlightedMoviesHorizontalList(
+                          oldList,
+                          onClickMovieImage,
+                          scrollController,
+                          key: listKey,
+                        );
+                      },
+                      threshold: 0.8,
+                      onThresholdExceeded: onNextPageRequested,
                     );
                   } else {
                     return Text(reason.toString());

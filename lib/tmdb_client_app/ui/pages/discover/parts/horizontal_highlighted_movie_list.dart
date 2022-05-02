@@ -5,13 +5,13 @@ import 'package:walt/tmdb_client_app/utils/throwable/not_provided_exception.dart
 
 class HighlightedMoviesHorizontalList extends HookConsumerWidget {
   const HighlightedMoviesHorizontalList(
-      this.movies, this.onClickMovieImage, this.onNextPageRequested,
+      this.movies, this.onClickMovieImage, this._scrollController,
       {Key? key})
       : super(key: key);
 
   final List<Movie> movies;
   final void Function(int id) onClickMovieImage;
-  final void Function() onNextPageRequested;
+  final ScrollController _scrollController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -20,6 +20,7 @@ class HighlightedMoviesHorizontalList extends HookConsumerWidget {
       child: ListView.builder(
         itemCount: movies.length,
         scrollDirection: Axis.horizontal,
+        controller: _scrollController,
         itemBuilder: (BuildContext context, int i) {
           return Padding(
             padding: EdgeInsets.symmetric(horizontal: _imageHPadding(i)),
