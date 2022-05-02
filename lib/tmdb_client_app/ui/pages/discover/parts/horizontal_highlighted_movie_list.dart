@@ -16,22 +16,33 @@ class HighlightedMoviesHorizontalList extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox(
-      height: 400,
+      height: 200,
       child: ListView.builder(
         itemCount: movies.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (BuildContext context, int i) {
-          return InkWell(
-              onTap: () {
-                onClickMovieImage(i);
-              },
-              ///TODO FIX 画像サイズをInjectするべき
-              child: Image.network(
-                "https://image.tmdb.org/t/p/w342${movies[i].posterPath}",
-              )
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: _imageHPadding(i)),
+            child: InkWell(
+                onTap: () {
+                  onClickMovieImage(i);
+                },
+
+                ///TODO FIX 画像サイズをInjectするべき
+                child: Image.network(
+                  "https://image.tmdb.org/t/p/w342${movies[i].posterPath}",
+                )),
           );
         },
       ),
     );
+  }
+
+  _imageHPadding(int i) {
+    if (i != 0 || i != movies.length - 1) {
+      return 4.0;
+    } else {
+      return 0.0;
+    }
   }
 }

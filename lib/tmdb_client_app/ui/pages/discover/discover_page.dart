@@ -48,6 +48,13 @@ class DiscoverPage extends HookConsumerWidget {
       bucket: PageStorageBucket(),
       child: ListView(
         children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: Text(
+              "Trending",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
           showHighLightedPageContent(
               const PageStorageKey("trending"),
               const ValueKey("trendingList"),
@@ -57,6 +64,13 @@ class DiscoverPage extends HookConsumerWidget {
           }, () {
             movieViewModel.requestNextPageTrendingMovies();
           }),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: Text(
+              "Up Coming",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
           showHighLightedPageContent(
               const PageStorageKey("upComing"),
               const ValueKey("upComingList"),
@@ -66,6 +80,13 @@ class DiscoverPage extends HookConsumerWidget {
           }, () {
             // movieViewModel.requestNextPageUpComingMovies();
           }),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: Text(
+              "Top Rated",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
           showHighLightedPageContent(
               const PageStorageKey("topRated"),
               const ValueKey("topRatedList"),
@@ -75,6 +96,13 @@ class DiscoverPage extends HookConsumerWidget {
           }, () {
             // movieViewModel.requestNextPageTrendingMovies();
           }),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8),
+            child: Text(
+              "Popular",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ),
           showHighLightedPageContent(
               const PageStorageKey("popular"),
               const ValueKey("popularList"),

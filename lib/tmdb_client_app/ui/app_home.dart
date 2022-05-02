@@ -17,26 +17,29 @@ class AppHome extends HookConsumerWidget {
     final PageModel navigation = ref.watch(navigationProvider);
 
     return Scaffold(
+      backgroundColor: Colors.white,
       extendBody: true,
       body: currentScreen(navigation.index),
-      bottomNavigationBar: BottomNavigationBar(
-          key: Keys.NAV_BAR,
-          currentIndex: navigation.index,
-          backgroundColor: Colors.transparent,
-          unselectedItemColor: _getUnSelectedItemColor(navigation),
-          elevation: 0,
-          onTap: (index) {
-            ref.read(navigationProvider.notifier).selectPage(index);
-          },
-          type: BottomNavigationBarType.fixed,
-          items: const [
-            BottomNavigationBarItem(
-                icon: SizedBox(width: 0, height: 0), label: "FOR YOU"),
-            BottomNavigationBarItem(
-                icon: SizedBox(width: 0, height: 0), label: "DISCOVER"),
-            BottomNavigationBarItem(
-                icon: SizedBox(width: 0, height: 0), label: "FAVORITE"),
-          ]),
+      bottomNavigationBar: SizedBox(
+        child: BottomNavigationBar(
+            key: Keys.NAV_BAR,
+            currentIndex: navigation.index,
+            backgroundColor: _getBottomNavigationColor(navigation),
+            unselectedItemColor: _getUnSelectedItemColor(navigation),
+            elevation: _getBottomNavigationElevation(navigation),
+            onTap: (index) {
+              ref.read(navigationProvider.notifier).selectPage(index);
+            },
+            type: BottomNavigationBarType.fixed,
+            items: const [
+              BottomNavigationBarItem(
+                  icon: SizedBox(width: 0, height: 0), label: "FOR YOU"),
+              BottomNavigationBarItem(
+                  icon: SizedBox(width: 0, height: 0), label: "DISCOVER"),
+              BottomNavigationBarItem(
+                  icon: SizedBox(width: 0, height: 0), label: "FAVORITE"),
+            ]),
+      ),
     );
   }
 
@@ -50,6 +53,22 @@ class AppHome extends HookConsumerWidget {
         return const FavoritePage();
       default:
         return const ForYouPage();
+    }
+  }
+
+  double _getBottomNavigationElevation(PageModel navigation) {
+    if (navigation.page == NavigationBarEvent.forYou) {
+      return 0.0;
+    } else {
+      return 10.0;
+    }
+  }
+
+  Color _getBottomNavigationColor(PageModel navigation) {
+    if (navigation.page == NavigationBarEvent.forYou) {
+      return Colors.transparent;
+    } else {
+      return Colors.white;
     }
   }
 
