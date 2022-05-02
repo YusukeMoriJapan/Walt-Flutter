@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:walt/tmdb_client_app/models/entity/movie/movie_detail/movie_details.dart';
 import 'package:walt/tmdb_client_app/models/region/region.dart';
+import 'package:walt/tmdb_client_app/models/request/append_to_response.dart';
 import 'package:walt/tmdb_client_app/utils/network/result.dart';
 import 'package:walt/tmdb_client_app/utils/utils.dart';
 
@@ -52,6 +54,15 @@ abstract class MovieRepository {
       required int page,
       required int apiVersion,
       required String region,
+      required CancelToken cancelToken});
+
+  Future<Result<MovieDetails>> getMovieDetails(
+      {required Language language,
+      required int page,
+      required int apiVersion,
+      required String region,
+      required int movieId,
+      required AppendToResponse appendToResponse,
       required CancelToken cancelToken});
 }
 
@@ -132,6 +143,25 @@ class MovieRepositoryImpl implements MovieRepository {
             false.toString(), "popularity.desc", cancelToken)
         .then((response) {
       return response.toMoviesResult();
+    });
+  }
+
+  @override
+  Future<Result<MovieDetails>> getMovieDetails(
+      {required Language language,
+      required int page,
+      required int apiVersion,
+      required String region,
+      required int movieId,
+      required AppendToResponse appendToResponse,
+      required CancelToken cancelToken}) {
+    return read(tmdbClientProvider)
+        .getMovieDetails(apiVersion, movieId, getTmdbApiKey(), language.name,
+            appendToResponse.toString(), cancelToken)
+        .then((response) {
+      return Result.success(response);
+    }).catchError((Object e, StackTrace stackTrace) {
+      return Result<MovieDetails>.failure(e.toFailureReason());
     });
   }
 }

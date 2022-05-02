@@ -14,19 +14,24 @@ launchTmdbApp() async {
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
-        // statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light,
-        statusBarBrightness: Brightness.light,
-        // systemNavigationBarColor: Colors.transparent,
-        // systemNavigationBarDividerColor: Colors.transparent,
-        // systemNavigationBarIconBrightness: Brightness.light
+      // statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
+      statusBarBrightness: Brightness.light,
+      // systemNavigationBarColor: Colors.transparent,
+      // systemNavigationBarDividerColor: Colors.transparent,
+      // systemNavigationBarIconBrightness: Brightness.light
     ),
   );
 
   runApp(ProviderScope(child: HookConsumer(builder: (context, ref, child) {
     return ref.watch(tmdbConfigProvider).when(
         data: (data) {
-          return const MaterialApp(home: AppHome());
+          return MaterialApp(
+            home: const AppHome(),
+            // onGenerateRoute: (setting) {
+            //   return MaterialPageRoute(builder: (context) {});
+            // },
+          );
         },
         error: (error, stack) {
           print(stack);

@@ -5,6 +5,7 @@ import 'package:walt/tmdb_client_app/models/responses/get_movie_response.dart';
 import 'package:walt/tmdb_client_app/models/responses/get_watch_provider_response.dart';
 
 import '../../models/config/tmdb_config.dart';
+import '../../models/entity/movie/movie_detail/movie_details.dart';
 import '../../models/entity/people/credits.dart';
 
 part 'tmdb_client.g.dart';
@@ -103,12 +104,22 @@ abstract class TmdbClient {
     @CancelRequest() CancelToken cancelToken,
   );
 
-  @GET("/{version}/movie/{movie_id}/videos")
-  Future<Credits> getMovieVideo(
+  @GET("/{version}/movie/{movie_id}")
+  Future<MovieDetails> getMovieDetails(
     @Path("version") int version,
     @Path("movie_id") int movieId,
     @Query("api_key") String apiKey,
     @Query("language") String language,
+    @Query("append_to_response") String? appendToResponse,
     @CancelRequest() CancelToken cancelToken,
   );
+
+// @GET("/{version}/movie/{movie_id}/videos")
+// Future<Credits> getMovieVideo(
+//   @Path("version") int version,
+//   @Path("movie_id") int movieId,
+//   @Query("api_key") String apiKey,
+//   @Query("language") String language,
+//   @CancelRequest() CancelToken cancelToken,
+// );
 }
