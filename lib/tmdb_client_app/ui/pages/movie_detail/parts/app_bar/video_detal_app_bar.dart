@@ -26,6 +26,7 @@ class VideoDetailAppBar extends HookConsumerWidget {
           onPressed: () {
             Navigator.of(context).pop();
           },
+          color: Colors.black,
           icon: const Icon(Icons.arrow_back_ios)),
       pinned: true,
       stretch: true,
