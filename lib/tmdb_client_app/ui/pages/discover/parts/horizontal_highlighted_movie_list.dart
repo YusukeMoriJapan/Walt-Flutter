@@ -26,7 +26,8 @@ class HighlightedMoviesHorizontalList extends HookConsumerWidget {
             padding: EdgeInsets.symmetric(horizontal: _imageHPadding(i)),
             child: InkWell(
                 onTap: () {
-                  onClickMovieImage(i);
+                  final id = movies[i].id?.toInt();
+                  if (id != null) onClickMovieImage(id);
                 },
 
                 ///TODO FIX 画像サイズをInjectするべき

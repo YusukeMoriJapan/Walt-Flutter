@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:walt/tmdb_client_app/ui/component/video_detail_page_base/parts/video_detal_app_bar.dart';
-import 'package:walt/tmdb_client_app/ui/component/video_detail_page_base/parts/sample_sliver_detail_list.dart';
+import 'package:walt/tmdb_client_app/ui/pages/movie_detail/parts/sample_sliver_detail_list.dart';
+import 'package:walt/tmdb_client_app/ui/pages/movie_detail/parts/video_detal_app_bar.dart';
 
-class VideoDetailPageBase extends HookConsumerWidget {
-  const VideoDetailPageBase({Key? key}) : super(key: key);
+import '../../../../models/entity/movie/movie.dart';
+import '../../../../models/entity/movie/movie_detail/movie_details.dart';
+
+class MovieDetailPageContent extends HookConsumerWidget {
+  const MovieDetailPageContent(this.movieDetails, {Key? key}) : super(key: key);
+
+  final MovieDetails movieDetails;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

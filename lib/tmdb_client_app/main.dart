@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:walt/tmdb_client_app/providers/tmdb_config_provider.dart';
 import 'package:walt/tmdb_client_app/ui/app_home.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:walt/tmdb_client_app/ui/pages/movie_detail/movie_detail_page.dart';
 
 main() async {
   launchTmdbApp();
@@ -28,9 +29,13 @@ launchTmdbApp() async {
         data: (data) {
           return MaterialApp(
             home: const AppHome(),
-            // onGenerateRoute: (setting) {
-            //   return MaterialPageRoute(builder: (context) {});
-            // },
+            onGenerateRoute: (setting) {
+              if (setting.name == '/movieDetail') {
+                final arguments = setting.arguments as MovieDetailPageArguments;
+                return MaterialPageRoute(
+                    builder: (context) => MovieDetailPage(arguments.movieId));
+              }
+            },
           );
         },
         error: (error, stack) {

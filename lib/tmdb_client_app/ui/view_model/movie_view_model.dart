@@ -1,9 +1,12 @@
 import 'dart:async';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:walt/tmdb_client_app/models/entity/movie/movie_detail/movie_details.dart';
 import 'package:walt/tmdb_client_app/models/region/region.dart';
+import 'package:walt/tmdb_client_app/use_cases/get_movie_details_use_case.dart';
 
 import '../../models/entity/movie/movie.dart';
 import '../../models/entity/movie/movie_list.dart';
@@ -11,6 +14,7 @@ import '../../repository/movie_repository.dart';
 import '../../use_cases/get_movies_use_case.dart';
 import '../../utils/network/paging/paging_result.dart';
 import '../../utils/network/paging/paging_result.dart';
+import '../../utils/network/result.dart';
 
 //TODO FIX onDisposeでStreamの購読解除を行う
 final movieViewModelProvider =
@@ -76,5 +80,14 @@ class MovieViewModel {
         timeWindow: TimeWindow.day,
         oldMovieList: upComingMovieList.currentMovieList,
         cancelToken: CancelToken());
+  }
+
+  Future<Result<MovieDetails>> getMovieDetails(int movieId) async {
+    return await _read(getMovieDetailsUseCase)(
+        language: Language.japanese,
+        movieId: movieId,
+        cancelToken: CancelToken(),
+        appendToResponse: null,
+        apiVersion: 3);
   }
 }

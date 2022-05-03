@@ -7,6 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:walt/tmdb_client_app/repository/movie_repository.dart';
 import 'package:walt/tmdb_client_app/ui/pages/discover/parts/builder/show_discover_page_content.dart';
+import 'package:walt/tmdb_client_app/ui/pages/movie_detail/movie_detail_page.dart';
 import 'package:walt/tmdb_client_app/ui/view_model/movie_view_model.dart';
 import 'package:walt/tmdb_client_app/use_cases/get_movies_use_case.dart';
 import 'package:walt/tmdb_client_app/utils/network/async_snapshot.dart';
@@ -59,8 +60,9 @@ class DiscoverPage extends HookConsumerWidget {
               const PageStorageKey("trending"),
               const ValueKey("trendingList"),
               movieViewModel.trendingMovieList.movieListStream,
-              movieViewModel.trendingMovieList.currentMovieList,
-              (id) {}, () {
+              movieViewModel.trendingMovieList.currentMovieList, (id) {
+            _navigateToMovieDetailPage(context, id);
+          }, () {
             movieViewModel.trendingMovieList.requestNextPageMovieList();
           }),
           const Padding(
@@ -74,8 +76,9 @@ class DiscoverPage extends HookConsumerWidget {
               const PageStorageKey("upComing"),
               const ValueKey("upComingList"),
               movieViewModel.upComingMovieList.movieListStream,
-              movieViewModel.upComingMovieList.currentMovieList,
-              (id) {}, () {
+              movieViewModel.upComingMovieList.currentMovieList, (id) {
+            _navigateToMovieDetailPage(context, id);
+          }, () {
             movieViewModel.upComingMovieList.requestNextPageMovieList();
           }),
           const Padding(
@@ -89,8 +92,9 @@ class DiscoverPage extends HookConsumerWidget {
               const PageStorageKey("topRated"),
               const ValueKey("topRatedList"),
               movieViewModel.topRatedMovieList.movieListStream,
-              movieViewModel.topRatedMovieList.currentMovieList,
-              (id) {}, () {
+              movieViewModel.topRatedMovieList.currentMovieList, (id) {
+            _navigateToMovieDetailPage(context, id);
+          }, () {
             movieViewModel.topRatedMovieList.requestNextPageMovieList();
           }),
           const Padding(
@@ -104,13 +108,19 @@ class DiscoverPage extends HookConsumerWidget {
               const PageStorageKey("popular"),
               const ValueKey("popularList"),
               movieViewModel.popularMovieList.movieListStream,
-              movieViewModel.popularMovieList.currentMovieList,
-              (id) {}, () {
+              movieViewModel.popularMovieList.currentMovieList, (id) {
+            _navigateToMovieDetailPage(context, id);
+          }, () {
             movieViewModel.popularMovieList.requestNextPageMovieList();
           })
         ],
       ),
     );
+  }
+
+  _navigateToMovieDetailPage(BuildContext context, int movieId) {
+    Navigator.of(context).pushNamed("/movieDetail",
+        arguments: MovieDetailPageArguments(movieId));
   }
 }
 

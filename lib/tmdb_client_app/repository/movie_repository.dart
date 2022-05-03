@@ -58,11 +58,9 @@ abstract class MovieRepository {
 
   Future<Result<MovieDetails>> getMovieDetails(
       {required Language language,
-      required int page,
       required int apiVersion,
-      required String region,
       required int movieId,
-      required AppendToResponse appendToResponse,
+      required AppendToResponse? appendToResponse,
       required CancelToken cancelToken});
 }
 
@@ -149,11 +147,9 @@ class MovieRepositoryImpl implements MovieRepository {
   @override
   Future<Result<MovieDetails>> getMovieDetails(
       {required Language language,
-      required int page,
       required int apiVersion,
-      required String region,
       required int movieId,
-      required AppendToResponse appendToResponse,
+      required AppendToResponse? appendToResponse,
       required CancelToken cancelToken}) {
     return read(tmdbClientProvider)
         .getMovieDetails(apiVersion, movieId, getTmdbApiKey(), language.name,
