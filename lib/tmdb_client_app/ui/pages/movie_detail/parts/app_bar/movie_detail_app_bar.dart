@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:walt/tmdb_client_app/ui/pages/movie_detail/parts/app_bar/video_detail_app_bar_flex_space.dart';
+import 'package:walt/tmdb_client_app/ui/pages/movie_detail/parts/app_bar/movie_detail_app_bar_flex_space.dart';
 
 import '../../../../../models/entity/movie/movie_detail/movie_details.dart';
 
