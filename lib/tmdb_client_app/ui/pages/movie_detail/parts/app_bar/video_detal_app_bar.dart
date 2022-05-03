@@ -1,0 +1,43 @@
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:walt/tmdb_client_app/ui/pages/movie_detail/parts/app_bar/video_detail_app_bar_flex_space.dart';
+
+import '../../../../../models/entity/movie/movie_detail/movie_details.dart';
+
+final flexibleSpaceBerKey = GlobalKey();
+
+class VideoDetailAppBar extends HookConsumerWidget {
+  const VideoDetailAppBar(
+      this.appBarHeight, this.onAppBarHeightChanged, this.movieDetail,
+      {Key? key})
+      : super(key: key);
+
+  final void Function(double? height) onAppBarHeightChanged;
+  final double? appBarHeight;
+  final maxAppBarHeight = 300.0;
+  final MovieDetails movieDetail;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return SliverAppBar(
+      elevation: 3,
+      backgroundColor: Colors.white,
+      leading: IconButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+          icon: const Icon(Icons.arrow_back_ios)),
+      pinned: true,
+      stretch: true,
+      expandedHeight: maxAppBarHeight,
+      flexibleSpace: VideoDetailAppBarFlexSpace(
+          appBarHeight,
+          maxAppBarHeight + 20,
+          onAppBarHeightChanged,
+          movieDetail.posterPath,
+          movieDetail.backdropPath,
+          movieDetail.title),
+      floating: false,
+    );
+  }
+}

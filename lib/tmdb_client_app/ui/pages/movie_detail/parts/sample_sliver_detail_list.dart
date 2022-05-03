@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class SampleSliverDetailList extends HookConsumerWidget {
-  const SampleSliverDetailList({Key? key}) : super(key: key);
+  const SampleSliverDetailList(this.overView, {Key? key}) : super(key: key);
+  final String? overView;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,19 +19,7 @@ class SampleSliverDetailList extends HookConsumerWidget {
           Stack(
             children: [
               Column(
-                children: [
-                  Container(
-                    height: 100,
-                    decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: <Color>[
-                              Color(0xE6FFC0A2),
-                              Colors.white,
-                            ])),
-                  ),
-                ],
+                children: [Text(overView ?? '')],
               ),
             ],
           ),
