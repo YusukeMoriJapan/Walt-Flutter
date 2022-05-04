@@ -14,7 +14,7 @@ class VideoDetailAppBar extends HookConsumerWidget {
 
   final void Function(double? height) onAppBarHeightChanged;
   final double? appBarHeight;
-  final maxAppBarHeight = 300.0;
+  final maxAppBarHeight = 350.0;
   final MovieDetails movieDetail;
 
   @override

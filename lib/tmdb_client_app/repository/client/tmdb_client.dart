@@ -64,6 +64,7 @@ abstract class TmdbClient {
   /// ・with_cast
   @GET("/{version}//discover/movie")
   Future<GetMoviesResponse> getDiscoveredMovies(
+    @Query("page") int page,
     @Path("version") int version,
     @Query("api_key") String apiKey,
     @Query("language") String language,

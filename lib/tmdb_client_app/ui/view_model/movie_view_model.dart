@@ -7,6 +7,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:walt/tmdb_client_app/models/entity/movie/movie_detail/movie_details.dart';
 import 'package:walt/tmdb_client_app/models/region/region.dart';
 import 'package:walt/tmdb_client_app/use_cases/get_movie_details_use_case.dart';
+import 'package:walt/tmdb_client_app/utils/throwable/cannot_find_value_from_key_exception.dart';
 
 import '../../models/entity/movie/movie.dart';
 import '../../models/entity/movie/movie_list.dart';
@@ -26,7 +27,9 @@ class MovieViewModel {
   late final MovieList trendingMovieList;
   late final MovieList upComingMovieList;
   late final MovieList popularMovieList;
+
   late final MovieList topRatedMovieList;
+  final Map<String, MovieList> _customMoviesMap = {};
 
   MovieViewModel(this._read) {
     trendingMovieList = MovieList(() => _requestTrendingMovies());
@@ -80,6 +83,66 @@ class MovieViewModel {
         timeWindow: TimeWindow.day,
         oldMovieList: upComingMovieList.currentMovieList,
         cancelToken: CancelToken());
+  }
+
+  Future<PagingResult<Movie>> _requestCustomDiscoveredMovies({
+    required String listKey,
+    required String sortBy,
+    double? voteAverageGte,
+    double? voteAverageLte,
+    int? year,
+    String? withGenres,
+    String? withKeywords,
+    String? withOriginalLanguage,
+    String? withWatchMonetizationTypes,
+    String? watchRegion,
+  }) async {
+    final customList = _customMoviesMap[listKey];
+
+    if (customList == null) {
+      return PagingResult.failure(
+          FailureReason.exception(CannotFindValueFromKeyException(
+              "Searched any matched list based on the key,but couldn't find it.")),
+          null);
+    } else {
+      return await _read(getDiscoveredMoviesUseCase).call(
+          language: Language.japanese,
+          page: customList.currentPage,
+          includeAdult: false,
+          sortBy: sortBy,
+          apiVersion: 3,
+          region: Region.japan,
+          oldMovieList: customList.currentMovieList,
+          cancelToken: CancelToken(),
+          voteAverageGte: voteAverageGte,
+          voteAverageLte: voteAverageLte,
+          year: year,
+          withGenres: withGenres,
+          withKeywords: withKeywords,
+          withOriginalLanguage: withOriginalLanguage,
+          withWatchMonetizationTypes: withWatchMonetizationTypes,
+          watchRegion: watchRegion);
+    }
+  }
+
+  bool registerCustomDiscoveredMovieList(
+    String key,
+    String? withGenres,
+    String sortBy,
+  ) {
+    final matchedList = _customMoviesMap[key];
+
+    if (matchedList == null) {
+      _customMoviesMap[key] = MovieList(() => _requestCustomDiscoveredMovies(
+          listKey: key, sortBy: sortBy, withGenres: withGenres));
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  MovieList? getCustomMovieList(String key) {
+    return _customMoviesMap[key];
   }
 
   Future<Result<MovieDetails>> getMovieDetails(int movieId) async {

@@ -49,12 +49,23 @@ abstract class MovieRepository {
       required Region region,
       required CancelToken cancelToken});
 
-  Future<Result<List<Movie>>> getDiscoveredMovies(
-      {required Language language,
-      required int page,
-      required int apiVersion,
-      required String region,
-      required CancelToken cancelToken});
+  Future<Result<List<Movie>>> getDiscoveredMovies({
+    required Language language,
+    required int page,
+    required int apiVersion,
+    required Region region,
+    required CancelToken cancelToken,
+    required bool includeAdult,
+    required String sortBy,
+    double? voteAverageGte,
+    double? voteAverageLte,
+    int? year,
+    String? withGenres,
+    String? withKeywords,
+    String? withOriginalLanguage,
+    String? withWatchMonetizationTypes,
+    String? watchRegion,
+  });
 
   Future<Result<MovieDetails>> getMovieDetails(
       {required Language language,
@@ -130,15 +141,34 @@ class MovieRepositoryImpl implements MovieRepository {
   }
 
   @override
-  Future<Result<List<Movie>>> getDiscoveredMovies(
-      {required Language language,
-      required int page,
-      required int apiVersion,
-      required String region,
-      required CancelToken cancelToken}) {
+  Future<Result<List<Movie>>> getDiscoveredMovies({
+    required Language language,
+    required int page,
+    required int apiVersion,
+    required Region region,
+    required CancelToken cancelToken,
+    required bool includeAdult,
+    required String sortBy,
+    double? voteAverageGte,
+    double? voteAverageLte,
+    int? year,
+    String? withGenres,
+    String? withKeywords,
+    String? withOriginalLanguage,
+    String? withWatchMonetizationTypes,
+    String? watchRegion,
+  }) {
     return read(tmdbClientProvider)
-        .getDiscoveredMovies(apiVersion, getTmdbApiKey(), language.name, region,
-            false.toString(), "popularity.desc", cancelToken)
+        .getDiscoveredMovies(page, apiVersion, getTmdbApiKey(), language.name,
+            region.name, includeAdult.toString(), sortBy, cancelToken,
+            voteAverageGte: voteAverageGte,
+            voteAverageLte: voteAverageLte,
+            year: year,
+            withGenres: withGenres,
+            withKeywords: withKeywords,
+            withOriginalLanguage: withOriginalLanguage,
+            withWatchMonetizationTypes: withWatchMonetizationTypes,
+            watchRegion: watchRegion)
         .then((response) {
       return response.toMoviesResult();
     });

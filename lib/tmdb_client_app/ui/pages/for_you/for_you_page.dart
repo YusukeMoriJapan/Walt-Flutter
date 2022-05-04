@@ -242,7 +242,7 @@ class MovieContentPage extends HookConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const SizedBox(height: 8),
-                    Text(selectedMovie.name ?? "",
+                    Text(selectedMovie.title ?? "",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           fontSize: 24,

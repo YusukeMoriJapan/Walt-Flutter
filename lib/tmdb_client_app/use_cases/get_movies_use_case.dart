@@ -132,3 +132,56 @@ final getUpComingMoviesUseCase = Provider((ref) {
     });
   };
 });
+
+final getDiscoveredMoviesUseCase = Provider((ref) {
+  return ({
+    required Language language,
+    required int page,
+    required int apiVersion,
+    required Region region,
+    required CancelToken cancelToken,
+    required bool includeAdult,
+    required String sortBy,
+    required List<Movie>? oldMovieList,
+    double? voteAverageGte,
+    double? voteAverageLte,
+    int? year,
+    String? withGenres,
+    String? withKeywords,
+    String? withOriginalLanguage,
+    String? withWatchMonetizationTypes,
+    String? watchRegion,
+  }) {
+    return ref
+        .read(movieRepository)
+        .getDiscoveredMovies(
+            language: language,
+            page: page,
+            apiVersion: apiVersion,
+            region: region,
+            cancelToken: cancelToken,
+            includeAdult: includeAdult,
+            sortBy: sortBy,
+            voteAverageLte: voteAverageLte,
+            voteAverageGte: voteAverageGte,
+            year: year,
+            withGenres: withGenres,
+            withKeywords: withKeywords,
+            withOriginalLanguage: withOriginalLanguage,
+            withWatchMonetizationTypes: withWatchMonetizationTypes,
+            watchRegion: watchRegion)
+        .then<PagingResult<Movie>>((result) {
+      /// TODO FIX 処理の共通化必要
+      return result.when(success: (newMovieList) {
+        if (oldMovieList != null) {
+          return PagingSuccess([...oldMovieList, ...newMovieList]);
+        } else {
+          return PagingSuccess(newMovieList);
+        }
+      }, failure: (e) {
+        return PagingFailure(e, oldMovieList);
+      });
+    });
+    ;
+  };
+});

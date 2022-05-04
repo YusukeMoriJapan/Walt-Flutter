@@ -16,7 +16,7 @@ class HighlightedMoviesHorizontalList extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return SizedBox(
-      height: 200,
+      height: 150,
       child: ListView.builder(
         itemCount: movies.length,
         scrollDirection: Axis.horizontal,
@@ -31,8 +31,34 @@ class HighlightedMoviesHorizontalList extends HookConsumerWidget {
                 },
 
                 ///TODO FIX 画像サイズをInjectするべき
-                child: Image.network(
-                  "https://image.tmdb.org/t/p/w342${movies[i].posterPath}",
+                child: Stack(
+                  children: [
+                    Container(
+                      foregroundDecoration: BoxDecoration(
+                          gradient: LinearGradient(
+                              begin: Alignment.center,
+                              end: Alignment.bottomCenter,
+                              colors: <Color>[
+                            Colors.transparent,
+                            Colors.black,
+                          ])),
+                      child: Image.network(
+                        "https://image.tmdb.org/t/p/w780${movies[i].backdropPath}",
+                      ),
+                    ),
+                    ConstrainedBox(
+                      constraints:
+                          BoxConstraints.loose(Size(200, double.infinity)),
+                      child: Container(
+                          alignment: Alignment.bottomLeft,
+                          padding: EdgeInsets.all(8),
+                          child: Text(
+                            movies[i].title ?? '',
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: Colors.white),
+                          )),
+                    )
+                  ],
                 )),
           );
         },

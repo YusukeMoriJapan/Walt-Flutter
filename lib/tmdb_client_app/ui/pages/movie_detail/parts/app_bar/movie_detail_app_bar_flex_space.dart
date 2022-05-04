@@ -90,7 +90,7 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
                       child: Align(
                         alignment: Alignment.topCenter,
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(0, 24, 0, 0),
+                          padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
                           child: SizedBox(
                             width: _calculatePosterHeight(
                                 appBarHeight, maxAppBarHeight),

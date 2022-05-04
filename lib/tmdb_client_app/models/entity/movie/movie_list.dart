@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:walt/tmdb_client_app/models/entity/movie/movie.dart';
-import 'package:walt/tmdb_client_app/ui/pages/movie_list_page.dart';
 
 import '../../../repository/movie_repository.dart';
 import '../../../use_cases/get_movies_use_case.dart';
