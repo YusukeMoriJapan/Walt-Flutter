@@ -42,14 +42,14 @@ class RowContent {
 
     return [
       Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: EdgeInsets.symmetric(horizontal: 8),
         child: Text(
           headerName,
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
       ),
       Padding(
-        padding: const EdgeInsets.fromLTRB(0, 4, 0, 24),
+        padding: const EdgeInsets.fromLTRB(0, 4, 0, 16),
         child: SizedBox(
           height: 150,
           child: StreamBuilder(

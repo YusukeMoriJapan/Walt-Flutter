@@ -21,7 +21,7 @@ class MovieDetailPageContent extends HookConsumerWidget {
           VideoDetailAppBar(appBarHeight.value, (heightValue) {
             appBarHeight.value = heightValue;
           }, movieDetails),
-          SampleSliverDetailList(
+          SliverMovieDetailList(
             movieDetails.overview,
           ),
         ],

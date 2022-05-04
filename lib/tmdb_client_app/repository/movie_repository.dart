@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:retry/retry.dart';
 import 'package:walt/tmdb_client_app/models/entity/movie/movie_detail/movie_details.dart';
 import 'package:walt/tmdb_client_app/models/region/region.dart';
 import 'package:walt/tmdb_client_app/models/request/append_to_response.dart';
+import 'package:walt/tmdb_client_app/utils/network/requests/retry.dart';
 import 'package:walt/tmdb_client_app/utils/network/result.dart';
 import 'package:walt/tmdb_client_app/utils/utils.dart';
 
@@ -90,6 +92,9 @@ class MovieRepositoryImpl implements MovieRepository {
     return read(tmdbClientProvider)
         .getPopularMovies(page, language.name, apiVersion, region.name,
             getTmdbApiKey(), cancelToken)
+        .httpDioRetry(
+            retryOptions: const RetryOptions(maxAttempts: 3),
+            timeoutDuration: const Duration(seconds: 10))
         .then((response) {
       return response.toMoviesResult();
     });
@@ -105,6 +110,9 @@ class MovieRepositoryImpl implements MovieRepository {
     return read(tmdbClientProvider)
         .getTrendingMovies(apiVersion, timeWindow.name, getTmdbApiKey(),
             language.name, page, cancelToken)
+        .httpDioRetry(
+            retryOptions: const RetryOptions(maxAttempts: 3),
+            timeoutDuration: const Duration(seconds: 10))
         .then((response) {
       return response.toMoviesResult();
     });
@@ -120,6 +128,9 @@ class MovieRepositoryImpl implements MovieRepository {
     return read(tmdbClientProvider)
         .getTopRatedMovies(apiVersion, getTmdbApiKey(), language.name,
             region.name, page, cancelToken)
+        .httpDioRetry(
+            retryOptions: const RetryOptions(maxAttempts: 3),
+            timeoutDuration: const Duration(seconds: 10))
         .then((response) {
       return response.toMoviesResult();
     });
@@ -135,6 +146,9 @@ class MovieRepositoryImpl implements MovieRepository {
     return read(tmdbClientProvider)
         .getUpComingMovies(page, language.name, apiVersion, region.name,
             getTmdbApiKey(), cancelToken)
+        .httpDioRetry(
+            retryOptions: const RetryOptions(maxAttempts: 3),
+            timeoutDuration: const Duration(seconds: 10))
         .then((response) {
       return response.toMoviesResult();
     });
@@ -169,6 +183,9 @@ class MovieRepositoryImpl implements MovieRepository {
             withOriginalLanguage: withOriginalLanguage,
             withWatchMonetizationTypes: withWatchMonetizationTypes,
             watchRegion: watchRegion)
+        .httpDioRetry(
+            retryOptions: const RetryOptions(maxAttempts: 3),
+            timeoutDuration: const Duration(seconds: 10))
         .then((response) {
       return response.toMoviesResult();
     });
@@ -184,6 +201,9 @@ class MovieRepositoryImpl implements MovieRepository {
     return read(tmdbClientProvider)
         .getMovieDetails(apiVersion, movieId, getTmdbApiKey(), language.name,
             appendToResponse.toString(), cancelToken)
+        .httpDioRetry(
+            retryOptions: const RetryOptions(maxAttempts: 3),
+            timeoutDuration: const Duration(seconds: 10))
         .then((response) {
       return Result.success(response);
     }).catchError((Object e, StackTrace stackTrace) {

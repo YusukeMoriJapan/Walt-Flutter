@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:retry/retry.dart';
 import 'package:walt/tmdb_client_app/models/entity/watch_provider/provider_metadata.dart';
+import 'package:walt/tmdb_client_app/utils/network/requests/retry.dart';
 import 'package:walt/tmdb_client_app/utils/utils.dart';
 
 import '../models/region/region.dart';
@@ -34,6 +36,9 @@ class WatchProviderRepositoryImpl implements WatchProviderRepository {
     return read(tmdbClientProvider)
         .getMovieWatchProvider(
             apiVersion, getTmdbApiKey(), movieId, cancelToken)
+        .httpDioRetry(
+            retryOptions: const RetryOptions(maxAttempts: 3),
+            timeoutDuration: const Duration(seconds: 10))
         .then((response) {
       try {
         if (region == Region.japan) {

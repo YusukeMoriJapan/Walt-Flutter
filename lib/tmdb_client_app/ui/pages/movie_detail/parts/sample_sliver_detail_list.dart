@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class SampleSliverDetailList extends HookConsumerWidget {
-  const SampleSliverDetailList(this.overView, {Key? key}) : super(key: key);
+class SliverMovieDetailList extends HookConsumerWidget {
+  const SliverMovieDetailList(this.overView, {Key? key}) : super(key: key);
   final String? overView;
 
   @override
@@ -16,11 +16,22 @@ class SampleSliverDetailList extends HookConsumerWidget {
     return SliverList(
       delegate: SliverChildListDelegate(
         [
-          Stack(
+          Column(
             children: [
-              Column(
-                children: [Text(overView ?? '')],
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24,vertical: 4),
+                  child: Text(
+                    "概要",
+                    style: TextStyle(fontSize: 24,fontWeight: FontWeight.bold),
+                  ),
+                ),
               ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Text(overView ?? ''),
+              )
             ],
           ),
         ],
