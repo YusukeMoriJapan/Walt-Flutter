@@ -109,25 +109,13 @@ class DiscoverPage extends HookConsumerWidget {
     }, [true]);
 
     return PageStorage(
-      bucket: PageStorageBucket(),
-      child: ListView(
-        children: useRef(_spreadWidgetList(allRowContents)).value,
-      ),
-    );
-  }
-
-  List<Widget> _spreadWidgetList(List<RowContent> allRowContents) {
-    final List<Widget> allRowWidgets = [];
-
-    allRowContents
-        .map((rowContent) => rowContent.buildRowContent())
-        .forEach((widgetList) {
-      widgetList.forEach((widget) {
-        allRowWidgets.add(widget);
-      });
-    });
-
-    return allRowWidgets;
+        bucket: PageStorageBucket(),
+        child: ListView.builder(
+            itemCount: allRowContents.length,
+            itemBuilder: (context, i) {
+              return allRowContents[i].buildRowContent();
+            })
+        );
   }
 
   _navigateToMovieDetailPage(BuildContext context, int movieId) {
