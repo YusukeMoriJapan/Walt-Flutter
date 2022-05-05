@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:walt/tmdb_client_app/ui/pages/movie_detail/parts/app_bar/movie_detail_app_bar.dart';
-import 'package:walt/tmdb_client_app/ui/pages/movie_detail/parts/movie_detail_page_content.dart';
-
-import '../sample_sliver_detail_list.dart';
 
 class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
   const VideoDetailAppBarFlexSpace(
@@ -42,6 +38,7 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
         child: SizeChangedLayoutNotifier(
             child: FlexibleSpaceBar(
                 key: flexibleSpaceBerKey,
+
                 /// AppBar縮小し切った時に、leading Iconと被らないようにするため設定。
                 /// bottom:16は、0にするとなぜかAppBarHeightが大きくなってしまうため、設定必要。
                 titlePadding: const EdgeInsets.fromLTRB(0, 0, 0, 16),

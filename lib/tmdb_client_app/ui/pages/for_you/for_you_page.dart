@@ -1,23 +1,15 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:preload_page_view/preload_page_view.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:walt/tmdb_client_app/models/mock/mock_movie.dart';
-import 'package:walt/tmdb_client_app/models/region/region.dart';
-import 'package:walt/tmdb_client_app/ui/view_model/movie_view_model.dart';
-import 'package:walt/tmdb_client_app/ui/view_model/watch_provider_view_model.dart';
-import 'package:walt/tmdb_client_app/use_cases/get_watch_provider_use_case.dart';
 import 'package:walt/tmdb_client_app/utils/hooks/system_hooks.dart';
-import 'package:webview_flutter/webview_flutter.dart';
 
 import '../../../models/entity/movie/movie.dart';
-import '../../../models/entity/watch_provider/provider_metadata.dart';
 import '../../../utils/ui/hard_spring_page_view_scroll_physics.dart';
-import '../../components/watch_provder_bottom_sheet.dart';
 import '../movie_detail/movie_detail_page.dart';
 
 class ForYouPage extends HookConsumerWidget {
@@ -51,7 +43,7 @@ class ForYouPagerContentState extends ConsumerState<ConsumerStatefulWidget>
     final tabController = useRef(TabController(length: 3, vsync: this));
     return Stack(
       children: [
-        Container(color: Colors.grey),
+        Container(color: Colors.black),
         PreloadPageView.builder(
             physics: const HardSpringPageViewScrollPhysics(),
             scrollDirection: Axis.horizontal,

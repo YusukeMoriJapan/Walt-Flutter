@@ -6,9 +6,6 @@ import 'package:walt/tmdb_client_app/ui/pages/movie_detail/parts/movie_detail_pa
 import 'package:walt/tmdb_client_app/ui/view_model/movie_view_model.dart';
 import 'package:walt/tmdb_client_app/utils/network/async_snapshot.dart';
 
-import '../../../models/entity/movie/movie_detail/movie_details.dart';
-import '../../../utils/network/result.dart';
-
 class MovieDetailPage extends HookConsumerWidget {
   const MovieDetailPage(this.movieId, {Key? key}) : super(key: key);
 
@@ -34,6 +31,7 @@ class MovieDetailPage extends HookConsumerWidget {
                 icon: const Icon(Icons.arrow_back_ios))),
         body: Center(
             child: CircularProgressIndicator(
+              backgroundColor: Colors.grey,
               color: Colors.black54,
             )),
       );
