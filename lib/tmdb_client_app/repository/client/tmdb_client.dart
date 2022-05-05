@@ -102,6 +102,7 @@ abstract class TmdbClient {
     @Path("version") int version,
     @Path("movie_id") int movieId,
     @Query("api_key") String apiKey,
+    @Query("language") String language,
     @CancelRequest() CancelToken cancelToken,
   );
 

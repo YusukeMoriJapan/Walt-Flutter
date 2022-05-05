@@ -162,9 +162,12 @@ class MovieContentPage extends HookConsumerWidget {
                         } else {
                           final expectedBytes =
                               loadingProgress.expectedTotalBytes ?? 0;
-                          return LinearProgressIndicator(
-                              value: loadingProgress.cumulativeBytesLoaded /
-                                  expectedBytes);
+                          return SizedBox(
+                            width: 200,
+                            child: LinearProgressIndicator(
+                                value: loadingProgress.cumulativeBytesLoaded /
+                                    expectedBytes),
+                          );
                         }
                       },
                     ),

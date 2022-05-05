@@ -11,6 +11,8 @@ extension AsyncSnapshotExt on AsyncSnapshot {
   bool get isDone => connectionState == ConnectionState.done;
 
   bool get isWaiting => connectionState == ConnectionState.waiting;
+
+  bool get isFetchingData => isWaiting || isNothing;
 }
 
 extension AsyncSnapshotExtResult<T extends Result<E>, E> on AsyncSnapshot<T> {

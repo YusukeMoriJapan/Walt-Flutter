@@ -6,6 +6,10 @@ import 'package:walt/tmdb_client_app/ui/pages/movie_detail/parts/movie_detail_pa
 import 'package:walt/tmdb_client_app/ui/view_model/movie_view_model.dart';
 import 'package:walt/tmdb_client_app/utils/network/async_snapshot.dart';
 
+import '../../../models/entity/movie/movie_detail/movie_details.dart';
+import '../../../utils/network/result.dart';
+import '../../view_model/credits_view_model.dart';
+
 class MovieDetailPage extends HookConsumerWidget {
   const MovieDetailPage(this.movieId, {Key? key}) : super(key: key);
 
@@ -13,12 +17,16 @@ class MovieDetailPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.watch(movieViewModelProvider);
+    final movieViewModel = ref.watch(movieViewModelProvider);
+    final creditsViewModel = ref.watch(creditsViewModelProvider);
 
-    final snapshot =
-    useFuture(useRef(viewModel.getMovieDetails(movieId)).value);
+    final AsyncSnapshot<Result<MovieDetails>> movieSnapshot =
+        useFuture(useRef(movieViewModel.getMovieDetails(movieId)).value);
 
-    if (snapshot.isWaiting || snapshot.isNothing) {
+    final creditsSnapshot =
+        useRef(creditsViewModel.getMovieCredits(movieId)).value;
+
+    if (movieSnapshot.isFetchingData) {
       return Scaffold(
         appBar: AppBar(
             elevation: 0,
@@ -30,21 +38,26 @@ class MovieDetailPage extends HookConsumerWidget {
                 color: Colors.black,
                 icon: const Icon(Icons.arrow_back_ios))),
         body: Center(
-            child: CircularProgressIndicator(
-              backgroundColor: Colors.grey,
-              color: Colors.black54,
-            )),
+            child: SizedBox(
+                width: 200,
+                child: LinearProgressIndicator(
+                  backgroundColor: Colors.grey,
+                  color: Colors.black54,
+                ))),
       );
     } else {
-      return snapshot.buildWidget(onSuccess: (movie) {
-        return MovieDetailPageContent(movie);
+      return movieSnapshot.buildWidget(onSuccess: (movie) {
+        return MovieDetailPageContent(
+          movieDetails: movie,
+          creditsFuture: creditsSnapshot,
+        );
       }, onError: (e) {
         ///TODO FIX エラーハンドリング必要
         return Center(
             child: Text(
-              "読み込めませんでした。",
-              style: TextStyle(fontSize: 16),
-            ));
+          "読み込めませんでした。",
+          style: TextStyle(fontSize: 16),
+        ));
       });
     }
   }

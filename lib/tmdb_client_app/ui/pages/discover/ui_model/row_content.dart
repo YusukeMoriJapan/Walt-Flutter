@@ -7,8 +7,8 @@ import '../../../../models/entity/movie/movie.dart';
 import '../../../../models/entity/movie/movie_list.dart';
 import '../../../../utils/network/paging/paging_result.dart';
 import '../../../../utils/ui/scroll_detector.dart';
-import '../parts/horizontal_normal_movie_list.dart';
 import '../parts/horizontal_highlighted_movie_list.dart';
+import '../parts/horizontal_normal_movie_list.dart';
 
 enum DiscoverRowContentType { normal, highLighted }
 
@@ -63,10 +63,13 @@ class DiscoverRowContentUiModel {
                     return _showRowContent(oldMovies, onNextPageRequested);
                   } else {
                     return const Center(
-                        child: LinearProgressIndicator(
+                        child: SizedBox(
+                          width: 200,
+                          child: LinearProgressIndicator(
                       backgroundColor: Colors.grey,
                       color: Colors.black54,
-                    ));
+                    ),
+                        ));
                   }
                 }
 

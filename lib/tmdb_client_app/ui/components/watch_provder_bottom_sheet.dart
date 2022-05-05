@@ -6,8 +6,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../models/entity/watch_provider/provider_metadata.dart';
-import '../pages/for_you/for_you_page.dart';
-import '../pages/movie_detail/movie_detail_page.dart';
 import '../view_model/watch_provider_view_model.dart';
 
 showWatchProviderBottomSheet(BuildContext context, WidgetRef ref, num movieId) {
@@ -42,9 +40,13 @@ showWatchProviderBottomSheet(BuildContext context, WidgetRef ref, num movieId) {
                         failure: (e) => Text(e.toString()));
                   } else {
                     ///TODO FIX 読み込み中インジケータ表示する
-                    return const Center(
-                      child: CircularProgressIndicator(color: Colors.black54),
-                    );
+                    return Center(
+                        child: SizedBox(
+                            width: 200,
+                            child: LinearProgressIndicator(
+                              backgroundColor: Colors.grey,
+                              color: Colors.black54,
+                            )));
                   }
                 }),
               ),

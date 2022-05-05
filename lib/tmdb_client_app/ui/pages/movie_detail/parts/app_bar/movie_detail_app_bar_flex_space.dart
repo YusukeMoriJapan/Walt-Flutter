@@ -119,10 +119,10 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
     print(result);
 
     /// 下方向へのオーバースクロール時、グラデーションがSliverListの裏側に隠れてしまうのを防ぐため
-    if (result >= 1) {
-      return 1.0;
-    } else {
-      return result;
-    }
+    // if (result >= 1) {
+    //   return 1.0;
+    // } else {
+      return result - 0.2;
+    // }
   }
 }
