@@ -12,7 +12,7 @@ import '../parts/horizontal_highlighted_movie_list.dart';
 
 enum DiscoverRowContentType { normal, highLighted }
 
-class RowContent {
+class DiscoverRowContentUiModel {
   final String headerName;
   final Key key;
   final Key listKey;
@@ -21,7 +21,7 @@ class RowContent {
 
   final DiscoverRowContentType type;
 
-  const RowContent(
+  const DiscoverRowContentUiModel(
       {required this.headerName,
       required this.key,
       required this.listKey,
@@ -62,7 +62,10 @@ class RowContent {
                   if (oldMovies != null) {
                     return _showRowContent(oldMovies, onNextPageRequested);
                   } else {
-                    return const Center(child: CircularProgressIndicator());
+                    return const Center(
+                        child: CircularProgressIndicator(
+                      color: Colors.black54,
+                    ));
                   }
                 }
 

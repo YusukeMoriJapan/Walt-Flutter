@@ -41,57 +41,57 @@ class DiscoverPage extends HookConsumerWidget {
           sfKey, "878", "popularity.desc");
     }, [true]);
 
-    final allRowContents = useRef<List<RowContent>>([
-      RowContent(
+    final allRowContents = useRef<List<DiscoverRowContentUiModel>>([
+      DiscoverRowContentUiModel(
           headerName: "Trending",
           key: const PageStorageKey("trending"),
           listKey: const ValueKey("trending"),
           movieList: movieViewModel.trendingMovieList,
           onClickMovieImage: (id) => _navigateToMovieDetailPage(context, id),
           type: DiscoverRowContentType.highLighted),
-      RowContent(
+      DiscoverRowContentUiModel(
           headerName: "Up Coming",
           key: const PageStorageKey("upComing"),
           listKey: const ValueKey("upComing"),
           movieList: movieViewModel.upComingMovieList,
           onClickMovieImage: (id) => _navigateToMovieDetailPage(context, id),
           type: DiscoverRowContentType.highLighted),
-      RowContent(
+      DiscoverRowContentUiModel(
           headerName: "Popular",
           key: const PageStorageKey("popular"),
           listKey: const ValueKey("popular"),
           movieList: movieViewModel.popularMovieList,
           onClickMovieImage: (id) => _navigateToMovieDetailPage(context, id),
           type: DiscoverRowContentType.highLighted),
-      RowContent(
+      DiscoverRowContentUiModel(
           headerName: "TopRated",
           key: const PageStorageKey("topRated"),
           listKey: const ValueKey("topRated"),
           movieList: movieViewModel.topRatedMovieList,
           onClickMovieImage: (id) => _navigateToMovieDetailPage(context, id),
           type: DiscoverRowContentType.highLighted),
-      RowContent(
+      DiscoverRowContentUiModel(
           headerName: "Anime",
           key: const PageStorageKey(animeKey),
           listKey: const ValueKey(animeKey),
           movieList: movieViewModel.getCustomMovieList(animeKey),
           onClickMovieImage: (id) => _navigateToMovieDetailPage(context, id),
           type: DiscoverRowContentType.normal),
-      RowContent(
+      DiscoverRowContentUiModel(
           headerName: "Romance",
           key: const PageStorageKey(romanceKey),
           listKey: const ValueKey(romanceKey),
           movieList: movieViewModel.getCustomMovieList(romanceKey),
           onClickMovieImage: (id) => _navigateToMovieDetailPage(context, id),
           type: DiscoverRowContentType.normal),
-      RowContent(
+      DiscoverRowContentUiModel(
           headerName: "Thriller",
           key: const PageStorageKey(thrillerKey),
           listKey: const ValueKey(thrillerKey),
           movieList: movieViewModel.getCustomMovieList(thrillerKey),
           onClickMovieImage: (id) => _navigateToMovieDetailPage(context, id),
           type: DiscoverRowContentType.normal),
-      RowContent(
+      DiscoverRowContentUiModel(
           headerName: "Science Fiction",
           key: const PageStorageKey(sfKey),
           listKey: const ValueKey(sfKey),
