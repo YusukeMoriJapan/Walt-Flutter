@@ -19,10 +19,24 @@ class MovieDetailPage extends HookConsumerWidget {
     final viewModel = ref.watch(movieViewModelProvider);
 
     final snapshot =
-        useFuture(useRef(viewModel.getMovieDetails(movieId)).value);
+    useFuture(useRef(viewModel.getMovieDetails(movieId)).value);
 
     if (snapshot.isWaiting || snapshot.isNothing) {
-      return Center(child: CircularProgressIndicator());
+      return Scaffold(
+        appBar: AppBar(
+            elevation: 0,
+            backgroundColor: Colors.transparent,
+            leading: IconButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                color: Colors.black,
+                icon: const Icon(Icons.arrow_back_ios))),
+        body: Center(
+            child: CircularProgressIndicator(
+              color: Colors.black54,
+            )),
+      );
     } else {
       return snapshot.buildWidget(onSuccess: (movie) {
         return MovieDetailPageContent(movie);
@@ -30,9 +44,9 @@ class MovieDetailPage extends HookConsumerWidget {
         ///TODO FIX エラーハンドリング必要
         return Center(
             child: Text(
-          "読み込めませんでした。",
-          style: TextStyle(fontSize: 16),
-        ));
+              "読み込めませんでした。",
+              style: TextStyle(fontSize: 16),
+            ));
       });
     }
   }

@@ -17,6 +17,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 import '../../../models/entity/movie/movie.dart';
 import '../../../models/entity/watch_provider/provider_metadata.dart';
 import '../../../utils/ui/hard_spring_page_view_scroll_physics.dart';
+import '../../components/watch_provder_bottom_sheet.dart';
+import '../movie_detail/movie_detail_page.dart';
 
 class ForYouPage extends HookConsumerWidget {
   const ForYouPage({Key? key}) : super(key: key);
@@ -49,6 +51,7 @@ class ForYouPagerContentState extends ConsumerState<ConsumerStatefulWidget>
     final tabController = useRef(TabController(length: 3, vsync: this));
     return Stack(
       children: [
+        Container(color: Colors.grey),
         PreloadPageView.builder(
             physics: const HardSpringPageViewScrollPhysics(),
             scrollDirection: Axis.horizontal,
@@ -88,21 +91,12 @@ class ForYouPagerContentState extends ConsumerState<ConsumerStatefulWidget>
                   Tab(text: 'High Rated'),
                 ],
                 onTap: (i) {
-                controllerParent.animateToPage(i, duration: Duration(milliseconds:250), curve: Curves.ease);
+                  controllerParent.animateToPage(i,
+                      duration: Duration(milliseconds: 250),
+                      curve: Curves.ease);
                 },
               )),
         ),
-        // Container(
-        //   alignment: Alignment.topCenter,
-        //   padding: EdgeInsets.fromLTRB(0, 16, 0, 0),
-        //   child: Text("Trending      Popular      High Rated",
-        //       // textAlign: TextAlign.center,
-        //       style: TextStyle(
-        //         fontSize: 16,
-        //         fontWeight: FontWeight.w300,
-        //         color: Theme.of(context).primaryColor,
-        //       )),
-        // ),
         Container(
             padding: const EdgeInsets.symmetric(horizontal: 4),
             alignment: Alignment.centerLeft,
@@ -157,7 +151,9 @@ class MovieContentPage extends HookConsumerWidget {
                     onTap: () {
                       final movieId = selectedMovie.id;
                       if (movieId != null) {
-                        _showWatchProviderBottomSheet(context, ref, movieId);
+                        Navigator.of(context).pushNamed("/movieDetail",
+                            arguments:
+                                MovieDetailPageArguments(movieId.toInt()));
                       } else {
                         ///TODO FIX スナックバーで読み込めないことを通知する
                       }
@@ -168,6 +164,17 @@ class MovieContentPage extends HookConsumerWidget {
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: double.infinity,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) {
+                          return child;
+                        } else {
+                          final expectedBytes =
+                              loadingProgress.expectedTotalBytes ?? 0;
+                          return LinearProgressIndicator(
+                              value: loadingProgress.cumulativeBytesLoaded /
+                                  expectedBytes);
+                        }
+                      },
                     ),
                   ),
                 );
@@ -233,6 +240,7 @@ class MovieContentPage extends HookConsumerWidget {
                   ),
                 ),
               ),
+
               /// 映画タイトル
               /// TODO FIX 何らかのNotifierを使い、画面上部のPagerIndicatorを避けるPaddingを動的に設定するコードに変更する必要あり
               Container(
@@ -258,213 +266,6 @@ class MovieContentPage extends HookConsumerWidget {
       ],
     );
   }
-
-  _showWatchProviderBottomSheet(
-      BuildContext context, WidgetRef ref, num movieId) {
-    showModalBottomSheet(
-        context: context,
-        backgroundColor: Colors.transparent,
-        isScrollControlled: true,
-        builder: (BuildContext context) {
-          return Container(
-            height: double.infinity,
-            color: Colors.transparent,
-            child: Stack(
-              children: [
-                BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-
-                  /// Opacity適用するため、Stack x BackdropFilterを組み合わせている
-                  child: HookConsumer(builder:
-                      (BuildContext context, WidgetRef ref, Widget? child) {
-                    final viewModel = ref.read(watchProviderViewModelProvider);
-                    final snapshot = useFuture(useMemoized(() =>
-                        viewModel.getMovieWatchProvider(movieId.toInt())));
-
-                    ///TODO FIX エラーハンドリング専用の拡張関数を追加する
-                    final data = snapshot.data;
-                    if (data != null) {
-                      return data.when(
-                          success: (providers) =>
-                              WatchProviderDetail(providers),
-
-                          ///TODO FIX エラーハンドリング
-                          failure: (e) => Text(e.toString()));
-                    } else {
-                      ///TODO FIX 読み込み中インジケータ表示する
-                      return const Text("読み込み中");
-                    }
-                  }),
-                ),
-              ],
-            ),
-          );
-        });
-  }
-}
-
-class WatchProviderDetail extends HookConsumerWidget {
-  const WatchProviderDetail(this.providerMetadataList, {Key? key})
-      : super(key: key);
-
-  final ProviderMetadataList providerMetadataList;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    /// flatrate
-    final Iterable<Widget>? flatrateLogoList =
-        providerMetadataList.flatrate?.map((provider) {
-      final logo = provider.logoPath;
-      if (logo != null) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: InkWell(
-            onTap: () {
-              final tmdbLink = providerMetadataList.link;
-              if (tmdbLink != null) {
-                launch(tmdbLink);
-              } else {
-                ///TODO FIX エラーハンドリング snackbar表示する
-              }
-            },
-            child: Image.network(
-              "https://www.themoviedb.org/t/p/original/" + logo,
-              width: 50,
-              height: 50,
-            ),
-          ),
-        );
-      } else {
-        return const SizedBox(
-          width: 0,
-          height: 0,
-        );
-      }
-    });
-
-    /// buy
-    final Iterable<Widget>? buyLogoList =
-        providerMetadataList.buy?.map((provider) {
-      final logo = provider.logoPath;
-      if (logo != null) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: InkWell(
-            onTap: () {
-              final tmdbLink = providerMetadataList.link;
-              if (tmdbLink != null) {
-                launch(tmdbLink);
-              } else {
-                ///TODO FIX エラーハンドリング snackbar表示する
-              }
-            },
-            child: Image.network(
-              "https://www.themoviedb.org/t/p/original/" + logo,
-              width: 50,
-              height: 50,
-            ),
-          ),
-        );
-      } else {
-        return const SizedBox(
-          width: 0,
-          height: 0,
-        );
-      }
-    });
-
-    /// rent
-    final Iterable<Widget>? rentLogoList =
-        providerMetadataList.rent?.map((provider) {
-      final logo = provider.logoPath;
-      if (logo != null) {
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: InkWell(
-            onTap: () {
-              final tmdbLink = providerMetadataList.link;
-              if (tmdbLink != null) {
-                launch(tmdbLink);
-              } else {
-                ///TODO FIX エラーハンドリング snackbar表示する
-              }
-            },
-            child: Image.network(
-              "https://www.themoviedb.org/t/p/original/" + logo,
-              width: 50,
-              height: 50,
-            ),
-          ),
-        );
-      } else {
-        return const SizedBox(
-          width: 0,
-          height: 0,
-        );
-      }
-    });
-
-    return Center(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text(
-            "Watch Now",
-            style: const TextStyle(
-                fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
-            child: Text(
-              "Flatrate",
-              style: TextStyle(
-                  fontSize: 24,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w300),
-            ),
-          ),
-          Align(
-            child: Wrap(
-              children: [
-                ...?flatrateLogoList,
-              ],
-            ),
-          ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
-            child: Text(
-              "Buy",
-              style: TextStyle(
-                  fontSize: 24,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w300),
-            ),
-          ),
-          Wrap(
-            children: [
-              ...?buyLogoList,
-            ],
-          ),
-          const Padding(
-            padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
-            child: Text(
-              "Rent",
-              style: TextStyle(
-                  fontSize: 24,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w300),
-            ),
-          ),
-          Wrap(
-            children: [
-              ...?rentLogoList,
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 }
 
 class ColoredTabBar extends Container implements PreferredSizeWidget {
@@ -483,45 +284,3 @@ class ColoredTabBar extends Container implements PreferredSizeWidget {
         child: tabBar,
       );
 }
-
-// return Center(
-//     child: Stack(
-//   children: [
-//     Image.network(
-//       "https://www.themoviedb.org/t/p/original/2kExe7ImkVP4emxWGoJnraxthWd.jpg",
-//       fit: BoxFit.cover,
-//       width: double.infinity,
-//       height: double.infinity,
-//     ),
-//     SafeArea(
-//         child: Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: const [
-//         Text("Trending",
-//             style: TextStyle(
-//                 fontSize: 40,
-//                 fontWeight: FontWeight.w300,
-//                 color: Color.fromARGB(255, 255, 255, 255),
-//                 shadows: const <Shadow>[
-//                   Shadow(
-//                     offset: Offset(2.0, 2.0),
-//                     blurRadius: 10.0,
-//                     color: Colors.black87,
-//                   ),
-//                 ])),
-//         Text("Casino Royale",
-//             style: TextStyle(
-//                 fontSize: 40,
-//                 fontWeight: FontWeight.w300,
-//                 color: Color.fromARGB(255, 255, 255, 255),
-//                 shadows: const <Shadow>[
-//                   Shadow(
-//                     offset: Offset(2.0, 2.0),
-//                     blurRadius: 10.0,
-//                     color: Colors.black87,
-//                   ),
-//                 ])),
-//       ],
-//     ))
-//   ],
-// ));

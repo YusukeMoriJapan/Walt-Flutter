@@ -23,6 +23,7 @@ class MovieDetailPageContent extends HookConsumerWidget {
           }, movieDetails),
           SliverMovieDetailList(
             movieDetails.overview,
+            movieDetails.id,
           ),
         ],
       ),

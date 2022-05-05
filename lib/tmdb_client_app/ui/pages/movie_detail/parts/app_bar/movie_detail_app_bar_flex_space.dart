@@ -119,6 +119,8 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
             (maxAppBarHeight - (appBarHeight ?? maxAppBarHeight)) * -1.0) /
         maxAppBarHeight;
 
+    print(result);
+
     /// 下方向へのオーバースクロール時、グラデーションがSliverListの裏側に隠れてしまうのを防ぐため
     if (result >= 1) {
       return 1.0;

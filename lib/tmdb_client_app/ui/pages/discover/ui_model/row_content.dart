@@ -63,7 +63,8 @@ class DiscoverRowContentUiModel {
                     return _showRowContent(oldMovies, onNextPageRequested);
                   } else {
                     return const Center(
-                        child: CircularProgressIndicator(
+                        child: LinearProgressIndicator(
+                      backgroundColor: Colors.grey,
                       color: Colors.black54,
                     ));
                   }
