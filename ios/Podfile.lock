@@ -53,6 +53,8 @@ PODS:
   - nanopb/encode (2.30908.0)
   - OrderedSet (5.0.0)
   - PromisesObjC (2.1.0)
+  - shared_preferences_ios (0.0.1):
+    - Flutter
   - webview_flutter_wkwebview (0.0.1):
     - Flutter
 
@@ -63,6 +65,7 @@ DEPENDENCIES:
   - Flutter (from `Flutter`)
   - flutter_custom_tabs (from `.symlinks/plugins/flutter_custom_tabs/ios`)
   - flutter_inappwebview (from `.symlinks/plugins/flutter_inappwebview/ios`)
+  - shared_preferences_ios (from `.symlinks/plugins/shared_preferences_ios/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
 
 SPEC REPOS:
@@ -90,6 +93,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_custom_tabs/ios"
   flutter_inappwebview:
     :path: ".symlinks/plugins/flutter_inappwebview/ios"
+  shared_preferences_ios:
+    :path: ".symlinks/plugins/shared_preferences_ios/ios"
   webview_flutter_wkwebview:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
@@ -113,6 +118,7 @@ SPEC CHECKSUMS:
   nanopb: a0ba3315591a9ae0a16a309ee504766e90db0c96
   OrderedSet: aaeb196f7fef5a9edf55d89760da9176ad40b93c
   PromisesObjC: 99b6f43f9e1044bd87a95a60beff28c2c44ddb72
+  shared_preferences_ios: 548a61f8053b9b8a49ac19c1ffbc8b92c50d68ad
   webview_flutter_wkwebview: b7e70ef1ddded7e69c796c7390ee74180182971f
 
 PODFILE CHECKSUM: 275cf595d010d8b7944af0a4ef04497a0845dea2

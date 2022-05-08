@@ -1,11 +1,12 @@
 import 'dart:io';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:retry/retry.dart';
+import 'package:walt/tmdb_client_app/data_sources/local/tmdb_config_local_data_source.dart';
 
 import '../../utils/network/result.dart';
 
 part 'tmdb_config.freezed.dart';
-
 part 'tmdb_config.g.dart';
 
 @freezed
@@ -37,7 +38,8 @@ class TmdbImageConfig with _$TmdbImageConfig {
 }
 
 extension TmdbConfigEx on TmdbConfig {
-  Result<TmdbConfig> toTmdbConfigResult() {
+  Result<TmdbConfig> toTmdbConfigResult(
+      TmdbConfigLocalDataSource localDataSource, bool shouldStoreToLocal) {
     try {
       final images = this.images;
       final changeKeys = this.changeKeys;
@@ -52,6 +54,14 @@ extension TmdbConfigEx on TmdbConfig {
         ///TODO:FIX 自作エラーでラップする方が良い
         throw const HttpException(
             "Fetching process has been completed normally. but changeKeys are null.");
+      }
+
+      if (shouldStoreToLocal) {
+        const RetryOptions(maxAttempts: 3).retry(() {
+          localDataSource
+              .setTmdbConfig(this)
+              .timeout(const Duration(seconds: 30));
+        }, retryIf: (e) => true);
       }
 
       return Result.success(this);
