@@ -167,14 +167,14 @@ class WatchProviderDetail extends HookConsumerWidget {
           const Spacer(),
           Text(
             AppLocalizations.of(context)!.watchNow,
-            style: TextStyle(
+            style: const TextStyle(
                 fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
+            padding: const EdgeInsets.fromLTRB(8, 16, 8, 0),
             child: Text(
               AppLocalizations.of(context)!.flatrate,
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 24,
                   color: Colors.white,
                   fontWeight: FontWeight.w300),
@@ -188,10 +188,10 @@ class WatchProviderDetail extends HookConsumerWidget {
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
+            padding: const EdgeInsets.fromLTRB(8, 16, 8, 0),
             child: Text(
               AppLocalizations.of(context)!.buy,
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 24,
                   color: Colors.white,
                   fontWeight: FontWeight.w300),
@@ -203,10 +203,10 @@ class WatchProviderDetail extends HookConsumerWidget {
             ],
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
+            padding: const EdgeInsets.fromLTRB(8, 16, 8, 0),
             child: Text(
               AppLocalizations.of(context)!.rent,
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 24,
                   color: Colors.white,
                   fontWeight: FontWeight.w300),
@@ -223,7 +223,7 @@ class WatchProviderDetail extends HookConsumerWidget {
               Navigator.of(context).pop();
             },
             child: Text(AppLocalizations.of(context)!.close,
-                style: TextStyle(
+                style: const TextStyle(
                     fontSize: 20,
                     color: Colors.white,
                     fontWeight: FontWeight.w300)),
