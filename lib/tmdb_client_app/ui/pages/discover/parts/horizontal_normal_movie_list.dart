@@ -2,17 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:walt/tmdb_client_app/models/entity/movie/movie.dart';
-import 'package:walt/tmdb_client_app/utils/throwable/not_provided_exception.dart';
 
 class NormalMoviesHorizontalList extends HookConsumerWidget {
-  const NormalMoviesHorizontalList(
-      this.movies, this.onClickMovieImage, this._scrollController,
+  const NormalMoviesHorizontalList(this.movies, this.onClickMovieImage,
+      this._scrollController, this.baseImageUrl,
       {Key? key})
       : super(key: key);
 
   final List<Movie> movies;
   final void Function(int id) onClickMovieImage;
   final ScrollController _scrollController;
+  final String baseImageUrl;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -34,8 +34,7 @@ class NormalMoviesHorizontalList extends HookConsumerWidget {
                 color: Color.fromARGB(255, 165, 165, 165),
                 child: FadeInImage.memoryNetwork(
                   placeholder: kTransparentImage,
-                  image:
-                      "https://image.tmdb.org/t/p/w342${movies[i].posterPath}",
+                  image: baseImageUrl + _getProfilePath(movies[i].posterPath),
                   fit: BoxFit.cover,
                   height: 150,
                   width: 150 * 0.71,
@@ -45,6 +44,8 @@ class NormalMoviesHorizontalList extends HookConsumerWidget {
       },
     );
   }
+
+  String _getProfilePath(String? path) => path ?? "";
 
   _imageHPadding(int i) {
     if (i != 0 || i != movies.length - 1) {

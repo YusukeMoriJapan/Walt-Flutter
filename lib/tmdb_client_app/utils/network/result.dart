@@ -24,4 +24,8 @@ extension FailureReasonEx on Object {
       return FailureReason.error(this as Error);
     }
   }
+
+  log(){
+
+  }
 }

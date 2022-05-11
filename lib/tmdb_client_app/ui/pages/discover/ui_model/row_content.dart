@@ -18,6 +18,8 @@ class DiscoverRowContentUiModel {
   final Key listKey;
   final MovieList? movieList;
   final Function(int id) onClickMovieImage;
+  final String backdropImageUrl;
+  final String posterImageUrl;
 
   final DiscoverRowContentType type;
 
@@ -27,7 +29,9 @@ class DiscoverRowContentUiModel {
       required this.listKey,
       required this.movieList,
       required this.onClickMovieImage,
-      required this.type});
+      required this.type,
+      required this.backdropImageUrl,
+      required this.posterImageUrl});
 
   Widget buildRowContent() {
     final _movieList = movieList;
@@ -64,12 +68,12 @@ class DiscoverRowContentUiModel {
                   } else {
                     return const Center(
                         child: SizedBox(
-                          width: 200,
-                          child: LinearProgressIndicator(
-                      backgroundColor: Colors.grey,
-                      color: Colors.black54,
-                    ),
-                        ));
+                      width: 200,
+                      child: LinearProgressIndicator(
+                        backgroundColor: Colors.grey,
+                        color: Colors.black54,
+                      ),
+                    ));
                   }
                 }
 
@@ -114,13 +118,13 @@ class DiscoverRowContentUiModel {
               movies,
               onClickMovieImage,
               scrollController,
+              backdropImageUrl,
               key: listKey,
             );
           },
           threshold: 0.8,
           onThresholdExceeded: onNextPageRequested,
         );
-        break;
       case DiscoverRowContentType.normal:
         return ScrollDetector(
           builder: (context, scrollController) {
@@ -128,13 +132,13 @@ class DiscoverRowContentUiModel {
               movies,
               onClickMovieImage,
               scrollController,
+              posterImageUrl,
               key: listKey,
             );
           },
           threshold: 0.8,
           onThresholdExceeded: onNextPageRequested,
         );
-        break;
     }
   }
 }

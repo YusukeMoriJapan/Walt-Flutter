@@ -4,10 +4,13 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:retry/retry.dart';
 import 'package:walt/tmdb_client_app/data_sources/local/tmdb_config_local_data_source.dart';
 
+import '../../utils/log/logger.dart';
 import '../../utils/network/result.dart';
 
 part 'tmdb_config.freezed.dart';
 part 'tmdb_config.g.dart';
+
+const defaultOriginalImagePath = "original";
 
 @freezed
 class TmdbConfig with _$TmdbConfig {
@@ -66,6 +69,7 @@ extension TmdbConfigEx on TmdbConfig {
 
       return Result.success(this);
     } catch (e) {
+      logger.e("Failed to convert TmdbConfig Result", e, StackTrace.current);
       return Result.failure(e.toFailureReason());
     }
   }

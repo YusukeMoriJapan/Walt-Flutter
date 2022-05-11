@@ -5,13 +5,15 @@ import 'package:walt/tmdb_client_app/ui/pages/movie_detail/parts/app_bar/movie_d
 
 class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
   const VideoDetailAppBarFlexSpace(
-      this.appBarHeight,
-      this.maxAppBarHeight,
-      this.onAppBarHeightChanged,
-      this.posterPath,
-      this.backDropPath,
-      this.title,
-      {Key? key})
+      {required this.appBarHeight,
+      required this.maxAppBarHeight,
+      required this.onAppBarHeightChanged,
+      required this.posterPath,
+      required this.backDropPath,
+      required this.title,
+      required this.baseBackdropImageUrl,
+      required this.basePosterImageUrl,
+      Key? key})
       : super(key: key);
 
   final void Function(double? height) onAppBarHeightChanged;
@@ -20,6 +22,8 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
   final String? backDropPath;
   final String? title;
   final double maxAppBarHeight;
+  final String baseBackdropImageUrl;
+  final String basePosterImageUrl;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -64,7 +68,7 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
                 background: Stack(alignment: Alignment.center, children: [
                   if (_backDropPath != null)
                     Image.network(
-                      "https://image.tmdb.org/t/p/original/" + _backDropPath,
+                      baseBackdropImageUrl + _backDropPath,
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: double.infinity,
@@ -93,9 +97,8 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
                                 appBarHeight, maxAppBarHeight),
                             height: _calculatePosterHeight(
                                 appBarHeight, maxAppBarHeight),
-                            child: Image.network(
-                                "https://image.tmdb.org/t/p/w500/" +
-                                    _posterPath),
+                            child:
+                                Image.network(basePosterImageUrl + _posterPath),
                           ),
                         ),
                       ),
@@ -122,7 +125,7 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
     // if (result >= 1) {
     //   return 1.0;
     // } else {
-      return result - 0.2;
+    return result - 0.2;
     // }
   }
 }

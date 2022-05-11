@@ -1,5 +1,5 @@
 class NotProvidedException implements Exception {
-  String cause;
+  String message;
 
-  NotProvidedException(this.cause);
+  NotProvidedException(this.message);
 }

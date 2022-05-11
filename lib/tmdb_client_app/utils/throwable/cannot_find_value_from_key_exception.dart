@@ -1,5 +1,5 @@
 class CannotFindValueFromKeyException implements Exception {
-  String cause;
+  String message;
 
-  CannotFindValueFromKeyException(this.cause);
+  CannotFindValueFromKeyException(this.message);
 }

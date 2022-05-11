@@ -29,6 +29,7 @@ class MovieDetailPageContent extends HookConsumerWidget {
             appBarHeight.value = heightValue;
           }, movieDetails),
           SliverMovieDetailList(movieDetails.overview, movieDetails.id,
+
               /// 主な出演者横スクロールリスト
               HookBuilder(builder: (context) {
             final creditsSnapshot = useFuture(creditsFuture);

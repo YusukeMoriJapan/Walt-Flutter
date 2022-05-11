@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:transparent_image/transparent_image.dart';
+import 'package:walt/tmdb_client_app/providers/tmdb_config_provider.dart';
 
 import '../../../../models/entity/people/cast.dart';
 import '../../../../models/entity/people/credits.dart';
@@ -17,6 +18,7 @@ class HorizontalCreditsList extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final _casts = useRef(credits.cast).value;
+    final baseImageUrl = ref.read(profileImagePathProvider(342));
 
     /// TODO FIX エラーハンドリング
     if (_casts == null || _casts.isEmpty) return Text("出演者が存在しません");
@@ -48,7 +50,9 @@ class HorizontalCreditsList extends HookConsumerWidget {
                       child: FadeInImage.memoryNetwork(
                         placeholder: kTransparentImage,
                         image:
-                            "https://image.tmdb.org/t/p/w342${_casts[i].profilePath}",
+                            // "https://image.tmdb.org/t/p/w342${_casts[i].profilePath}",
+                            baseImageUrl +
+                                _getProfilePath(_casts[i].profilePath),
                         imageErrorBuilder: (context, error, stackTrace) {
                           return ConstrainedBox(
                             constraints: BoxConstraints.loose(
@@ -85,6 +89,8 @@ class HorizontalCreditsList extends HookConsumerWidget {
       },
     );
   }
+
+  String _getProfilePath(String? path) => path ?? "";
 
   _imageHPadding(int i, List<Cast> casts) {
     if (i != 0 || i != casts.length - 1) {
