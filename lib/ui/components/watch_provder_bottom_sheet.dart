@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -164,15 +165,15 @@ class WatchProviderDetail extends HookConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const Spacer(),
-          const Text(
-            "Watch Now",
+          Text(
+            AppLocalizations.of(context)!.watchNow,
             style: TextStyle(
                 fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
             child: Text(
-              "Flatrate",
+              AppLocalizations.of(context)!.flatrate,
               style: TextStyle(
                   fontSize: 24,
                   color: Colors.white,
@@ -186,10 +187,10 @@ class WatchProviderDetail extends HookConsumerWidget {
               ],
             ),
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
             child: Text(
-              "Buy",
+              AppLocalizations.of(context)!.buy,
               style: TextStyle(
                   fontSize: 24,
                   color: Colors.white,
@@ -201,10 +202,10 @@ class WatchProviderDetail extends HookConsumerWidget {
               ...?buyLogoList,
             ],
           ),
-          const Padding(
+          Padding(
             padding: EdgeInsets.fromLTRB(8, 16, 8, 0),
             child: Text(
-              "Rent",
+              AppLocalizations.of(context)!.rent,
               style: TextStyle(
                   fontSize: 24,
                   color: Colors.white,
@@ -221,7 +222,7 @@ class WatchProviderDetail extends HookConsumerWidget {
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: const Text("Close",
+            child: Text(AppLocalizations.of(context)!.close,
                 style: TextStyle(
                     fontSize: 20,
                     color: Colors.white,

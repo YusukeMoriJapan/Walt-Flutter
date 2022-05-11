@@ -208,11 +208,7 @@ class MovieDetails {
 
   @override
   String toString() {
-    return 'MovieDetail{' ' adult: $adult,' ' backdropPath: $backdropPath,' ' belongsToCollection: $belongsToCollection,' ' budget: $budget,' +
-        ' genres: $genres,' +
-        ' homepage: $homepage,' +
-        ' id: $id,' +
-        ' imdbId: $imdbId,' +
+    return 'MovieDetail{' ' adult: $adult,' ' backdropPath: $backdropPath,' ' belongsToCollection: $belongsToCollection,' ' budget: $budget,' ' genres: $genres,' ' homepage: $homepage,' ' id: $id,' ' imdbId: $imdbId,' +
         ' originalLanguage: $originalLanguage,' +
         ' originalTitle: $originalTitle,' +
         ' overview: $overview,' +

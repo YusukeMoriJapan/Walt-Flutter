@@ -1,7 +1,13 @@
 {
   "@@locale": "ja",
-  "helloWorld": "こんにちは世界",
-  "@helloWorld": {
-    "description":"新米プログラマーの挨拶"
-  }
+  "watchNow": "今すぐ見る",
+  "@watchNow": {
+    "description": ""
+  },
+  "overView": "概要",
+  "topBilledCast": "主な出演者",
+  "flatrate": "定額制",
+  "buy": "購入",
+  "rent": "レンタル",
+  "close": "閉じる"
 }

@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:walt/ui/pages/movie_detail/parts/app_bar/movie_detail_app_bar.dart';
 import 'package:walt/ui/pages/movie_detail/parts/horizontal_credits_list.dart';
-import 'package:walt/ui/pages/movie_detail/parts/sample_sliver_detail_list.dart';
+import 'package:walt/ui/pages/movie_detail/parts/sliver_movie_detail_list.dart';
 import 'package:walt/utils/network/async_snapshot.dart';
 
 import '../../../../models/entity/movie/movie_detail/movie_details.dart';

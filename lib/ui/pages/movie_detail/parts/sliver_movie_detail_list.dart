@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:walt/ui/components/watch_provder_bottom_sheet.dart';
 
@@ -41,13 +42,14 @@ class SliverMovieDetailList extends HookConsumerWidget {
                         "https://www.justwatch.com/appassets/img/logo/JustWatch-logo-large.webp"),
                   ),
                 ),
-                const Align(
+                Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
                     child: Text(
-                      "概要",
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      AppLocalizations.of(context)!.overView,
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),
@@ -58,13 +60,14 @@ class SliverMovieDetailList extends HookConsumerWidget {
                 const SizedBox(
                   height: 16,
                 ),
-                const Align(
+                Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 4),
                     child: Text(
-                      "主な出演者",
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      AppLocalizations.of(context)!.topBilledCast,
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ),

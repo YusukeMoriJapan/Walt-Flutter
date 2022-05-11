@@ -43,8 +43,7 @@ class ProductionCompanies {
 
   @override
   String toString() {
-    return 'ProductionCompanies{' ' id: $id,' ' logoPath: $logoPath,' ' name: $name,' ' originCountry: $originCountry,' +
-        '}';
+    return 'ProductionCompanies{' ' id: $id,' ' logoPath: $logoPath,' ' name: $name,' ' originCountry: $originCountry,' '}';
   }
 
   ProductionCompanies copyWith({

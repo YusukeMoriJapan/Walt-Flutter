@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:walt/providers/tmdb_config_provider.dart';
 import 'package:walt/ui/app_home.dart';
@@ -36,6 +37,17 @@ launchTmdbApp() async {
                     builder: (context) => MovieDetailPage(arguments.movieId));
               }
               return null;
+            },
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            localeResolutionCallback: (locale, supportedLocales) {
+              if (locale != null) {
+                final _locale = Locale(locale.languageCode);
+                if (supportedLocales.contains(_locale)) {
+                  return _locale;
+                }
+              }
+              return supportedLocales.first;
             },
           );
         },

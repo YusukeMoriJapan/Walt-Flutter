@@ -1,7 +1,13 @@
 {
   "@@locale": "en",
-  "helloWorld": "Hello World!",
-  "@helloWorld": {
-    "description": "The conventional newborn programmer greeting"
-  }
+  "watchNow": "Watch Now",
+  "@watchNow": {
+    "description": ""
+  },
+  "overView": "Overview",
+  "topBilledCast": "Top Billed Cast",
+  "flatrate": "Flatrate",
+  "buy": "Buy",
+  "rent": "Rent",
+  "close": "Close"
 }

@@ -89,21 +89,21 @@ String _extractTargetImageSizePath(List<String>? sizeList, int targetWidth) {
               .abs();
     } catch (e) {
       logger.w("Failed to parse imageSizeString.", e);
-      return;
+      continue;
     }
 
     if (_lastDiff == null) {
       matchedSizeString = sizeString;
       lastDiff = _diff;
-      return;
+      continue;
     }
 
     if (_diff < _lastDiff) {
       matchedSizeString = sizeString;
       lastDiff = _diff;
-      return;
+      continue;
     } else {
-      return;
+      continue;
     }
   }
 
