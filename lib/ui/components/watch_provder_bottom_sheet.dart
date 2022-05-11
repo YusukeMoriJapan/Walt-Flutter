@@ -5,6 +5,7 @@ import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:walt/providers/tmdb_config_provider.dart';
 
 import '../../models/entity/watch_provider/provider_metadata.dart';
 import '../view_model/watch_provider_view_model.dart';
@@ -66,6 +67,8 @@ class WatchProviderDetail extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final baseImageUrl = ref.read(baseImageUrlProvider);
+    
     /// flatrate
     final Iterable<Widget>? flatrateLogoList =
         providerMetadataList.flatrate?.map((provider) {
@@ -83,7 +86,7 @@ class WatchProviderDetail extends HookConsumerWidget {
               }
             },
             child: Image.network(
-              "https://www.themoviedb.org/t/p/original/" + logo,
+              baseImageUrl + logo,
               width: 50,
               height: 50,
             ),
@@ -114,7 +117,7 @@ class WatchProviderDetail extends HookConsumerWidget {
               }
             },
             child: Image.network(
-              "https://www.themoviedb.org/t/p/original/" + logo,
+              baseImageUrl + logo,
               width: 50,
               height: 50,
             ),
@@ -145,7 +148,7 @@ class WatchProviderDetail extends HookConsumerWidget {
               }
             },
             child: Image.network(
-              "https://www.themoviedb.org/t/p/original/" + logo,
+              baseImageUrl + logo,
               width: 50,
               height: 50,
             ),
