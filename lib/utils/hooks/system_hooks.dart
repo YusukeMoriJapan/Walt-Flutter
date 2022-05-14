@@ -1,5 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+
+import '../ui/theme/darkmode.dart';
 
 void useFullScreenUntilDispose([List<Object?>? keys]) {
   useEffect(() {
@@ -9,4 +12,9 @@ void useFullScreenUntilDispose([List<Object?>? keys]) {
           overlays: SystemUiOverlay.values);
     };
   }, keys);
+}
+
+bool useDarkModeState() {
+  return useMemoized(
+      () => isDarkMode(useContext()), [Theme.of(useContext()).brightness]);
 }

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -183,15 +182,17 @@ class MovieContentPage extends HookConsumerWidget {
               Container(
                 alignment: Alignment.bottomRight,
                 padding: const EdgeInsets.fromLTRB(0, 0, 16, 40),
-                child: AnimatedSmoothIndicator(
-                    activeIndex: pagerIndicatorActiveIndex.value,
-                    effect: SlideEffect(
-                        activeDotColor: Theme.of(context).primaryColor,
-                        dotWidth: 8,
-                        dotHeight: 8,
-                        spacing: 16),
-                    count: movies.length,
-                    axisDirection: Axis.vertical),
+                child: HookConsumer(builder: (context, ref, child) {
+                  return AnimatedSmoothIndicator(
+                      activeIndex: pagerIndicatorActiveIndex.value,
+                      effect: SlideEffect(
+                          activeDotColor: _useActivePagerIndicatorColor(),
+                          dotWidth: 8,
+                          dotHeight: 8,
+                          spacing: 16),
+                      count: movies.length,
+                      axisDirection: Axis.vertical);
+                }),
               ),
 
               /// VoteAverage
@@ -205,11 +206,23 @@ class MovieContentPage extends HookConsumerWidget {
                       SizedBox(
                         width: 72,
                         height: 72,
-                        child: CircularProgressIndicator(
-                            strokeWidth: 4,
-                            backgroundColor:
-                                const Color.fromARGB(102, 158, 158, 158),
-                            value: selectedMovie.getVoteAverageForIndicator()),
+                        child: HookConsumer(builder: (context, ref, child) {
+                          final isDarkMode = useDarkModeState();
+                          Color _color;
+                          if (isDarkMode) {
+                            _color = Theme.of(context).colorScheme.secondary;
+                          } else {
+                            _color = Theme.of(context).colorScheme.primary;
+                          }
+
+                          return CircularProgressIndicator(
+                              strokeWidth: 4,
+                              backgroundColor:
+                                  const Color.fromARGB(102, 158, 158, 158),
+                              color: _color,
+                              value:
+                                  selectedMovie.getVoteAverageForIndicator());
+                        }),
                       ),
                       Row(
                         mainAxisSize: MainAxisSize.min,
@@ -259,6 +272,14 @@ class MovieContentPage extends HookConsumerWidget {
         ),
       ],
     );
+  }
+
+  Color _useActivePagerIndicatorColor() {
+    if (useDarkModeState()) {
+      return Theme.of(useContext()).colorScheme.secondary;
+    } else {
+      return Theme.of(useContext()).colorScheme.primary;
+    }
   }
 }
 

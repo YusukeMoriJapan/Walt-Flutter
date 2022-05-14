@@ -52,6 +52,9 @@ launchTmdbApp() async {
               }
               return null;
             },
+            theme: ThemeData.light(),
+            darkTheme: ThemeData.dark(),
+            themeMode: ThemeMode.system,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             localeResolutionCallback: (locale, supportedLocales) {

@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:walt/ui/pages/discover/discover_page.dart';
 import 'package:walt/ui/pages/favorite/favorite_page.dart';
 import 'package:walt/ui/pages/for_you/for_you_page.dart';
+import 'package:walt/utils/hooks/system_hooks.dart';
 
 import '../constants/keys.dart';
 import 'navigation/navigation_bar_event.dart';
@@ -17,28 +18,31 @@ class AppHome extends HookConsumerWidget {
     final PageModel navigation = ref.watch(navigationProvider);
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBody: true,
       body: currentScreen(navigation.index),
       bottomNavigationBar: SizedBox(
-        child: BottomNavigationBar(
-            key: Keys.NAV_BAR,
-            currentIndex: navigation.index,
-            backgroundColor: _getBottomNavigationColor(navigation),
-            unselectedItemColor: _getUnSelectedItemColor(navigation),
-            elevation: _getBottomNavigationElevation(navigation),
-            onTap: (index) {
-              ref.read(navigationProvider.notifier).selectPage(index);
-            },
-            type: BottomNavigationBarType.fixed,
-            items: const [
-              BottomNavigationBarItem(
-                  icon: SizedBox(width: 0, height: 0), label: "FOR YOU"),
-              BottomNavigationBarItem(
-                  icon: SizedBox(width: 0, height: 0), label: "DISCOVER"),
-              BottomNavigationBarItem(
-                  icon: SizedBox(width: 0, height: 0), label: "FAVORITE"),
-            ]),
+        child: HookConsumer(builder: (context, ref, child) {
+          return BottomNavigationBar(
+              key: Keys.NAV_BAR,
+              currentIndex: navigation.index,
+              backgroundColor:
+                  _getBottomNavigationColor(navigation, useDarkModeState()),
+              unselectedItemColor: _getUnSelectedItemColor(navigation),
+              elevation: _getBottomNavigationElevation(navigation),
+              onTap: (index) {
+                ref.read(navigationProvider.notifier).selectPage(index);
+              },
+              type: BottomNavigationBarType.fixed,
+              items: const [
+                BottomNavigationBarItem(
+                    icon: SizedBox(width: 0, height: 0), label: "FOR YOU"),
+                BottomNavigationBarItem(
+                    icon: SizedBox(width: 0, height: 0), label: "DISCOVER"),
+                BottomNavigationBarItem(
+                    icon: SizedBox(width: 0, height: 0), label: "FAVORITE"),
+              ]);
+        }),
       ),
     );
   }
@@ -64,11 +68,15 @@ class AppHome extends HookConsumerWidget {
     }
   }
 
-  Color _getBottomNavigationColor(PageModel navigation) {
+  Color? _getBottomNavigationColor(PageModel navigation, bool isDarkMode) {
     if (navigation.page == NavigationBarEvent.forYou) {
       return Colors.transparent;
     } else {
-      return Colors.white;
+      if (isDarkMode) {
+        return null;
+      } else {
+        return Colors.white;
+      }
     }
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:walt/providers/tmdb_config_provider.dart';
 import 'package:walt/ui/pages/movie_detail/parts/app_bar/movie_detail_app_bar_flex_space.dart';
+import 'package:walt/utils/hooks/system_hooks.dart';
 
 import '../../../../../models/entity/movie/movie_detail/movie_details.dart';
 import '../../../../../utils/ui/icons.dart';
@@ -20,10 +21,12 @@ class VideoDetailAppBar extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDarkMode = useDarkModeState();
+
     return SliverAppBar(
       automaticallyImplyLeading: false,
       elevation: 3,
-      backgroundColor: Colors.white,
+      backgroundColor: _getAppBarBackgroundColor(isDarkMode),
       actions: [
         IconButton(
             icon: const ShadowIcon(
@@ -50,5 +53,13 @@ class VideoDetailAppBar extends HookConsumerWidget {
       ),
       floating: false,
     );
+  }
+}
+
+Color? _getAppBarBackgroundColor(bool isDarkMode) {
+  if (isDarkMode) {
+    return null;
+  } else {
+    return Colors.white;
   }
 }
