@@ -7,6 +7,7 @@ import 'package:walt/ui/pages/discover/ui_model/row_content.dart';
 import 'package:walt/ui/pages/movie_detail/movie_detail_page.dart';
 import 'package:walt/ui/view_model/movie_view_model.dart';
 
+import '../../../models/entity/movie/movie.dart';
 import '../../../models/region/region.dart';
 import '../../../repository/movie_repository.dart';
 
@@ -47,7 +48,11 @@ class DiscoverPage extends HookConsumerWidget {
           key: const PageStorageKey("trending"),
           listKey: const ValueKey("trending"),
           movieList: movieViewModel.trendingMovieList,
-          onClickMovieImage: (id) => _navigateToMovieDetailPage(context, id),
+          onClickMovieImage: (id) => _navigateToMovieDetailPage(
+              context,
+              id,
+              _convertToMovieIdList(
+                  movieViewModel.trendingMovieList.currentMovieList)),
           type: DiscoverRowContentType.highLighted,
           backdropImageUrl: ref.read(backdropImagePathProvider(780)),
           posterImageUrl: ref.read(posterImagePathProvider(342))),
@@ -56,7 +61,11 @@ class DiscoverPage extends HookConsumerWidget {
           key: const PageStorageKey("upComing"),
           listKey: const ValueKey("upComing"),
           movieList: movieViewModel.upComingMovieList,
-          onClickMovieImage: (id) => _navigateToMovieDetailPage(context, id),
+          onClickMovieImage: (id) => _navigateToMovieDetailPage(
+              context,
+              id,
+              _convertToMovieIdList(
+                  movieViewModel.upComingMovieList.currentMovieList)),
           type: DiscoverRowContentType.highLighted,
           backdropImageUrl: ref.read(backdropImagePathProvider(780)),
           posterImageUrl: ref.read(posterImagePathProvider(342))),
@@ -65,7 +74,11 @@ class DiscoverPage extends HookConsumerWidget {
           key: const PageStorageKey("popular"),
           listKey: const ValueKey("popular"),
           movieList: movieViewModel.popularMovieList,
-          onClickMovieImage: (id) => _navigateToMovieDetailPage(context, id),
+          onClickMovieImage: (id) => _navigateToMovieDetailPage(
+              context,
+              id,
+              _convertToMovieIdList(
+                  movieViewModel.popularMovieList.currentMovieList)),
           type: DiscoverRowContentType.highLighted,
           backdropImageUrl: ref.read(backdropImagePathProvider(780)),
           posterImageUrl: ref.read(posterImagePathProvider(342))),
@@ -74,7 +87,11 @@ class DiscoverPage extends HookConsumerWidget {
           key: const PageStorageKey("topRated"),
           listKey: const ValueKey("topRated"),
           movieList: movieViewModel.topRatedMovieList,
-          onClickMovieImage: (id) => _navigateToMovieDetailPage(context, id),
+          onClickMovieImage: (id) => _navigateToMovieDetailPage(
+              context,
+              id,
+              _convertToMovieIdList(
+                  movieViewModel.topRatedMovieList.currentMovieList)),
           type: DiscoverRowContentType.highLighted,
           backdropImageUrl: ref.read(backdropImagePathProvider(780)),
           posterImageUrl: ref.read(posterImagePathProvider(342))),
@@ -83,7 +100,12 @@ class DiscoverPage extends HookConsumerWidget {
           key: const PageStorageKey(animeKey),
           listKey: const ValueKey(animeKey),
           movieList: movieViewModel.getCustomMovieList(animeKey),
-          onClickMovieImage: (id) => _navigateToMovieDetailPage(context, id),
+          onClickMovieImage: (id) => _navigateToMovieDetailPage(
+              context,
+              id,
+              _convertToMovieIdList(movieViewModel
+                  .getCustomMovieList(animeKey)
+                  ?.currentMovieList)),
           type: DiscoverRowContentType.normal,
           backdropImageUrl: ref.read(backdropImagePathProvider(780)),
           posterImageUrl: ref.read(posterImagePathProvider(342))),
@@ -92,7 +114,12 @@ class DiscoverPage extends HookConsumerWidget {
           key: const PageStorageKey(romanceKey),
           listKey: const ValueKey(romanceKey),
           movieList: movieViewModel.getCustomMovieList(romanceKey),
-          onClickMovieImage: (id) => _navigateToMovieDetailPage(context, id),
+          onClickMovieImage: (id) => _navigateToMovieDetailPage(
+              context,
+              id,
+              _convertToMovieIdList(movieViewModel
+                  .getCustomMovieList(romanceKey)
+                  ?.currentMovieList)),
           type: DiscoverRowContentType.normal,
           backdropImageUrl: ref.read(backdropImagePathProvider(780)),
           posterImageUrl: ref.read(posterImagePathProvider(342))),
@@ -101,7 +128,12 @@ class DiscoverPage extends HookConsumerWidget {
           key: const PageStorageKey(thrillerKey),
           listKey: const ValueKey(thrillerKey),
           movieList: movieViewModel.getCustomMovieList(thrillerKey),
-          onClickMovieImage: (id) => _navigateToMovieDetailPage(context, id),
+          onClickMovieImage: (id) => _navigateToMovieDetailPage(
+              context,
+              id,
+              _convertToMovieIdList(movieViewModel
+                  .getCustomMovieList(thrillerKey)
+                  ?.currentMovieList)),
           type: DiscoverRowContentType.normal,
           backdropImageUrl: ref.read(backdropImagePathProvider(780)),
           posterImageUrl: ref.read(posterImagePathProvider(342))),
@@ -110,7 +142,11 @@ class DiscoverPage extends HookConsumerWidget {
           key: const PageStorageKey(sfKey),
           listKey: const ValueKey(sfKey),
           movieList: movieViewModel.getCustomMovieList(sfKey),
-          onClickMovieImage: (id) => _navigateToMovieDetailPage(context, id),
+          onClickMovieImage: (id) => _navigateToMovieDetailPage(
+              context,
+              id,
+              _convertToMovieIdList(
+                  movieViewModel.getCustomMovieList(sfKey)?.currentMovieList)),
           type: DiscoverRowContentType.normal,
           backdropImageUrl: ref.read(backdropImagePathProvider(780)),
           posterImageUrl: ref.read(posterImagePathProvider(342))),
@@ -134,8 +170,22 @@ class DiscoverPage extends HookConsumerWidget {
             }));
   }
 
-  _navigateToMovieDetailPage(BuildContext context, int movieId) {
+  _navigateToMovieDetailPage(
+      BuildContext context, int movieId, List<int>? movieIds) {
     Navigator.of(context).pushNamed("/movieDetail",
-        arguments: MovieDetailPageArguments(movieId));
+        arguments: MovieDetailPageArguments(movieId, movieIds));
+  }
+
+  List<int>? _convertToMovieIdList(List<Movie>? movies) {
+    if (movies == null) return null;
+
+    final List<int> result = [];
+
+    for (var movie in movies) {
+      final _id = movie.id?.toInt();
+      if (_id != null) result.add(_id);
+    }
+
+    return result;
   }
 }

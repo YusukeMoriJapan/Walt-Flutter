@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:walt/ui/pages/movie_detail/parts/app_bar/movie_detail_app_bar.dart';
 
 class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
   const VideoDetailAppBarFlexSpace(
@@ -12,6 +11,7 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
       required this.title,
       required this.baseBackdropImageUrl,
       required this.basePosterImageUrl,
+      required this.flexibleSpaceBerKey,
       Key? key})
       : super(key: key);
 
@@ -23,6 +23,7 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
   final double maxAppBarHeight;
   final String baseBackdropImageUrl;
   final String basePosterImageUrl;
+  final GlobalKey flexibleSpaceBerKey;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -117,8 +118,6 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
     final result = ((appBarHeight ?? maxAppBarHeight) +
             (maxAppBarHeight - (appBarHeight ?? maxAppBarHeight)) * -1.0) /
         maxAppBarHeight;
-
-    print(result);
 
     /// 下方向へのオーバースクロール時、グラデーションがSliverListの裏側に隠れてしまうのを防ぐため
     // if (result >= 1) {

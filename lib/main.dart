@@ -33,8 +33,22 @@ launchTmdbApp() async {
             onGenerateRoute: (setting) {
               if (setting.name == '/movieDetail') {
                 final arguments = setting.arguments as MovieDetailPageArguments;
-                return MaterialPageRoute(
-                    builder: (context) => MovieDetailPage(arguments.movieId));
+                return PageRouteBuilder(
+                    pageBuilder: (_, __, ___) => MovieDetailPage(
+                        arguments.defaultMovieId, arguments.movieIds),
+                    transitionsBuilder:
+                        (context, animation, secondaryAnimation, child) {
+                      return const FadeUpwardsPageTransitionsBuilder()
+                          .buildTransitions(
+                              MaterialPageRoute(
+                                  builder: (context) => MovieDetailPage(
+                                      arguments.defaultMovieId,
+                                      arguments.movieIds)),
+                              context,
+                              animation,
+                              secondaryAnimation,
+                              child);
+                    });
               }
               return null;
             },
