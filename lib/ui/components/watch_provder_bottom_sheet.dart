@@ -5,6 +5,7 @@ import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:walt/models/region/region.dart';
 import 'package:walt/providers/tmdb_config_provider.dart';
 
 import '../../models/entity/watch_provider/provider_metadata.dart';
@@ -27,7 +28,10 @@ showWatchProviderBottomSheet(BuildContext context, WidgetRef ref, num movieId) {
                 /// Opacity適用するため、Stack x BackdropFilterを組み合わせている
                 child: HookConsumer(builder:
                     (BuildContext context, WidgetRef ref, Widget? child) {
-                  final viewModel = ref.read(watchProviderViewModelProvider);
+                  final region = ianaCodeToRegion(
+                      Localizations.localeOf(context).countryCode);
+                  final viewModel =
+                      ref.read(watchProviderViewModelProvider(region));
                   final snapshot = useFuture(useMemoized(
                       () => viewModel.getMovieWatchProvider(movieId.toInt())));
 
@@ -67,8 +71,8 @@ class WatchProviderDetail extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final baseImageUrl = ref.read(baseImageUrlProvider);
-    
+    final baseImageUrl = ref.read(baseImageUrlProvider) + "original";
+
     /// flatrate
     final Iterable<Widget>? flatrateLogoList =
         providerMetadataList.flatrate?.map((provider) {

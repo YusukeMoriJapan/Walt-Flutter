@@ -7,17 +7,19 @@ import '../../use_cases/get_movie_credits_use_case.dart';
 import '../../utils/network/result.dart';
 
 //TODO FIX onDisposeでStreamの購読解除を行う
-final creditsViewModelProvider =
-    Provider.autoDispose((ref) => CreditsViewModel(ref.read));
+final creditsViewModelProvider = Provider.autoDispose
+    .family<CreditsViewModel, Language>(
+        (ref, param) => CreditsViewModel(ref.read, param));
 
 class CreditsViewModel {
   final Reader _read;
+  final Language lang;
 
-  CreditsViewModel(this._read);
+  CreditsViewModel(this._read, this.lang);
 
   Future<Result<Credits>> getMovieCredits(int movieId) =>
       _read(getMovieCreditsUseCase)(
-          language: Language.japanese,
+          language: lang,
           movieId: movieId,
           cancelToken: CancelToken(),
           apiVersion: 3);

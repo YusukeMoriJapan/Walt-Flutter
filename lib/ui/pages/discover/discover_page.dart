@@ -7,6 +7,9 @@ import 'package:walt/ui/pages/discover/ui_model/row_content.dart';
 import 'package:walt/ui/pages/movie_detail/movie_detail_page.dart';
 import 'package:walt/ui/view_model/movie_view_model.dart';
 
+import '../../../models/region/region.dart';
+import '../../../repository/movie_repository.dart';
+
 const animeKey = "popularAnime";
 const romanceKey = "popularRomance";
 const thrillerKey = "popularThriller";
@@ -17,7 +20,14 @@ class DiscoverPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final movieViewModel = ref.watch(movieViewModelProvider);
+    final lang =
+        ianaCodeToLanguage(Localizations.localeOf(context).languageCode);
+
+    final region =
+        ianaCodeToRegion(Localizations.localeOf(context).countryCode);
+
+    final movieViewModel = ref.watch(movieViewModelProvider(
+        MovieViewModelParam(language: lang, region: region)));
 
     useEffect(() {
       movieViewModel.registerCustomDiscoveredMovieList(

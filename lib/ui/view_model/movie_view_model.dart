@@ -15,11 +15,14 @@ import '../../utils/network/result.dart';
 import '../../utils/throwable/cannot_find_value_from_key_exception.dart';
 
 //TODO FIX onDisposeでStreamの購読解除を行う
-final movieViewModelProvider =
-    Provider.autoDispose((ref) => MovieViewModel(ref.read));
+final movieViewModelProvider = Provider.autoDispose
+    .family<MovieViewModel, MovieViewModelParam>(
+        (ref, param) => MovieViewModel(ref.read, param.language, param.region));
 
 class MovieViewModel {
   final Reader _read;
+  final Language lang;
+  final Region region;
 
   late final MovieList trendingMovieList;
   late final MovieList upComingMovieList;
@@ -28,7 +31,7 @@ class MovieViewModel {
   late final MovieList topRatedMovieList;
   final Map<String, MovieList> _customMoviesMap = {};
 
-  MovieViewModel(this._read) {
+  MovieViewModel(this._read, this.lang, this.region) {
     trendingMovieList = MovieList(() => _requestTrendingMovies());
     upComingMovieList = MovieList(() => _requestUpComingMovies());
     popularMovieList = MovieList(() => _requestPopularMovies());
@@ -42,7 +45,7 @@ class MovieViewModel {
 
   Future<PagingResult<Movie>> _requestTrendingMovies() async {
     return await _read(getTrendingMoviesUseCase).call(
-        language: Language.japanese,
+        language: lang,
         page: trendingMovieList.currentPage,
         apiVersion: 3,
         timeWindow: TimeWindow.day,
@@ -52,10 +55,10 @@ class MovieViewModel {
 
   Future<PagingResult<Movie>> _requestPopularMovies() async {
     return await _read(getPopularMoviesUseCase).call(
-        language: Language.japanese,
+        language: lang,
         page: popularMovieList.currentPage,
         apiVersion: 3,
-        region: Region.japan,
+        region: region,
         timeWindow: TimeWindow.day,
         oldMovieList: popularMovieList.currentMovieList,
         cancelToken: CancelToken());
@@ -63,20 +66,20 @@ class MovieViewModel {
 
   Future<PagingResult<Movie>> _requestTopRatedMovies() async {
     return await _read(getTopRatedMoviesUseCase).call(
-        language: Language.japanese,
+        language: lang,
         page: topRatedMovieList.currentPage,
         apiVersion: 3,
-        region: Region.japan,
+        region: region,
         oldMovieList: topRatedMovieList.currentMovieList,
         cancelToken: CancelToken());
   }
 
   Future<PagingResult<Movie>> _requestUpComingMovies() async {
     return await _read(getUpComingMoviesUseCase).call(
-        language: Language.japanese,
+        language: lang,
         page: upComingMovieList.currentPage,
         apiVersion: 3,
-        region: Region.japan,
+        region: region,
         timeWindow: TimeWindow.day,
         oldMovieList: upComingMovieList.currentMovieList,
         cancelToken: CancelToken());
@@ -103,12 +106,12 @@ class MovieViewModel {
           null);
     } else {
       return await _read(getDiscoveredMoviesUseCase).call(
-          language: Language.japanese,
+          language: lang,
           page: customList.currentPage,
           includeAdult: false,
           sortBy: sortBy,
           apiVersion: 3,
-          region: Region.japan,
+          region: region,
           oldMovieList: customList.currentMovieList,
           cancelToken: CancelToken(),
           voteAverageGte: voteAverageGte,
@@ -144,10 +147,63 @@ class MovieViewModel {
 
   Future<Result<MovieDetails>> getMovieDetails(int movieId) async {
     return await _read(getMovieDetailsUseCase)(
-        language: Language.japanese,
+        language: lang,
         movieId: movieId,
         cancelToken: CancelToken(),
         appendToResponse: null,
         apiVersion: 3);
+  }
+}
+
+class MovieViewModelParam {
+  final Language language;
+  final Region region;
+
+  const MovieViewModelParam({
+    required this.language,
+    required this.region,
+  });
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is MovieViewModelParam &&
+          runtimeType == other.runtimeType &&
+          language == other.language &&
+          region == other.region);
+
+  @override
+  int get hashCode => language.hashCode ^ region.hashCode;
+
+  @override
+  String toString() {
+    return 'MovieViewModelParam{' +
+        ' language: $language,' +
+        ' region: $region,' +
+        '}';
+  }
+
+  MovieViewModelParam copyWith({
+    Language? language,
+    Region? region,
+  }) {
+    return MovieViewModelParam(
+      language: language ?? this.language,
+      region: region ?? this.region,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'language': language,
+      'region': region,
+    };
+  }
+
+  factory MovieViewModelParam.fromMap(Map<String, dynamic> map) {
+    return MovieViewModelParam(
+      language: map['language'] as Language,
+      region: map['region'] as Region,
+    );
   }
 }

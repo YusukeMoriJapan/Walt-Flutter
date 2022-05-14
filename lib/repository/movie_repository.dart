@@ -11,6 +11,7 @@ import 'package:walt/utils/utils.dart';
 import '../models/entity/movie/movie.dart';
 import '../models/responses/get_movie_response.dart';
 import '../providers/tmdb_client_provider.dart';
+import '../utils/log/logger.dart';
 
 final movieRepository =
     Provider<MovieRepository>((ref) => MovieRepositoryImpl(ref.read));
@@ -223,6 +224,17 @@ extension LanguageEx on Language {
         return 'ja';
     }
   }
+}
+
+Language ianaCodeToLanguage(String languageCode) {
+  switch (languageCode) {
+    case 'en':
+      return Language.englishUs;
+    case 'ja':
+      return Language.japanese;
+  }
+  logger.d("Since no matching language code found, applied englishUs instead.");
+  return Language.englishUs;
 }
 
 enum TimeWindow { day, week }

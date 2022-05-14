@@ -42,9 +42,10 @@ launchTmdbApp() async {
             supportedLocales: AppLocalizations.supportedLocales,
             localeResolutionCallback: (locale, supportedLocales) {
               if (locale != null) {
-                final _locale = Locale(locale.languageCode);
-                if (supportedLocales.contains(_locale)) {
-                  return _locale;
+                /// 国コードでの判別は除外する。文字コードのみでサポート対象有無を判断する。
+                final _localeOnlyLang = Locale(locale.languageCode);
+                if (supportedLocales.contains(_localeOnlyLang)) {
+                  return locale;
                 }
               }
               return supportedLocales.first;

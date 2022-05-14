@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:walt/repository/movie_repository.dart';
 import 'package:walt/ui/pages/movie_detail/parts/movie_detail_page_content.dart';
 import 'package:walt/ui/view_model/movie_view_model.dart';
 import 'package:walt/utils/network/async_snapshot.dart';
 
 import '../../../models/entity/movie/movie_detail/movie_details.dart';
+import '../../../models/region/region.dart';
 import '../../../utils/network/result.dart';
 import '../../view_model/credits_view_model.dart';
 
@@ -16,8 +18,16 @@ class MovieDetailPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final movieViewModel = ref.watch(movieViewModelProvider);
-    final creditsViewModel = ref.watch(creditsViewModelProvider);
+    final lang =
+        ianaCodeToLanguage(Localizations.localeOf(context).languageCode);
+
+    final region =
+        ianaCodeToRegion(Localizations.localeOf(context).countryCode);
+
+    final movieViewModel = ref.watch(movieViewModelProvider(
+        MovieViewModelParam(language: lang, region: region)));
+
+    final creditsViewModel = ref.watch(creditsViewModelProvider(lang));
 
     final AsyncSnapshot<Result<MovieDetails>> movieSnapshot =
         useFuture(useRef(movieViewModel.getMovieDetails(movieId)).value);
