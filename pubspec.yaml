@@ -58,6 +58,11 @@ flutter_native_splash:
   image_dark: 'assets/images/white_logo_no_background.png'
   fullscreen: true
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/launcher_icon.png"
+
 flutter:
   generate: true
   uses-material-design: true
