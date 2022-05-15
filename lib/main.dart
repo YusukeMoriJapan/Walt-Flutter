@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:walt/providers/tmdb_config_provider.dart';
 import 'package:walt/ui/app_home.dart';
@@ -13,6 +14,8 @@ main() async {
 
 launchTmdbApp() async {
   await dotenv.load(fileName: ".env");
+  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -28,6 +31,7 @@ launchTmdbApp() async {
   runApp(ProviderScope(child: HookConsumer(builder: (context, ref, child) {
     return ref.watch(tmdbConfigAsyncProvider).when(
         data: (data) {
+          FlutterNativeSplash.remove();
           return MaterialApp(
             home: const AppHome(),
             onGenerateRoute: (setting) {

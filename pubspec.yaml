@@ -38,6 +38,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: ^0.17.0
+  flutter_native_splash: ^2.1.6
+
 
 dev_dependencies:
   flutter_test:
@@ -47,6 +49,14 @@ dev_dependencies:
   build_runner: ^2.1.10
   json_serializable: ^6.1.6
   freezed: ^2.0.2
+  flutter_launcher_icons: "^0.9.2"
+
+flutter_native_splash:
+  color: '#ffffff'
+  image: 'assets/images/black_logo_no_background.png'
+  color_dark: '#000000'
+  image_dark: 'assets/images/white_logo_no_background.png'
+  fullscreen: true
 
 flutter:
   generate: true
