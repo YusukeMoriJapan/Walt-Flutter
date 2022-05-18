@@ -9,14 +9,14 @@ import '../../../use_cases/get_watch_provider_use_case.dart';
 import '../../../utils/network/result.dart';
 
 final watchProviderViewModelProvider = Provider.autoDispose
-    .family<WatchProviderViewModel, WatchProviderViewModelParam>((ref, param) =>
-        WatchProviderViewModel(ref.watch, param.region));
+    .family<WatchProviderBottomSheetViewModel, WatchProviderViewModelParam>((ref, param) =>
+        WatchProviderBottomSheetViewModel(ref.watch, param.region));
 
-class WatchProviderViewModel {
+class WatchProviderBottomSheetViewModel {
   final Reader _read;
   final Region region;
 
-  WatchProviderViewModel(this._read,this.region);
+  WatchProviderBottomSheetViewModel(this._read,this.region);
 
   Future<Result<ProviderMetadataList>> getMovieWatchProvider(int movieId) =>
       _read(getMovieWatchProviderUseCase)(
