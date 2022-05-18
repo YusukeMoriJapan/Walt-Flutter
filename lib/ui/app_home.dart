@@ -31,7 +31,7 @@ class AppHome extends HookConsumerWidget {
               unselectedItemColor: _getUnSelectedItemColor(navigation),
               elevation: _getBottomNavigationElevation(navigation),
               onTap: (index) {
-                ref.read(navigationProvider.notifier).selectPage(index);
+                ref.watch(navigationProvider.notifier).selectPage(index);
               },
               type: BottomNavigationBarType.fixed,
               items: const [

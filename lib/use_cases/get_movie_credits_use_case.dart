@@ -11,7 +11,7 @@ final getMovieCreditsUseCase = Provider((ref) {
     required Language language,
     required CancelToken cancelToken,
   }) {
-    return ref.read(creditsRepository).getMovieCredits(
+    return ref.watch(creditsRepository).getMovieCredits(
           movieId: movieId,
           apiVersion: apiVersion,
           language: language,

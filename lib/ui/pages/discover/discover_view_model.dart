@@ -3,91 +3,98 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../models/entity/movie/movie.dart';
-import '../../models/entity/movie/movie_detail/movie_details.dart';
-import '../../models/entity/movie/movie_list.dart';
-import '../../models/region/region.dart';
-import '../../repository/movie_repository.dart';
-import '../../use_cases/get_movie_details_use_case.dart';
-import '../../use_cases/get_movies_use_case.dart';
-import '../../utils/network/paging/paging_result.dart';
-import '../../utils/network/result.dart';
-import '../../utils/throwable/cannot_find_value_from_key_exception.dart';
+import '../../../models/entity/movie/movie.dart';
+import '../../../models/entity/movie/movie_detail/movie_details.dart';
+import '../../../models/region/region.dart';
+import '../../../repository/movie_repository.dart';
+import '../../../use_cases/get_movie_details_use_case.dart';
+import '../../../use_cases/get_movies_use_case.dart';
+import '../../../utils/network/paging/paging_result.dart';
+import '../../../utils/network/result.dart';
+import '../../../utils/throwable/cannot_find_value_from_key_exception.dart';
+import '../../states/movie_list.dart';
 
 //TODO FIX onDisposeでStreamの購読解除を行う
-final movieViewModelProvider = Provider.autoDispose
-    .family<MovieViewModel, MovieViewModelParam>(
-        (ref, param) => MovieViewModel(ref.read, param.language, param.region));
+final discoverViewModelProvider = Provider.autoDispose
+    .family<DiscoverViewModel, DiscoverViewModelParam>((ref, param) =>
+        DiscoverViewModel(ref.watch, param.language, param.region));
 
-class MovieViewModel {
+class DiscoverViewModel {
   final Reader _read;
   final Language lang;
   final Region region;
 
-  late final MovieList trendingMovieList;
-  late final MovieList upComingMovieList;
-  late final MovieList popularMovieList;
+  late final MoviesState trendingMovieList;
+  late final MoviesState upComingMovieList;
+  late final MoviesState popularMovieList;
+  late final MoviesState topRatedMovieList;
 
-  late final MovieList topRatedMovieList;
-  final Map<String, MovieList> _customMoviesMap = {};
+  late final Map<String, MoviesState> _customMovieStateMap;
 
-  MovieViewModel(this._read, this.lang, this.region) {
-    trendingMovieList = MovieList(() => _requestTrendingMovies());
-    upComingMovieList = MovieList(() => _requestUpComingMovies());
-    popularMovieList = MovieList(() => _requestPopularMovies());
-    topRatedMovieList = MovieList(() => _requestTopRatedMovies());
+  DiscoverViewModel(this._read, this.lang, this.region) {
+    trendingMovieList = _read(movieStateProvider(
+        MoviesStateParam(trendingMovieListKey, _requestTrendingMovies)));
+    upComingMovieList = _read(movieStateProvider(
+        MoviesStateParam(upComingMovieListKey, _requestUpComingMovies)));
+    popularMovieList = _read(movieStateProvider(
+        MoviesStateParam(popularMovieListKey, _requestPopularMovies)));
+    topRatedMovieList = _read(movieStateProvider(
+        MoviesStateParam(topRatedMovieListKey, _requestTopRatedMovies)));
 
-    trendingMovieList.refreshMovieList();
-    upComingMovieList.refreshMovieList();
-    popularMovieList.refreshMovieList();
-    topRatedMovieList.refreshMovieList();
+    _customMovieStateMap = _read(customMovieStateMapProvider);
   }
 
-  Future<PagingResult<Movie>> _requestTrendingMovies() async {
+  Future<PagingResult<Movie>> _requestTrendingMovies(
+      int page, List<Movie>? oldMovieList) async {
     return await _read(getTrendingMoviesUseCase).call(
         language: lang,
-        page: trendingMovieList.currentPage,
+        page: page,
         apiVersion: 3,
         timeWindow: TimeWindow.day,
-        oldMovieList: trendingMovieList.currentMovieList,
+        oldMovieList: oldMovieList,
         cancelToken: CancelToken());
   }
 
-  Future<PagingResult<Movie>> _requestPopularMovies() async {
+  Future<PagingResult<Movie>> _requestPopularMovies(
+      int page, List<Movie>? oldMovieList) async {
     return await _read(getPopularMoviesUseCase).call(
         language: lang,
-        page: popularMovieList.currentPage,
+        page: page,
         apiVersion: 3,
         region: region,
         timeWindow: TimeWindow.day,
-        oldMovieList: popularMovieList.currentMovieList,
+        oldMovieList: oldMovieList,
         cancelToken: CancelToken());
   }
 
-  Future<PagingResult<Movie>> _requestTopRatedMovies() async {
+  Future<PagingResult<Movie>> _requestTopRatedMovies(
+      int page, List<Movie>? oldMovieList) async {
     return await _read(getTopRatedMoviesUseCase).call(
         language: lang,
-        page: topRatedMovieList.currentPage,
+        page: page,
         apiVersion: 3,
         region: region,
-        oldMovieList: topRatedMovieList.currentMovieList,
+        oldMovieList: oldMovieList,
         cancelToken: CancelToken());
   }
 
-  Future<PagingResult<Movie>> _requestUpComingMovies() async {
+  Future<PagingResult<Movie>> _requestUpComingMovies(
+      int page, List<Movie>? oldMovieList) async {
     return await _read(getUpComingMoviesUseCase).call(
         language: lang,
-        page: upComingMovieList.currentPage,
+        page: page,
         apiVersion: 3,
         region: region,
         timeWindow: TimeWindow.day,
-        oldMovieList: upComingMovieList.currentMovieList,
+        oldMovieList: oldMovieList,
         cancelToken: CancelToken());
   }
 
   Future<PagingResult<Movie>> _requestCustomDiscoveredMovies({
     required String listKey,
     required String sortBy,
+    required int page,
+    required List<Movie>? oldMovieList,
     double? voteAverageGte,
     double? voteAverageLte,
     int? year,
@@ -97,7 +104,7 @@ class MovieViewModel {
     String? withWatchMonetizationTypes,
     String? watchRegion,
   }) async {
-    final customList = _customMoviesMap[listKey];
+    final customList = _customMovieStateMap[listKey];
 
     if (customList == null) {
       return PagingResult.failure(
@@ -107,12 +114,12 @@ class MovieViewModel {
     } else {
       return await _read(getDiscoveredMoviesUseCase).call(
           language: lang,
-          page: customList.currentPage,
+          page: page,
           includeAdult: false,
           sortBy: sortBy,
           apiVersion: 3,
           region: region,
-          oldMovieList: customList.currentMovieList,
+          oldMovieList: oldMovieList,
           cancelToken: CancelToken(),
           voteAverageGte: voteAverageGte,
           voteAverageLte: voteAverageLte,
@@ -130,19 +137,25 @@ class MovieViewModel {
     String? withGenres,
     String sortBy,
   ) {
-    final matchedList = _customMoviesMap[key];
+    final matchedList = _customMovieStateMap[key];
 
     if (matchedList == null) {
-      _customMoviesMap[key] = MovieList(() => _requestCustomDiscoveredMovies(
-          listKey: key, sortBy: sortBy, withGenres: withGenres));
+      _customMovieStateMap[key] = MoviesState(
+          (page, oldMovieList) => _requestCustomDiscoveredMovies(
+              listKey: key,
+              sortBy: sortBy,
+              withGenres: withGenres,
+              page: page,
+              oldMovieList: oldMovieList),
+          key);
       return true;
     } else {
       return false;
     }
   }
 
-  MovieList? getCustomMovieList(String key) {
-    return _customMoviesMap[key];
+  MoviesState? getCustomMovieList(String key) {
+    return _customMovieStateMap[key];
   }
 
   Future<Result<MovieDetails>> getMovieDetails(int movieId) async {
@@ -155,11 +168,11 @@ class MovieViewModel {
   }
 }
 
-class MovieViewModelParam {
+class DiscoverViewModelParam {
   final Language language;
   final Region region;
 
-  const MovieViewModelParam({
+  const DiscoverViewModelParam({
     required this.language,
     required this.region,
   });
@@ -167,7 +180,7 @@ class MovieViewModelParam {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      (other is MovieViewModelParam &&
+      (other is DiscoverViewModelParam &&
           runtimeType == other.runtimeType &&
           language == other.language &&
           region == other.region);
@@ -183,11 +196,11 @@ class MovieViewModelParam {
         '}';
   }
 
-  MovieViewModelParam copyWith({
+  DiscoverViewModelParam copyWith({
     Language? language,
     Region? region,
   }) {
-    return MovieViewModelParam(
+    return DiscoverViewModelParam(
       language: language ?? this.language,
       region: region ?? this.region,
     );
@@ -200,8 +213,8 @@ class MovieViewModelParam {
     };
   }
 
-  factory MovieViewModelParam.fromMap(Map<String, dynamic> map) {
-    return MovieViewModelParam(
+  factory DiscoverViewModelParam.fromMap(Map<String, dynamic> map) {
+    return DiscoverViewModelParam(
       language: map['language'] as Language,
       region: map['region'] as Region,
     );

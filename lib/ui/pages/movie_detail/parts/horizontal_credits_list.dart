@@ -18,7 +18,7 @@ class HorizontalCreditsList extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final _casts = useRef(credits.cast).value;
-    final baseImageUrl = ref.read(profileImagePathProvider(342));
+    final baseImageUrl = ref.watch(profileImagePathProvider(342));
 
     /// TODO FIX エラーハンドリング
     if (_casts == null || _casts.isEmpty) return const Text("出演者が存在しません");

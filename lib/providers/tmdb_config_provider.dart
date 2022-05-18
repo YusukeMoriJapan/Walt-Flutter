@@ -20,7 +20,7 @@ final tmdbConfigAsyncProvider = FutureProvider<Result<TmdbConfig>>((ref) async {
 });
 
 final Provider<TmdbConfig> tmdbConfigProvider = Provider((ref) {
-  final asyncResult = ref.read(tmdbConfigAsyncProvider).value;
+  final asyncResult = ref.watch(tmdbConfigAsyncProvider).value;
 
   if (asyncResult == null) {
     throw IllegalStateException('It is not allowed to call tmdbConfigProvider'
@@ -37,7 +37,7 @@ final Provider<TmdbConfig> tmdbConfigProvider = Provider((ref) {
 });
 
 final Provider<String> baseImageUrlProvider = Provider((ref) {
-  final baseImageUrl = ref.read(tmdbConfigProvider).images?.secureBaseUrl;
+  final baseImageUrl = ref.watch(tmdbConfigProvider).images?.secureBaseUrl;
   if (baseImageUrl == null) {
     throw NotProvidedException('base image URL is null.');
   }
@@ -47,24 +47,24 @@ final Provider<String> baseImageUrlProvider = Provider((ref) {
 
 final ProviderFamily<String, int> posterImagePathProvider =
     Provider.family<String, int>((ref, targetWidth) {
-  final posterSizes = ref.read(tmdbConfigProvider).images?.posterSizes;
-  final baseUrl = ref.read(baseImageUrlProvider);
+  final posterSizes = ref.watch(tmdbConfigProvider).images?.posterSizes;
+  final baseUrl = ref.watch(baseImageUrlProvider);
 
   return baseUrl + _extractTargetImageSizePath(posterSizes, targetWidth);
 });
 
 final ProviderFamily<String, int> backdropImagePathProvider =
     Provider.family<String, int>((ref, targetWidth) {
-  final backdropSizes = ref.read(tmdbConfigProvider).images?.backdropSizes;
-  final baseUrl = ref.read(baseImageUrlProvider);
+  final backdropSizes = ref.watch(tmdbConfigProvider).images?.backdropSizes;
+  final baseUrl = ref.watch(baseImageUrlProvider);
 
   return baseUrl + _extractTargetImageSizePath(backdropSizes, targetWidth);
 });
 
 final ProviderFamily<String, int> profileImagePathProvider =
     Provider.family<String, int>((ref, targetWidth) {
-  final backdropSizes = ref.read(tmdbConfigProvider).images?.profileSizes;
-  final baseUrl = ref.read(baseImageUrlProvider);
+  final backdropSizes = ref.watch(tmdbConfigProvider).images?.profileSizes;
+  final baseUrl = ref.watch(baseImageUrlProvider);
 
   return baseUrl + _extractTargetImageSizePath(backdropSizes, targetWidth);
 });

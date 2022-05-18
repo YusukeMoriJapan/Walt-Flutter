@@ -11,7 +11,7 @@ final getMovieDetailsUseCase = Provider((ref) {
       required int movieId,
       required CancelToken cancelToken,
       required AppendToResponse? appendToResponse}) {
-    return ref.read(movieRepository).getMovieDetails(
+    return ref.watch(movieRepository).getMovieDetails(
         language: language,
         apiVersion: apiVersion,
         cancelToken: cancelToken,

@@ -3,15 +3,15 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:preload_page_view/preload_page_view.dart';
 import 'package:walt/repository/movie_repository.dart';
+import 'package:walt/ui/pages/discover/discover_view_model.dart';
 import 'package:walt/ui/pages/movie_detail/parts/movie_detail_page_content.dart';
-import 'package:walt/ui/view_model/movie_view_model.dart';
 import 'package:walt/utils/network/async_snapshot.dart';
 
 import '../../../models/entity/movie/movie_detail/movie_details.dart';
 import '../../../models/region/region.dart';
 import '../../../utils/network/result.dart';
 import '../../../utils/ui/icons.dart';
-import '../../view_model/credits_view_model.dart';
+import 'credits_view_model.dart';
 
 class MovieDetailPage extends HookConsumerWidget {
   const MovieDetailPage(this.defaultMovieId, this.movieIds, {Key? key})
@@ -46,8 +46,8 @@ class MovieDetailPage extends HookConsumerWidget {
             final region =
                 ianaCodeToRegion(Localizations.localeOf(context).countryCode);
 
-            final movieViewModel = ref.watch(movieViewModelProvider(
-                MovieViewModelParam(language: lang, region: region)));
+            final movieViewModel = ref.watch(discoverViewModelProvider(
+                DiscoverViewModelParam(language: lang, region: region)));
 
             final creditsViewModel = ref.watch(creditsViewModelProvider(lang));
 

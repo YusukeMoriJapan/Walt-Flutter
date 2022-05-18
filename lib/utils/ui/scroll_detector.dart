@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 class ScrollDetector extends StatefulWidget {
-  final Widget Function(BuildContext, ScrollController) builder;
+  final Widget Function(BuildContext, AutoScrollController) builder;
   final VoidCallback onThresholdExceeded;
   final double threshold;
 
@@ -16,12 +17,12 @@ class ScrollDetector extends StatefulWidget {
 }
 
 class _ScrollDetectorState extends State<ScrollDetector> {
-  late ScrollController _controller;
+  late AutoScrollController _controller;
 
   @override
   void initState() {
     super.initState();
-    _controller = ScrollController()
+    _controller = AutoScrollController()
       ..addListener(() {
         final scrollValue =
             _controller.offset / _controller.position.maxScrollExtent;

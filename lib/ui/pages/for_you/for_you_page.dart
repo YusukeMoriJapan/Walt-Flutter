@@ -4,9 +4,12 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:preload_page_view/preload_page_view.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:walt/models/mock/mock_movie.dart';
+import 'package:walt/ui/pages/for_you/for_you_view_model.dart';
 import 'package:walt/utils/hooks/system_hooks.dart';
 
 import '../../../models/entity/movie/movie.dart';
+import '../../../models/region/region.dart';
+import '../../../repository/movie_repository.dart';
 import '../../../utils/ui/hard_spring_page_view_scroll_physics.dart';
 import '../movie_detail/movie_detail_page.dart';
 
@@ -39,6 +42,15 @@ class ForYouPagerContentState extends ConsumerState<ConsumerStatefulWidget>
   @override
   Widget build(BuildContext context) {
     final tabController = useRef(TabController(length: 3, vsync: this));
+    final lang =
+        ianaCodeToLanguage(Localizations.localeOf(context).languageCode);
+
+    final region =
+        ianaCodeToRegion(Localizations.localeOf(context).countryCode);
+
+    final forYouViewModel = ref.watch(forYouViewModelProvider(
+        ForYouViewModelParam(language: lang, region: region)));
+
     return Stack(
       children: [
         Container(color: Colors.black),
@@ -54,14 +66,14 @@ class ForYouPagerContentState extends ConsumerState<ConsumerStatefulWidget>
             itemBuilder: (BuildContext context, int indexParent) {
               switch (indexParent) {
                 case 0:
-                  return MovieContentPage(ref.read(mock007MoviesProvider));
+                  return MovieContentPage(ref.watch(mock007MoviesProvider));
 
                 case 1:
-                  return MovieContentPage(ref.read(mockJohnWickMoviesProvider));
+                  return MovieContentPage(ref.watch(mockJohnWickMoviesProvider));
 
                 case 2:
                   return MovieContentPage(
-                      ref.read(mockFastAndFuriousMoviesProvider));
+                      ref.watch(mockFastAndFuriousMoviesProvider));
                 default:
 
                   ///TODO FIX エラーハンドリング必須

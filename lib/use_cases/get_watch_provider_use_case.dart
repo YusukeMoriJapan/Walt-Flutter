@@ -9,7 +9,7 @@ final getMovieWatchProviderUseCase = Provider((ref) {
       required int apiVersion,
       required int movieId,
       required CancelToken cancelToken}) {
-    return ref.read(watchProviderRepository).getMovieWatchProvider(
+    return ref.watch(watchProviderRepository).getMovieWatchProvider(
         region: region,
         apiVersion: apiVersion,
         movieId: movieId,

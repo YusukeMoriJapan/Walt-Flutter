@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:walt/models/entity/movie/movie.dart';
 
@@ -11,7 +12,7 @@ class NormalMoviesHorizontalList extends HookConsumerWidget {
 
   final List<Movie> movies;
   final void Function(int id) onClickMovieImage;
-  final ScrollController _scrollController;
+  final AutoScrollController _scrollController;
   final String baseImageUrl;
 
   @override
@@ -21,25 +22,30 @@ class NormalMoviesHorizontalList extends HookConsumerWidget {
       scrollDirection: Axis.horizontal,
       controller: _scrollController,
       itemBuilder: (BuildContext context, int i) {
-        return Padding(
-          padding: EdgeInsets.symmetric(horizontal: _imageHPadding(i)),
-          child: InkWell(
-              onTap: () {
-                final id = movies[i].id?.toInt();
-                if (id != null) onClickMovieImage(id);
-              },
+        return AutoScrollTag(
+          index: i,
+          controller: _scrollController,
+          key: ValueKey(i),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: _imageHPadding(i)),
+            child: InkWell(
+                onTap: () {
+                  final id = movies[i].id?.toInt();
+                  if (id != null) onClickMovieImage(id);
+                },
 
-              ///TODO FIX 画像サイズをInjectするべき
-              child: Container(
-                color: const Color.fromARGB(255, 165, 165, 165),
-                child: FadeInImage.memoryNetwork(
-                  placeholder: kTransparentImage,
-                  image: baseImageUrl + _getProfilePath(movies[i].posterPath),
-                  fit: BoxFit.cover,
-                  height: 150,
-                  width: 150 * 0.71,
-                ),
-              )),
+                ///TODO FIX 画像サイズをInjectするべき
+                child: Container(
+                  color: const Color.fromARGB(255, 165, 165, 165),
+                  child: FadeInImage.memoryNetwork(
+                    placeholder: kTransparentImage,
+                    image: baseImageUrl + _getProfilePath(movies[i].posterPath),
+                    fit: BoxFit.cover,
+                    height: 150,
+                    width: 150 * 0.71,
+                  ),
+                )),
+          ),
         );
       },
     );

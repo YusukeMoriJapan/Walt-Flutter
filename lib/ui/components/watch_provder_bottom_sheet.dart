@@ -7,9 +7,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:walt/models/region/region.dart';
 import 'package:walt/providers/tmdb_config_provider.dart';
+import 'package:walt/ui/components/watch_provider_bottom_sheet_view_model.dart';
 
 import '../../models/entity/watch_provider/provider_metadata.dart';
-import '../view_model/watch_provider_view_model.dart';
 
 showWatchProviderBottomSheet(BuildContext context, WidgetRef ref, num movieId) {
   showModalBottomSheet(
@@ -31,7 +31,7 @@ showWatchProviderBottomSheet(BuildContext context, WidgetRef ref, num movieId) {
                   final region = ianaCodeToRegion(
                       Localizations.localeOf(context).countryCode);
                   final viewModel =
-                      ref.read(watchProviderViewModelProvider(region));
+                      ref.watch(watchProviderViewModelProvider(WatchProviderViewModelParam(region: region)));
                   final snapshot = useFuture(useMemoized(
                       () => viewModel.getMovieWatchProvider(movieId.toInt())));
 
@@ -71,7 +71,7 @@ class WatchProviderDetail extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final baseImageUrl = ref.read(baseImageUrlProvider) + "original";
+    final baseImageUrl = ref.watch(baseImageUrlProvider) + "original";
 
     /// flatrate
     final Iterable<Widget>? flatrateLogoList =

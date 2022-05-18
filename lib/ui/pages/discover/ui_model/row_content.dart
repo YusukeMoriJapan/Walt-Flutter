@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:walt/utils/network/async_snapshot.dart';
 
 import '../../../../models/entity/movie/movie.dart';
-import '../../../../models/entity/movie/movie_list.dart';
 import '../../../../utils/network/paging/paging_result.dart';
 import '../../../../utils/ui/scroll_detector.dart';
+import '../../../states/movie_list.dart';
 import '../parts/horizontal_highlighted_movie_list.dart';
 import '../parts/horizontal_normal_movie_list.dart';
 
@@ -14,7 +14,7 @@ class DiscoverRowContentUiModel {
   final String headerName;
   final Key key;
   final Key listKey;
-  final MovieList? movieList;
+  final MoviesState? moviesState;
   final Function(int id) onClickMovieImage;
   final String backdropImageUrl;
   final String posterImageUrl;
@@ -25,14 +25,14 @@ class DiscoverRowContentUiModel {
       {required this.headerName,
       required this.key,
       required this.listKey,
-      required this.movieList,
+      required this.moviesState,
       required this.onClickMovieImage,
       required this.type,
       required this.backdropImageUrl,
       required this.posterImageUrl});
 
   Widget buildRowContent() {
-    final _movieList = movieList;
+    final _movieList = moviesState;
 
     if (_movieList == null) {
       return const SizedBox();
