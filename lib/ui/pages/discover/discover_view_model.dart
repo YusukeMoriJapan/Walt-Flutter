@@ -9,7 +9,7 @@ import '../../../models/region/region.dart';
 import '../../../repository/movie_repository.dart';
 import '../../../use_cases/get_movies_use_case.dart';
 import '../../../utils/network/paging/paging_result.dart';
-import '../../states/movie_list.dart';
+import '../../states/movies_state.dart';
 
 //TODO FIX onDisposeでStreamの購読解除を行う
 final discoverViewModelProvider = Provider.autoDispose

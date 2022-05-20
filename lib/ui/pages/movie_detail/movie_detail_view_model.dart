@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:walt/constants/movie_constant.dart';
 import 'package:walt/models/entity/movie/movie_detail/movie_details.dart';
-import 'package:walt/ui/states/movie_list.dart';
+import 'package:walt/ui/states/movies_state.dart';
 import 'package:walt/use_cases/get_movie_details_with_credits_use_case.dart';
 
 import '../../../models/entity/people/credits.dart';

@@ -12,7 +12,7 @@ import '../../../use_cases/get_movies_use_case.dart';
 import '../../../use_cases/get_watch_provider_use_case.dart';
 import '../../../utils/network/paging/paging_result.dart';
 import '../../../utils/network/result.dart';
-import '../../states/movie_list.dart';
+import '../../states/movies_state.dart';
 
 //TODO FIX onDisposeでStreamの購読解除を行う
 final forYouViewModelProvider = Provider.autoDispose

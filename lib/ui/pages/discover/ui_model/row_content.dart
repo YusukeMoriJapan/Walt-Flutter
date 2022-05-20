@@ -5,7 +5,7 @@ import 'package:walt/utils/network/async_snapshot.dart';
 import '../../../../models/entity/movie/movie.dart';
 import '../../../../utils/network/paging/paging_result.dart';
 import '../../../../utils/ui/scroll_detector.dart';
-import '../../../states/movie_list.dart';
+import '../../../states/movies_state.dart';
 import '../parts/horizontal_highlighted_movie_list.dart';
 import '../parts/horizontal_normal_movie_list.dart';
 
