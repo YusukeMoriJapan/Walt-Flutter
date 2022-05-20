@@ -64,7 +64,7 @@ class DiscoverRowContentUiModel {
               key: key,
               stream: stream,
               builder: (context, AsyncSnapshot<PagingResult<Movie>> snapshot) {
-                if (snapshot.isWaiting || snapshot.isNothing) {
+                if (snapshot.isFetchingData) {
                   if (oldMovies != null) {
                     return _showRowContent(oldMovies, onNextPageRequested);
                   } else {

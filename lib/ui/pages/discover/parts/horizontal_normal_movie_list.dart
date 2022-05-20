@@ -54,7 +54,7 @@ class NormalMoviesHorizontalList extends HookConsumerWidget {
 
   _imageHPadding(int i) {
     if (i != 0 || i != movies.length - 1) {
-      return 2.0;
+      return 4.0;
     } else {
       return 0.0;
     }

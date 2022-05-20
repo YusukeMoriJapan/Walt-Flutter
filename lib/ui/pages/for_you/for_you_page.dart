@@ -4,13 +4,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:preload_page_view/preload_page_view.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:walt/constants/movie_constant.dart';
-import 'package:walt/models/mock/mock_movie.dart';
 import 'package:walt/ui/pages/for_you/for_you_view_model.dart';
 import 'package:walt/utils/hooks/system_hooks.dart';
+import 'package:walt/utils/network/async_snapshot.dart';
 
 import '../../../models/entity/movie/movie.dart';
 import '../../../models/region/region.dart';
+import '../../../providers/tmdb_config_provider.dart';
 import '../../../repository/movie_repository.dart';
+import '../../../utils/network/paging/paging_result.dart';
 import '../../../utils/ui/hard_spring_page_view_scroll_physics.dart';
 import '../movie_detail/movie_detail_page.dart';
 
@@ -67,14 +69,22 @@ class ForYouPagerContentState extends ConsumerState<ConsumerStatefulWidget>
             itemBuilder: (BuildContext context, int indexParent) {
               switch (indexParent) {
                 case 0:
-                  return MovieContentPage(ref.watch(mock007MoviesProvider));
+                  return MovieContentPage(
+                      forYouViewModel.trendingMovies.movieListStream,
+                      trendingMovieListKey,
+                      forYouViewModel);
 
                 case 1:
-                  return MovieContentPage(ref.watch(mockJohnWickMoviesProvider));
+                  return MovieContentPage(
+                      forYouViewModel.popularMovies.movieListStream,
+                      popularMovieListKey,
+                      forYouViewModel);
 
                 case 2:
                   return MovieContentPage(
-                      ref.watch(mockFastAndFuriousMoviesProvider));
+                      forYouViewModel.topRatedMovies.movieListStream,
+                      topRatedMovieListKey,
+                      forYouViewModel);
                 default:
 
                   ///TODO FIX エラーハンドリング必須
@@ -91,7 +101,7 @@ class ForYouPagerContentState extends ConsumerState<ConsumerStatefulWidget>
                 tabs: const [
                   Tab(text: 'Trending'),
                   Tab(text: 'Popular'),
-                  Tab(text: 'High Rated'),
+                  Tab(text: 'Top Rated'),
                 ],
                 onTap: (i) {
                   controllerParent.animateToPage(i,
@@ -114,178 +124,231 @@ class ForYouPagerContentState extends ConsumerState<ConsumerStatefulWidget>
 }
 
 class MovieContentPage extends HookConsumerWidget {
-  final List<Movie> movies;
+  final Stream<PagingResult<Movie>> moviesStream;
   final controller = PreloadPageController();
+  final String moviesStateKey;
+  final ForYouViewModel forYouViewModel;
 
-  MovieContentPage(this.movies, {Key? key}) : super(key: key);
+  MovieContentPage(this.moviesStream, this.moviesStateKey, this.forYouViewModel,
+      {Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pagerIndicatorActiveIndex = useState(0);
-    final selectedMovie = movies[pagerIndicatorActiveIndex.value];
 
-    return Stack(
-      children: [
-        Container(
-          foregroundDecoration: const BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: <Color>[
-                Color(0xCB000000),
-                Color(0x80000000),
-                Color(0x0a000000),
-                Color(0x00000000),
-                Color(0x0a000000),
-                Color(0x80000000),
-                Color(0xCC000000),
-              ])),
-          child: PreloadPageView.builder(
-              controller: controller,
-              preloadPagesCount: 3,
-              itemCount: movies.length,
-              scrollDirection: Axis.vertical,
-              onPageChanged: (i) {
-                pagerIndicatorActiveIndex.value = i;
-              },
-              itemBuilder: (BuildContext context, int index) {
-                return Center(
-                  child: InkWell(
-                    onTap: () {
-                      final movieId = selectedMovie.id;
-                      if (movieId != null) {
-                        Navigator.of(context).pushNamed("/movieDetail",
-                            arguments:
-                                //TODO FIX 仮置き
-                                MovieDetailPageArguments(moviesStateKey: trendingMovieListKey));
-                      } else {
-                        ///TODO FIX スナックバーで読み込めないことを通知する
-                      }
-                    },
-                    child: Image.network(
-                      /// nullハンドリング必要
-                      movies[index].posterPath ?? "",
-                      fit: BoxFit.cover,
-                      width: double.infinity,
-                      height: double.infinity,
-                      loadingBuilder: (context, child, loadingProgress) {
-                        if (loadingProgress == null) {
-                          return child;
-                        } else {
-                          final expectedBytes =
-                              loadingProgress.expectedTotalBytes ?? 0;
-                          return SizedBox(
-                            width: 200,
-                            child: LinearProgressIndicator(
-                                value: loadingProgress.cumulativeBytesLoaded /
-                                    expectedBytes),
-                          );
-                        }
-                      },
+    final snapshot = useStream(useRef(moviesStream).value);
+    final data = snapshot.data;
+    final error = snapshot.error;
+
+    if (snapshot.isFetchingData) {
+      return const Center(
+          child: SizedBox(
+        width: 200,
+        child: LinearProgressIndicator(
+          backgroundColor: Colors.grey,
+          color: Colors.black54,
+        ),
+      ));
+    }
+
+    if (error != null) {
+      //TODO FIX エラーハンドリング 再読み込み処理を追加
+      return TextButton(onPressed: () {}, child: const Text("もう一度読み込む"));
+    }
+
+    if (data != null) {
+      return data.when(success: (allMovies) {
+        const rangedMoviesLastIndex = 4;
+        final rangedMovies =
+            allMovies.getRange(0, rangedMoviesLastIndex + 1).toList();
+        final selectedMovie = rangedMovies[pagerIndicatorActiveIndex.value];
+        return Stack(
+          children: [
+            Container(
+              foregroundDecoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: <Color>[
+                    Color(0xCB000000),
+                    Color(0x80000000),
+                    Color(0x0a000000),
+                    Color(0x00000000),
+                    Color(0x0a000000),
+                    Color(0x80000000),
+                    Color(0xCC000000),
+                  ])),
+              child: PreloadPageView.builder(
+                  controller: controller,
+                  preloadPagesCount: 3,
+                  itemCount: rangedMovies.length,
+                  scrollDirection: Axis.vertical,
+                  onPageChanged: (i) {
+                    pagerIndicatorActiveIndex.value = i;
+                  },
+                  itemBuilder: (BuildContext context, int index) {
+                    final posterPath = rangedMovies[index].posterPath ?? "";
+                    return Center(
+                      child: InkWell(
+                        onTap: () {
+                          forYouViewModel
+                              .getMoviesStateFromKey(moviesStateKey)
+                              ?.currentIndex = index;
+                          Navigator.of(context)
+                              .pushNamed("/movieDetail",
+                                  arguments: MovieDetailPageArguments(
+                                      moviesStateKey: moviesStateKey))
+                              .then((_) {
+                            final index = forYouViewModel
+                                .getMoviesStateFromKey(moviesStateKey)
+                                ?.currentIndex;
+
+                            print(index.toString());
+
+                            if (index != null &&
+                                index <= rangedMoviesLastIndex) {
+                              controller.jumpToPage(index);
+                              pagerIndicatorActiveIndex.value = index;
+                            }
+                          });
+                        },
+                        child: Image.network(
+                          /// nullハンドリング必要
+                          ref.watch(posterImagePathProvider(780)) + posterPath,
+                          fit: BoxFit.cover,
+                          width: double.infinity,
+                          height: double.infinity,
+                          loadingBuilder: (context, child, loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            } else {
+                              final expectedBytes =
+                                  loadingProgress.expectedTotalBytes ?? 0;
+                              return SizedBox(
+                                width: 200,
+                                child: LinearProgressIndicator(
+                                    value:
+                                        loadingProgress.cumulativeBytesLoaded /
+                                            expectedBytes),
+                              );
+                            }
+                          },
+                        ),
+                      ),
+                    );
+                  }),
+            ),
+
+            /// 映画ポスターの上に表示するWidget群
+            SafeArea(
+              child: Stack(
+                children: [
+                  /// Pager Indicator
+                  Container(
+                    alignment: Alignment.bottomRight,
+                    padding: const EdgeInsets.fromLTRB(0, 0, 16, 40),
+                    child: HookConsumer(builder: (context, ref, child) {
+                      return AnimatedSmoothIndicator(
+                          activeIndex: pagerIndicatorActiveIndex.value,
+                          effect: SlideEffect(
+                              activeDotColor: _useActivePagerIndicatorColor(),
+                              dotWidth: 8,
+                              dotHeight: 8,
+                              spacing: 16),
+                          count: rangedMovies.length,
+                          axisDirection: Axis.vertical);
+                    }),
+                  ),
+
+                  /// VoteAverage
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(24, 8, 8, 16),
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          SizedBox(
+                            width: 72,
+                            height: 72,
+                            child: HookConsumer(builder: (context, ref, child) {
+                              final isDarkMode = useDarkModeState();
+                              Color _color;
+                              if (isDarkMode) {
+                                _color =
+                                    Theme.of(context).colorScheme.secondary;
+                              } else {
+                                _color = Theme.of(context).colorScheme.primary;
+                              }
+
+                              return CircularProgressIndicator(
+                                  strokeWidth: 4,
+                                  backgroundColor:
+                                      const Color.fromARGB(102, 158, 158, 158),
+                                  color: _color,
+                                  value: selectedMovie
+                                      .getVoteAverageForIndicator());
+                            }),
+                          ),
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                selectedMovie
+                                    .getVoteAverageForText()
+                                    .toString(),
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              const Text(
+                                "%",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                );
-              }),
-        ),
 
-        /// 映画ポスターの上に表示するWidget群
-        SafeArea(
-          child: Stack(
-            children: [
-              /// Pager Indicator
-              Container(
-                alignment: Alignment.bottomRight,
-                padding: const EdgeInsets.fromLTRB(0, 0, 16, 40),
-                child: HookConsumer(builder: (context, ref, child) {
-                  return AnimatedSmoothIndicator(
-                      activeIndex: pagerIndicatorActiveIndex.value,
-                      effect: SlideEffect(
-                          activeDotColor: _useActivePagerIndicatorColor(),
-                          dotWidth: 8,
-                          dotHeight: 8,
-                          spacing: 16),
-                      count: movies.length,
-                      axisDirection: Axis.vertical);
-                }),
-              ),
-
-              /// VoteAverage
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 8, 8, 16),
-                  child: Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      SizedBox(
-                        width: 72,
-                        height: 72,
-                        child: HookConsumer(builder: (context, ref, child) {
-                          final isDarkMode = useDarkModeState();
-                          Color _color;
-                          if (isDarkMode) {
-                            _color = Theme.of(context).colorScheme.secondary;
-                          } else {
-                            _color = Theme.of(context).colorScheme.primary;
-                          }
-
-                          return CircularProgressIndicator(
-                              strokeWidth: 4,
-                              backgroundColor:
-                                  const Color.fromARGB(102, 158, 158, 158),
-                              color: _color,
-                              value:
-                                  selectedMovie.getVoteAverageForIndicator());
-                        }),
-                      ),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(
-                            selectedMovie.getVoteAverageForText().toString(),
+                  /// 映画タイトル
+                  /// TODO FIX 何らかのNotifierを使い、画面上部のPagerIndicatorを避けるPaddingを動的に設定するコードに変更する必要あり
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(8, 48, 8, 8),
+                    alignment: Alignment.topCenter,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        const SizedBox(height: 8),
+                        Text(selectedMovie.title ?? "",
+                            textAlign: TextAlign.center,
                             style: const TextStyle(
                               fontSize: 24,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const Text(
-                            "%",
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
+                              // fontWeight: FontWeight.w300,
+                              color: Color.fromARGB(255, 255, 255, 255),
+                            ))
+                      ],
+                    ),
+                  )
+                ],
               ),
+            ),
+          ],
+        );
+      }, failure: (reason, oldList) {
+        //TODO FIX エラーハンドリング 再読み込み処理を追加
+        return TextButton(onPressed: () {}, child: const Text("もう一度読み込む"));
+      });
+    }
 
-              /// 映画タイトル
-              /// TODO FIX 何らかのNotifierを使い、画面上部のPagerIndicatorを避けるPaddingを動的に設定するコードに変更する必要あり
-              Container(
-                padding: const EdgeInsets.fromLTRB(8, 48, 8, 8),
-                alignment: Alignment.topCenter,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 8),
-                    Text(selectedMovie.title ?? "",
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontSize: 24,
-                          // fontWeight: FontWeight.w300,
-                          color: Color.fromARGB(255, 255, 255, 255),
-                        ))
-                  ],
-                ),
-              )
-            ],
-          ),
-        ),
-      ],
-    );
+    //TODO FIX エラーハンドリング 再読み込み処理を追加
+    return TextButton(onPressed: () {}, child: const Text("もう一度読み込む"));
   }
 
   Color _useActivePagerIndicatorColor() {
