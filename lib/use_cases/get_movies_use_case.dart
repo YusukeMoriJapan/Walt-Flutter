@@ -6,7 +6,7 @@ import '../models/entity/movie/movie.dart';
 import '../models/region/region.dart';
 import '../utils/network/paging/paging_result.dart';
 
-final getTrendingMoviesUseCase = Provider((ref) {
+final getTrendingMoviesPagingUseCase = Provider((ref) {
   return (
       {required Language language,
       required int page,
@@ -37,7 +37,7 @@ final getTrendingMoviesUseCase = Provider((ref) {
   };
 });
 
-final getTopRatedMoviesUseCase = Provider((ref) {
+final getTopRatedMoviesPagingUseCase = Provider((ref) {
   return (
       {required Language language,
       required int page,
@@ -68,7 +68,7 @@ final getTopRatedMoviesUseCase = Provider((ref) {
   };
 });
 
-final getPopularMoviesUseCase = Provider((ref) {
+final getPopularMoviesPagingUseCase = Provider((ref) {
   return (
       {required Language language,
       required int page,
@@ -100,7 +100,7 @@ final getPopularMoviesUseCase = Provider((ref) {
   };
 });
 
-final getUpComingMoviesUseCase = Provider((ref) {
+final getUpComingMoviesPagingUseCase = Provider((ref) {
   return (
       {required Language language,
       required int page,
@@ -132,7 +132,7 @@ final getUpComingMoviesUseCase = Provider((ref) {
   };
 });
 
-final getDiscoveredMoviesUseCase = Provider((ref) {
+final getDiscoveredMoviesPagingUseCase = Provider((ref) {
   return ({
     required Language language,
     required int page,

@@ -30,10 +30,8 @@ class HighlightedMoviesHorizontalList extends HookConsumerWidget {
             padding: EdgeInsets.symmetric(horizontal: _imageHPadding(i)),
             child: InkWell(
                 onTap: () {
-                  final id = movies[i].id?.toInt();
-                  if (id != null) onClickMovieImage(id);
+                  onClickMovieImage(i);
                 },
-
                 child: Stack(
                   children: [
                     Container(
@@ -58,8 +56,8 @@ class HighlightedMoviesHorizontalList extends HookConsumerWidget {
                       ),
                     ),
                     ConstrainedBox(
-                      constraints:
-                          BoxConstraints.loose(const Size(200, double.infinity)),
+                      constraints: BoxConstraints.loose(
+                          const Size(200, double.infinity)),
                       child: Container(
                           alignment: Alignment.bottomLeft,
                           padding: const EdgeInsets.all(8),

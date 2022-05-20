@@ -15,7 +15,7 @@ extension AsyncSnapshotExt on AsyncSnapshot {
   bool get isFetchingData => isWaiting || isNothing;
 }
 
-extension AsyncSnapshotExtResult<T extends Result<E>, E> on AsyncSnapshot<T> {
+extension AsyncSnapshotExtResult<E> on AsyncSnapshot<Result<E>> {
   /// snapshotの結果から型安全にWidgetを生成するための拡張関数
   Widget buildWidget(
       {required Widget Function(E data) onSuccess,

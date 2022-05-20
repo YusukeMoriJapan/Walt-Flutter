@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:walt/constants/movie_constant.dart';
 
 import '../../../models/entity/movie/movie.dart';
 import '../../../models/entity/watch_provider/provider_metadata.dart';
@@ -23,25 +24,25 @@ class ForYouViewModel {
   final Language lang;
   final Region region;
 
-  late final MoviesState trendingMovieList;
-  late final MoviesState upComingMovieList;
-  late final MoviesState popularMovieList;
-  late final MoviesState topRatedMovieList;
+  late final MoviesState trendingMovies;
+  late final MoviesState upComingMovies;
+  late final MoviesState popularMovies;
+  late final MoviesState topRatedMovies;
 
   ForYouViewModel(this._read, this.lang, this.region) {
-    trendingMovieList = _read(movieStateProvider(
+    trendingMovies = _read(movieStateProvider(
         MoviesStateParam(trendingMovieListKey, _requestTrendingMovies)));
-    upComingMovieList = _read(movieStateProvider(
+    upComingMovies = _read(movieStateProvider(
         MoviesStateParam(upComingMovieListKey, _requestUpComingMovies)));
-    popularMovieList = _read(movieStateProvider(
+    popularMovies = _read(movieStateProvider(
         MoviesStateParam(popularMovieListKey, _requestPopularMovies)));
-    topRatedMovieList = _read(movieStateProvider(
+    topRatedMovies = _read(movieStateProvider(
         MoviesStateParam(topRatedMovieListKey, _requestTopRatedMovies)));
   }
 
   Future<PagingResult<Movie>> _requestTrendingMovies(
       int page, List<Movie>? oldMovieList) async {
-    return await _read(getTrendingMoviesUseCase).call(
+    return await _read(getTrendingMoviesPagingUseCase).call(
         language: lang,
         page: page,
         apiVersion: 3,
@@ -52,7 +53,7 @@ class ForYouViewModel {
 
   Future<PagingResult<Movie>> _requestPopularMovies(
       int page, List<Movie>? oldMovieList) async {
-    return await _read(getPopularMoviesUseCase).call(
+    return await _read(getPopularMoviesPagingUseCase).call(
         language: lang,
         page: page,
         apiVersion: 3,
@@ -64,7 +65,7 @@ class ForYouViewModel {
 
   Future<PagingResult<Movie>> _requestTopRatedMovies(
       int page, List<Movie>? oldMovieList) async {
-    return await _read(getTopRatedMoviesUseCase).call(
+    return await _read(getTopRatedMoviesPagingUseCase).call(
         language: lang,
         page: page,
         apiVersion: 3,
@@ -75,7 +76,7 @@ class ForYouViewModel {
 
   Future<PagingResult<Movie>> _requestUpComingMovies(
       int page, List<Movie>? oldMovieList) async {
-    return await _read(getUpComingMoviesUseCase).call(
+    return await _read(getUpComingMoviesPagingUseCase).call(
         language: lang,
         page: page,
         apiVersion: 3,
@@ -83,6 +84,40 @@ class ForYouViewModel {
         timeWindow: TimeWindow.day,
         oldMovieList: oldMovieList,
         cancelToken: CancelToken());
+  }
+
+  MoviesState? getMoviesStateFromKey(String key) {
+    switch (key) {
+      case trendingMovieListKey:
+        return trendingMovies;
+        break;
+      case popularMovieListKey:
+        return popularMovies;
+        break;
+      case topRatedMovieListKey:
+        return topRatedMovies;
+        break;
+      case upComingMovieListKey:
+        return upComingMovies;
+        break;
+    }
+  }
+
+  setMoviesStateCurrentIndex(String key, int index) {
+    switch (key) {
+      case trendingMovieListKey:
+        trendingMovies.currentIndex = index;
+        break;
+      case popularMovieListKey:
+        popularMovies.currentIndex = index;
+        break;
+      case topRatedMovieListKey:
+        topRatedMovies.currentIndex = index;
+        break;
+      case upComingMovieListKey:
+        upComingMovies.currentIndex = index;
+        break;
+    }
   }
 
   Future<Result<ProviderMetadataList>> getMovieWatchProvider(int movieId) =>

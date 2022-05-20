@@ -38,16 +38,15 @@ launchTmdbApp() async {
               if (setting.name == '/movieDetail') {
                 final arguments = setting.arguments as MovieDetailPageArguments;
                 return PageRouteBuilder(
-                    pageBuilder: (_, __, ___) => MovieDetailPage(
-                        arguments.defaultMovieId, arguments.movieIds),
+                    pageBuilder: (_, __, ___) =>
+                        MovieDetailPage(arguments.moviesStateKey),
                     transitionsBuilder:
                         (context, animation, secondaryAnimation, child) {
                       return const FadeUpwardsPageTransitionsBuilder()
                           .buildTransitions(
                               MaterialPageRoute(
                                   builder: (context) => MovieDetailPage(
-                                      arguments.defaultMovieId,
-                                      arguments.movieIds)),
+                                      arguments.moviesStateKey)),
                               context,
                               animation,
                               secondaryAnimation,

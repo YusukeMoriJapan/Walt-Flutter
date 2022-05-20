@@ -2,16 +2,13 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:walt/constants/movie_constant.dart';
 
 import '../../../models/entity/movie/movie.dart';
-import '../../../models/entity/movie/movie_detail/movie_details.dart';
 import '../../../models/region/region.dart';
 import '../../../repository/movie_repository.dart';
-import '../../../use_cases/get_movie_details_use_case.dart';
 import '../../../use_cases/get_movies_use_case.dart';
 import '../../../utils/network/paging/paging_result.dart';
-import '../../../utils/network/result.dart';
-import '../../../utils/throwable/cannot_find_value_from_key_exception.dart';
 import '../../states/movie_list.dart';
 
 //TODO FIX onDisposeでStreamの購読解除を行う
@@ -24,29 +21,65 @@ class DiscoverViewModel {
   final Language lang;
   final Region region;
 
-  late final MoviesState trendingMovieList;
-  late final MoviesState upComingMovieList;
-  late final MoviesState popularMovieList;
-  late final MoviesState topRatedMovieList;
+  late final MoviesState trendingMovies;
+  late final MoviesState upComingMovies;
+  late final MoviesState popularMovies;
+  late final MoviesState topRatedMovies;
 
-  late final Map<String, MoviesState> _customMovieStateMap;
+  late final Map<String, MoviesState> _customMoviesMap;
 
   DiscoverViewModel(this._read, this.lang, this.region) {
-    trendingMovieList = _read(movieStateProvider(
+    trendingMovies = _read(movieStateProvider(
         MoviesStateParam(trendingMovieListKey, _requestTrendingMovies)));
-    upComingMovieList = _read(movieStateProvider(
+    upComingMovies = _read(movieStateProvider(
         MoviesStateParam(upComingMovieListKey, _requestUpComingMovies)));
-    popularMovieList = _read(movieStateProvider(
+    popularMovies = _read(movieStateProvider(
         MoviesStateParam(popularMovieListKey, _requestPopularMovies)));
-    topRatedMovieList = _read(movieStateProvider(
+    topRatedMovies = _read(movieStateProvider(
         MoviesStateParam(topRatedMovieListKey, _requestTopRatedMovies)));
 
-    _customMovieStateMap = _read(customMovieStateMapProvider);
+    _customMoviesMap = _read(customMovieStateMapProvider);
+  }
+
+  requestNextPageMovies(String key) {
+    switch (key) {
+      case trendingMovieListKey:
+        trendingMovies.requestNextPageMovieList();
+        break;
+      case popularMovieListKey:
+        popularMovies.requestNextPageMovieList();
+        break;
+      case topRatedMovieListKey:
+        topRatedMovies.requestNextPageMovieList();
+        break;
+      case upComingMovieListKey:
+        upComingMovies.requestNextPageMovieList();
+        break;
+    }
+    _customMoviesMap[key]?.requestNextPageMovieList();
+  }
+
+  setMoviesStateCurrentIndex(String key, int index) {
+    switch (key) {
+      case trendingMovieListKey:
+        trendingMovies.currentIndex = index;
+        break;
+      case popularMovieListKey:
+        popularMovies.currentIndex = index;
+        break;
+      case topRatedMovieListKey:
+        topRatedMovies.currentIndex = index;
+        break;
+      case upComingMovieListKey:
+        upComingMovies.currentIndex = index;
+        break;
+    }
+    _customMoviesMap[key]?.currentIndex = index;
   }
 
   Future<PagingResult<Movie>> _requestTrendingMovies(
       int page, List<Movie>? oldMovieList) async {
-    return await _read(getTrendingMoviesUseCase).call(
+    return await _read(getTrendingMoviesPagingUseCase).call(
         language: lang,
         page: page,
         apiVersion: 3,
@@ -57,7 +90,7 @@ class DiscoverViewModel {
 
   Future<PagingResult<Movie>> _requestPopularMovies(
       int page, List<Movie>? oldMovieList) async {
-    return await _read(getPopularMoviesUseCase).call(
+    return await _read(getPopularMoviesPagingUseCase).call(
         language: lang,
         page: page,
         apiVersion: 3,
@@ -69,7 +102,7 @@ class DiscoverViewModel {
 
   Future<PagingResult<Movie>> _requestTopRatedMovies(
       int page, List<Movie>? oldMovieList) async {
-    return await _read(getTopRatedMoviesUseCase).call(
+    return await _read(getTopRatedMoviesPagingUseCase).call(
         language: lang,
         page: page,
         apiVersion: 3,
@@ -80,7 +113,7 @@ class DiscoverViewModel {
 
   Future<PagingResult<Movie>> _requestUpComingMovies(
       int page, List<Movie>? oldMovieList) async {
-    return await _read(getUpComingMoviesUseCase).call(
+    return await _read(getUpComingMoviesPagingUseCase).call(
         language: lang,
         page: page,
         apiVersion: 3,
@@ -104,32 +137,23 @@ class DiscoverViewModel {
     String? withWatchMonetizationTypes,
     String? watchRegion,
   }) async {
-    final customList = _customMovieStateMap[listKey];
-
-    if (customList == null) {
-      return PagingResult.failure(
-          FailureReason.exception(CannotFindValueFromKeyException(
-              "Searched any matched list based on the key,but couldn't find it.")),
-          null);
-    } else {
-      return await _read(getDiscoveredMoviesUseCase).call(
-          language: lang,
-          page: page,
-          includeAdult: false,
-          sortBy: sortBy,
-          apiVersion: 3,
-          region: region,
-          oldMovieList: oldMovieList,
-          cancelToken: CancelToken(),
-          voteAverageGte: voteAverageGte,
-          voteAverageLte: voteAverageLte,
-          year: year,
-          withGenres: withGenres,
-          withKeywords: withKeywords,
-          withOriginalLanguage: withOriginalLanguage,
-          withWatchMonetizationTypes: withWatchMonetizationTypes,
-          watchRegion: watchRegion);
-    }
+    return await _read(getDiscoveredMoviesPagingUseCase).call(
+        language: lang,
+        page: page,
+        includeAdult: false,
+        sortBy: sortBy,
+        apiVersion: 3,
+        region: region,
+        oldMovieList: oldMovieList,
+        cancelToken: CancelToken(),
+        voteAverageGte: voteAverageGte,
+        voteAverageLte: voteAverageLte,
+        year: year,
+        withGenres: withGenres,
+        withKeywords: withKeywords,
+        withOriginalLanguage: withOriginalLanguage,
+        withWatchMonetizationTypes: withWatchMonetizationTypes,
+        watchRegion: watchRegion);
   }
 
   bool registerCustomDiscoveredMovieList(
@@ -137,34 +161,40 @@ class DiscoverViewModel {
     String? withGenres,
     String sortBy,
   ) {
-    final matchedList = _customMovieStateMap[key];
+    final matchedList = _customMoviesMap[key];
 
     if (matchedList == null) {
-      _customMovieStateMap[key] = MoviesState(
+      _customMoviesMap[key] = MoviesState(
           (page, oldMovieList) => _requestCustomDiscoveredMovies(
               listKey: key,
               sortBy: sortBy,
               withGenres: withGenres,
               page: page,
               oldMovieList: oldMovieList),
-          key);
+          key)
+        ..refreshMovieList();
       return true;
     } else {
       return false;
     }
   }
 
-  MoviesState? getCustomMovieList(String key) {
-    return _customMovieStateMap[key];
-  }
-
-  Future<Result<MovieDetails>> getMovieDetails(int movieId) async {
-    return await _read(getMovieDetailsUseCase)(
-        language: lang,
-        movieId: movieId,
-        cancelToken: CancelToken(),
-        appendToResponse: null,
-        apiVersion: 3);
+  MoviesState? getMoviesStateFromKey(String key) {
+    switch (key) {
+      case trendingMovieListKey:
+        return trendingMovies;
+        break;
+      case popularMovieListKey:
+        return popularMovies;
+        break;
+      case topRatedMovieListKey:
+        return topRatedMovies;
+        break;
+      case upComingMovieListKey:
+        return upComingMovies;
+        break;
+    }
+    return _customMoviesMap[key];
   }
 }
 

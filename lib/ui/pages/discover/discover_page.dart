@@ -2,19 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:walt/constants/movie_constant.dart';
 import 'package:walt/providers/tmdb_config_provider.dart';
 import 'package:walt/ui/pages/discover/discover_view_model.dart';
 import 'package:walt/ui/pages/discover/ui_model/row_content.dart';
 import 'package:walt/ui/pages/movie_detail/movie_detail_page.dart';
 
-import '../../../models/entity/movie/movie.dart';
 import '../../../models/region/region.dart';
 import '../../../repository/movie_repository.dart';
-
-const animeKey = "popularAnime";
-const romanceKey = "popularRomance";
-const thrillerKey = "popularThriller";
-const sfKey = "popularScienceFiction";
 
 class DiscoverPage extends HookConsumerWidget {
   const DiscoverPage({Key? key}) : super(key: key);
@@ -32,134 +28,134 @@ class DiscoverPage extends HookConsumerWidget {
 
     useEffect(() {
       discoverViewModel.registerCustomDiscoveredMovieList(
-          animeKey, "16", "popularity.desc");
+          animePopularMovieListKey, "16", "popularity.desc");
       discoverViewModel.registerCustomDiscoveredMovieList(
-          romanceKey, "10749", "popularity.desc");
+          romancePopularMovieListKey, "10749", "popularity.desc");
       discoverViewModel.registerCustomDiscoveredMovieList(
-          thrillerKey, "53", "popularity.desc");
+          thrillerPopularMovieListKey, "53", "popularity.desc");
       discoverViewModel.registerCustomDiscoveredMovieList(
-          sfKey, "878", "popularity.desc");
+          sfPopularMovieListKey, "878", "popularity.desc");
       return null;
     }, [true]);
 
     final allRowContents = useRef<List<DiscoverRowContentUiModel>>([
       DiscoverRowContentUiModel(
           headerName: "Trending",
-          key: const PageStorageKey("trending"),
-          listKey: const ValueKey("trending"),
-          moviesState: discoverViewModel.trendingMovieList,
-          onClickMovieImage: (id) => _navigateToMovieDetailPage(
-              context,
-              id,
-              _convertToMovieIdList(
-                  discoverViewModel.trendingMovieList.currentMovieList)),
+          key: const PageStorageKey(trendingMovieListKey),
+          listKey: const ValueKey(trendingMovieListKey),
+          moviesState: discoverViewModel.trendingMovies,
+          onClickMovieImage: (id, controller) => _navigateToMovieDetailPage(
+              context, id, discoverViewModel, trendingMovieListKey, controller),
+          onNextPageRequested: () =>
+              discoverViewModel.requestNextPageMovies(trendingMovieListKey),
           type: DiscoverRowContentType.highLighted,
           backdropImageUrl: ref.watch(backdropImagePathProvider(780)),
           posterImageUrl: ref.watch(posterImagePathProvider(342))),
       DiscoverRowContentUiModel(
           headerName: "Up Coming",
-          key: const PageStorageKey("upComing"),
-          listKey: const ValueKey("upComing"),
-          moviesState: discoverViewModel.upComingMovieList,
-          onClickMovieImage: (id) => _navigateToMovieDetailPage(
-              context,
-              id,
-              _convertToMovieIdList(
-                  discoverViewModel.upComingMovieList.currentMovieList)),
+          key: const PageStorageKey(upComingMovieListKey),
+          listKey: const ValueKey(upComingMovieListKey),
+          moviesState: discoverViewModel.upComingMovies,
+          onClickMovieImage: (id, controller) => _navigateToMovieDetailPage(
+              context, id, discoverViewModel, upComingMovieListKey, controller),
+          onNextPageRequested: () =>
+              discoverViewModel.requestNextPageMovies(upComingMovieListKey),
           type: DiscoverRowContentType.highLighted,
           backdropImageUrl: ref.watch(backdropImagePathProvider(780)),
           posterImageUrl: ref.watch(posterImagePathProvider(342))),
       DiscoverRowContentUiModel(
           headerName: "Popular",
-          key: const PageStorageKey("popular"),
-          listKey: const ValueKey("popular"),
-          moviesState: discoverViewModel.popularMovieList,
-          onClickMovieImage: (id) => _navigateToMovieDetailPage(
-              context,
-              id,
-              _convertToMovieIdList(
-                  discoverViewModel.popularMovieList.currentMovieList)),
+          key: const PageStorageKey(popularMovieListKey),
+          listKey: const ValueKey(popularMovieListKey),
+          moviesState: discoverViewModel.popularMovies,
+          onClickMovieImage: (id, controller) => _navigateToMovieDetailPage(
+              context, id, discoverViewModel, popularMovieListKey, controller),
+          onNextPageRequested: () =>
+              discoverViewModel.requestNextPageMovies(popularMovieListKey),
           type: DiscoverRowContentType.highLighted,
           backdropImageUrl: ref.watch(backdropImagePathProvider(780)),
           posterImageUrl: ref.watch(posterImagePathProvider(342))),
       DiscoverRowContentUiModel(
           headerName: "TopRated",
-          key: const PageStorageKey("topRated"),
-          listKey: const ValueKey("topRated"),
-          moviesState: discoverViewModel.topRatedMovieList,
-          onClickMovieImage: (id) => _navigateToMovieDetailPage(
-              context,
-              id,
-              _convertToMovieIdList(
-                  discoverViewModel.topRatedMovieList.currentMovieList)),
+          key: const PageStorageKey(topRatedMovieListKey),
+          listKey: const ValueKey(topRatedMovieListKey),
+          moviesState: discoverViewModel.topRatedMovies,
+          onClickMovieImage: (id, controller) => _navigateToMovieDetailPage(
+              context, id, discoverViewModel, topRatedMovieListKey, controller),
+          onNextPageRequested: () =>
+              discoverViewModel.requestNextPageMovies(topRatedMovieListKey),
           type: DiscoverRowContentType.highLighted,
           backdropImageUrl: ref.watch(backdropImagePathProvider(780)),
           posterImageUrl: ref.watch(posterImagePathProvider(342))),
       DiscoverRowContentUiModel(
           headerName: "Anime",
-          key: const PageStorageKey(animeKey),
-          listKey: const ValueKey(animeKey),
-          moviesState: discoverViewModel.getCustomMovieList(animeKey),
-          onClickMovieImage: (id) => _navigateToMovieDetailPage(
+          key: const PageStorageKey(animePopularMovieListKey),
+          listKey: const ValueKey(animePopularMovieListKey),
+          moviesState:
+              discoverViewModel.getMoviesStateFromKey(animePopularMovieListKey),
+          onClickMovieImage: (id, controller) => _navigateToMovieDetailPage(
               context,
               id,
-              _convertToMovieIdList(discoverViewModel
-                  .getCustomMovieList(animeKey)
-                  ?.currentMovieList)),
+              discoverViewModel,
+              animePopularMovieListKey,
+              controller),
+          onNextPageRequested: () =>
+              discoverViewModel.requestNextPageMovies(animePopularMovieListKey),
           type: DiscoverRowContentType.normal,
           backdropImageUrl: ref.watch(backdropImagePathProvider(780)),
           posterImageUrl: ref.watch(posterImagePathProvider(342))),
       DiscoverRowContentUiModel(
           headerName: "Romance",
-          key: const PageStorageKey(romanceKey),
-          listKey: const ValueKey(romanceKey),
-          moviesState: discoverViewModel.getCustomMovieList(romanceKey),
-          onClickMovieImage: (id) => _navigateToMovieDetailPage(
+          key: const PageStorageKey(romancePopularMovieListKey),
+          listKey: const ValueKey(romancePopularMovieListKey),
+          moviesState:
+              discoverViewModel.getMoviesStateFromKey(romancePopularMovieListKey),
+          onClickMovieImage: (id, controller) => _navigateToMovieDetailPage(
               context,
               id,
-              _convertToMovieIdList(discoverViewModel
-                  .getCustomMovieList(romanceKey)
-                  ?.currentMovieList)),
+              discoverViewModel,
+              romancePopularMovieListKey,
+              controller),
+          onNextPageRequested: () => discoverViewModel
+              .requestNextPageMovies(romancePopularMovieListKey),
           type: DiscoverRowContentType.normal,
           backdropImageUrl: ref.watch(backdropImagePathProvider(780)),
           posterImageUrl: ref.watch(posterImagePathProvider(342))),
       DiscoverRowContentUiModel(
           headerName: "Thriller",
-          key: const PageStorageKey(thrillerKey),
-          listKey: const ValueKey(thrillerKey),
-          moviesState: discoverViewModel.getCustomMovieList(thrillerKey),
-          onClickMovieImage: (id) => _navigateToMovieDetailPage(
+          key: const PageStorageKey(thrillerPopularMovieListKey),
+          listKey: const ValueKey(thrillerPopularMovieListKey),
+          moviesState:
+              discoverViewModel.getMoviesStateFromKey(thrillerPopularMovieListKey),
+          onClickMovieImage: (id, controller) => _navigateToMovieDetailPage(
               context,
               id,
-              _convertToMovieIdList(discoverViewModel
-                  .getCustomMovieList(thrillerKey)
-                  ?.currentMovieList)),
+              discoverViewModel,
+              thrillerPopularMovieListKey,
+              controller),
+          onNextPageRequested: () => discoverViewModel
+              .requestNextPageMovies(thrillerPopularMovieListKey),
           type: DiscoverRowContentType.normal,
           backdropImageUrl: ref.watch(backdropImagePathProvider(780)),
           posterImageUrl: ref.watch(posterImagePathProvider(342))),
       DiscoverRowContentUiModel(
           headerName: "Science Fiction",
-          key: const PageStorageKey(sfKey),
-          listKey: const ValueKey(sfKey),
-          moviesState: discoverViewModel.getCustomMovieList(sfKey),
-          onClickMovieImage: (id) => _navigateToMovieDetailPage(
+          key: const PageStorageKey(sfPopularMovieListKey),
+          listKey: const ValueKey(sfPopularMovieListKey),
+          moviesState:
+              discoverViewModel.getMoviesStateFromKey(sfPopularMovieListKey),
+          onClickMovieImage: (id, controller) => _navigateToMovieDetailPage(
               context,
               id,
-              _convertToMovieIdList(
-                  discoverViewModel.getCustomMovieList(sfKey)?.currentMovieList)),
+              discoverViewModel,
+              sfPopularMovieListKey,
+              controller),
+          onNextPageRequested: () =>
+              discoverViewModel.requestNextPageMovies(sfPopularMovieListKey),
           type: DiscoverRowContentType.normal,
           backdropImageUrl: ref.watch(backdropImagePathProvider(780)),
           posterImageUrl: ref.watch(posterImagePathProvider(342))),
     ]).value;
-
-    useEffect(() {
-      for (var rowContent in allRowContents) {
-        if (rowContent.moviesState?.currentMovieListIsNull == true) {
-          rowContent.moviesState?.refreshMovieList();
-        }
-      }
-      return null;
-    }, [true]);
 
     return PageStorage(
         bucket: PageStorageBucket(),
@@ -171,25 +167,22 @@ class DiscoverPage extends HookConsumerWidget {
   }
 
   _navigateToMovieDetailPage(
-      BuildContext context, int movieId, List<int>? movieIds) {
+      BuildContext context,
+      int index,
+      DiscoverViewModel discoverViewModel,
+      String key,
+      AutoScrollController controller) {
+    discoverViewModel.setMoviesStateCurrentIndex(key, index);
     Navigator.of(context)
         .pushNamed("/movieDetail",
-            arguments: MovieDetailPageArguments(movieId, movieIds))
-        .then((value) {
-
+            arguments: MovieDetailPageArguments(moviesStateKey: key))
+        .then((_) {
+      final currentIndex =
+          discoverViewModel.getMoviesStateFromKey(key)?.currentIndex;
+      if (currentIndex != null) {
+        controller.scrollToIndex(currentIndex,
+            preferPosition: AutoScrollPosition.middle);
+      }
     });
-  }
-
-  List<int>? _convertToMovieIdList(List<Movie>? movies) {
-    if (movies == null) return null;
-
-    final List<int> result = [];
-
-    for (var movie in movies) {
-      final _id = movie.id?.toInt();
-      if (_id != null) result.add(_id);
-    }
-
-    return result;
   }
 }

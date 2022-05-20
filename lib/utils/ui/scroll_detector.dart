@@ -5,41 +5,44 @@ class ScrollDetector extends StatefulWidget {
   final Widget Function(BuildContext, AutoScrollController) builder;
   final VoidCallback onThresholdExceeded;
   final double threshold;
+  final AutoScrollController controller;
+  late final void Function() controllerListener;
 
-  const ScrollDetector({
-    required this.builder,
-    required this.onThresholdExceeded,
-    required this.threshold,
-  });
+  ScrollDetector(
+      {Key? key,
+      required this.builder,
+      required this.onThresholdExceeded,
+      required this.threshold,
+      required this.controller})
+      : super(key: key) {
+    controllerListener = () {
+      final scrollValue =
+          controller.offset / controller.position.maxScrollExtent;
+      if (scrollValue > threshold) {
+        onThresholdExceeded();
+      }
+    };
+  }
 
   @override
   _ScrollDetectorState createState() => _ScrollDetectorState();
 }
 
 class _ScrollDetectorState extends State<ScrollDetector> {
-  late AutoScrollController _controller;
-
   @override
   void initState() {
     super.initState();
-    _controller = AutoScrollController()
-      ..addListener(() {
-        final scrollValue =
-            _controller.offset / _controller.position.maxScrollExtent;
-        if (scrollValue > widget.threshold) {
-          widget.onThresholdExceeded();
-        }
-      });
+    widget.controller.addListener(widget.controllerListener);
   }
 
   @override
   Widget build(BuildContext context) {
-    return widget.builder(context, _controller);
+    return widget.builder(context, widget.controller);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    widget.controller.removeListener(widget.controllerListener);
     super.dispose();
   }
 }

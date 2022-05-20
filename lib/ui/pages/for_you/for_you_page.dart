@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:preload_page_view/preload_page_view.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:walt/constants/movie_constant.dart';
 import 'package:walt/models/mock/mock_movie.dart';
 import 'package:walt/ui/pages/for_you/for_you_view_model.dart';
 import 'package:walt/utils/hooks/system_hooks.dart';
@@ -155,7 +156,8 @@ class MovieContentPage extends HookConsumerWidget {
                       if (movieId != null) {
                         Navigator.of(context).pushNamed("/movieDetail",
                             arguments:
-                                MovieDetailPageArguments(movieId.toInt()));
+                                //TODO FIX 仮置き
+                                MovieDetailPageArguments(moviesStateKey: trendingMovieListKey));
                       } else {
                         ///TODO FIX スナックバーで読み込めないことを通知する
                       }

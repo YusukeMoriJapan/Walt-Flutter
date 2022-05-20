@@ -11,7 +11,7 @@ class NormalMoviesHorizontalList extends HookConsumerWidget {
       : super(key: key);
 
   final List<Movie> movies;
-  final void Function(int id) onClickMovieImage;
+  final void Function(int index) onClickMovieImage;
   final AutoScrollController _scrollController;
   final String baseImageUrl;
 
@@ -30,8 +30,7 @@ class NormalMoviesHorizontalList extends HookConsumerWidget {
             padding: EdgeInsets.symmetric(horizontal: _imageHPadding(i)),
             child: InkWell(
                 onTap: () {
-                  final id = movies[i].id?.toInt();
-                  if (id != null) onClickMovieImage(id);
+                  onClickMovieImage(i);
                 },
 
                 ///TODO FIX 画像サイズをInjectするべき

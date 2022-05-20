@@ -3,59 +3,67 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:preload_page_view/preload_page_view.dart';
 import 'package:walt/repository/movie_repository.dart';
-import 'package:walt/ui/pages/discover/discover_view_model.dart';
 import 'package:walt/ui/pages/movie_detail/parts/movie_detail_page_content.dart';
 import 'package:walt/utils/network/async_snapshot.dart';
 
-import '../../../models/entity/movie/movie_detail/movie_details.dart';
-import '../../../models/region/region.dart';
 import '../../../utils/network/result.dart';
 import '../../../utils/ui/icons.dart';
-import 'credits_view_model.dart';
+import 'movie_detail_view_model.dart';
 
 class MovieDetailPage extends HookConsumerWidget {
-  const MovieDetailPage(this.defaultMovieId, this.movieIds, {Key? key})
-      : super(key: key);
+  const MovieDetailPage(this.moviesStateKey, {Key? key}) : super(key: key);
 
-  final int defaultMovieId;
-  final List<int>? movieIds;
+  final String moviesStateKey;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final lang =
+        ianaCodeToLanguage(Localizations.localeOf(context).languageCode);
+
+    final movieDetailViewModel = ref.watch(movieDetailViewModelProvider(lang));
+
     final pageController = useRef(PreloadPageController(
-            initialPage:
-                movieIds?.indexWhere((element) => element == defaultMovieId) ??
-                    0))
+            initialPage: movieDetailViewModel
+                    .getMoviesStateFromKey(moviesStateKey)
+                    ?.currentIndex ??
+                0))
+        .value;
+
+    final currentMovies = useRef(movieDetailViewModel
+            .getMoviesStateFromKey(moviesStateKey)
+            ?.currentMovieList)
         .value;
 
     return PreloadPageView.builder(
-        itemCount: movieIds?.length ?? 1,
+        itemCount: currentMovies?.length ?? 1,
         controller: pageController,
         preloadPagesCount: 3,
+        onPageChanged: (index) => movieDetailViewModel
+            .setMoviesStateCurrentIndex(moviesStateKey, index),
         itemBuilder: (context, index) {
           return HookConsumer(builder: (
             BuildContext context,
             WidgetRef ref,
             Widget? child,
           ) {
-            final _id = _getId(index);
+            final id = currentMovies?[index].id?.toInt();
+
+            if (id == null) {
+              return TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: const Text("映画が存在しません"));
+            }
 
             final lang = ianaCodeToLanguage(
                 Localizations.localeOf(context).languageCode);
 
-            final region =
-                ianaCodeToRegion(Localizations.localeOf(context).countryCode);
+            final movieDetailViewModel =
+                ref.watch(movieDetailViewModelProvider(lang));
 
-            final movieViewModel = ref.watch(discoverViewModelProvider(
-                DiscoverViewModelParam(language: lang, region: region)));
-
-            final creditsViewModel = ref.watch(creditsViewModelProvider(lang));
-
-            final AsyncSnapshot<Result<MovieDetails>> movieSnapshot =
-                useFuture(useRef(movieViewModel.getMovieDetails(_id)).value);
-
-            final creditsSnapshot =
-                useRef(creditsViewModel.getMovieCredits(_id)).value;
+            final AsyncSnapshot<Result<MovieDetailsWithCredits>> movieSnapshot =
+                useFuture(
+                    useRef(movieDetailViewModel.getMovieDetailsWithCredits(id))
+                        .value);
 
             if (movieSnapshot.isFetchingData) {
               return Scaffold(
@@ -85,8 +93,7 @@ class MovieDetailPage extends HookConsumerWidget {
             } else {
               return movieSnapshot.buildWidget(onSuccess: (movie) {
                 return MovieDetailPageContent(
-                  movieDetails: movie,
-                  creditsFuture: creditsSnapshot,
+                  movieDetailsWithCredits: movie,
                 );
               }, onError: (e) {
                 ///TODO FIX エラーハンドリング必要
@@ -100,20 +107,12 @@ class MovieDetailPage extends HookConsumerWidget {
           });
         });
   }
-
-  int _getId(int index) {
-    final _movieIds = movieIds;
-    if (_movieIds == null) {
-      return defaultMovieId;
-    } else {
-      return _movieIds[index];
-    }
-  }
 }
 
 class MovieDetailPageArguments {
-  final int defaultMovieId;
-  final List<int>? movieIds;
+  final String moviesStateKey;
 
-  const MovieDetailPageArguments(this.defaultMovieId, [this.movieIds]);
+  const MovieDetailPageArguments({
+    required this.moviesStateKey,
+  });
 }

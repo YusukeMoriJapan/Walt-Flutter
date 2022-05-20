@@ -7,11 +7,6 @@ import '../../utils/network/paging/paging_result.dart';
 typedef GetMovieList = Future<PagingResult<Movie>> Function(
     int page, List<Movie>? oldMovieList);
 
-const trendingMovieListKey = "trendingMovieListKey";
-const popularMovieListKey = "popularMovieListKey";
-const upComingMovieListKey = "upComingMovieListKey";
-const topRatedMovieListKey = "topRatedMovieListKey";
-
 final movieStateProvider = Provider.autoDispose
     .family<MoviesState, MoviesStateParam>((ref, param) =>
         MoviesState(param.getMovieList, param.key)..refreshMovieList());
@@ -20,7 +15,7 @@ final customMovieStateMapProvider =
     Provider.autoDispose<Map<String, MoviesState>>((ref) => {});
 
 class MoviesState {
-  final GetMovieList _getMovieList;
+  final GetMovieList? _getMovieList;
   final String key;
 
   /// streamの現在値を同期的に取得できないため、別変数で管理
@@ -42,8 +37,10 @@ class MoviesState {
   }
 
   _requestMovieList() async {
+    //TODO FIX _getMovieListがnull時のハンドリングが必要
     _newMovieListIsRequested = true;
-    _getMovieList(currentPage, currentMovieList)
+    _getMovieList
+        ?.call(currentPage, currentMovieList)
         .whenComplete(() => {_newMovieListIsRequested = false})
         .then((value) {
       _pagingController.value = value;
@@ -72,12 +69,9 @@ class MoviesState {
 
 class MoviesStateParam {
   final String key;
-  final GetMovieList getMovieList;
+  final GetMovieList? getMovieList;
 
-  const MoviesStateParam(
-    this.key,
-    this.getMovieList,
-  );
+  const MoviesStateParam(this.key, [this.getMovieList]);
 
   @override
   bool operator ==(Object other) =>

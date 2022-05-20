@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:walt/utils/network/async_snapshot.dart';
 
 import '../../../../models/entity/movie/movie.dart';
@@ -15,18 +16,21 @@ class DiscoverRowContentUiModel {
   final Key key;
   final Key listKey;
   final MoviesState? moviesState;
-  final Function(int id) onClickMovieImage;
+  final Function(int id, AutoScrollController controller) onClickMovieImage;
   final String backdropImageUrl;
   final String posterImageUrl;
+  final void Function() onNextPageRequested;
+  final scrollController = AutoScrollController();
 
   final DiscoverRowContentType type;
 
-  const DiscoverRowContentUiModel(
+  DiscoverRowContentUiModel(
       {required this.headerName,
       required this.key,
       required this.listKey,
       required this.moviesState,
       required this.onClickMovieImage,
+      required this.onNextPageRequested,
       required this.type,
       required this.backdropImageUrl,
       required this.posterImageUrl});
@@ -40,7 +44,7 @@ class DiscoverRowContentUiModel {
 
     final stream = _movieList.movieListStream;
     final oldMovies = _movieList.currentMovieList;
-    final onNextPageRequested = () => _movieList.requestNextPageMovieList();
+    // final onNextPageRequested = () => _movieList.requestNextPageMovieList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,10 +115,11 @@ class DiscoverRowContentUiModel {
     switch (type) {
       case DiscoverRowContentType.highLighted:
         return ScrollDetector(
+          controller: scrollController,
           builder: (context, scrollController) {
             return HighlightedMoviesHorizontalList(
               movies,
-              onClickMovieImage,
+              (id) => onClickMovieImage(id, scrollController),
               scrollController,
               backdropImageUrl,
               key: listKey,
@@ -125,10 +130,11 @@ class DiscoverRowContentUiModel {
         );
       case DiscoverRowContentType.normal:
         return ScrollDetector(
+          controller: scrollController,
           builder: (context, scrollController) {
             return NormalMoviesHorizontalList(
               movies,
-              onClickMovieImage,
+              (id) => onClickMovieImage(id, scrollController),
               scrollController,
               posterImageUrl,
               key: listKey,
