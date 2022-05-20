@@ -27,8 +27,8 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final _posterPath = posterPath;
-    final _backDropPath = backDropPath;
+    final posterPath = this.posterPath;
+    final backDropPath = this.backDropPath;
 
     return NotificationListener<SizeChangedLayoutNotification>(
         onNotification: (layout) {
@@ -66,9 +66,9 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
                   ),
                 ),
                 background: Stack(alignment: Alignment.center, children: [
-                  if (_backDropPath != null)
+                  if (backDropPath != null)
                     Image.network(
-                      baseBackdropImageUrl + _backDropPath,
+                      baseBackdropImageUrl + backDropPath,
                       fit: BoxFit.cover,
                       width: double.infinity,
                       height: double.infinity,
@@ -86,7 +86,7 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
                           Theme.of(context).scaffoldBackgroundColor,
                         ])),
                   ),
-                  if (_posterPath != null)
+                  if (posterPath != null)
                     SafeArea(
                       child: Align(
                         alignment: Alignment.topCenter,
@@ -98,7 +98,7 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
                             height: _calculatePosterHeight(
                                 appBarHeight, maxAppBarHeight),
                             child:
-                                Image.network(basePosterImageUrl + _posterPath),
+                                Image.network(basePosterImageUrl + posterPath),
                           ),
                         ),
                       ),

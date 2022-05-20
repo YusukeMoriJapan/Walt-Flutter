@@ -220,10 +220,7 @@ class DiscoverViewModelParam {
 
   @override
   String toString() {
-    return 'MovieViewModelParam{' +
-        ' language: $language,' +
-        ' region: $region,' +
-        '}';
+    return 'MovieViewModelParam{ language: $language, region: $region,}';
   }
 
   DiscoverViewModelParam copyWith({

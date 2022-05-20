@@ -19,7 +19,7 @@ class SliverMovieDetailList extends HookConsumerWidget {
       // print(renderBox?.localToGlobal(Offset.zero).dy);
     });
 
-    final _castList = castList;
+    final castList =  this.castList;
 
     return SliverList(
       delegate: SliverChildListDelegate(
@@ -30,9 +30,9 @@ class SliverMovieDetailList extends HookConsumerWidget {
               children: [
                 InkWell(
                   onTap: () {
-                    final _movieId = movieId;
-                    if (_movieId != null) {
-                      showWatchProviderBottomSheet(context, ref, _movieId);
+                    final movieId = this.movieId;
+                    if (movieId != null) {
+                      showWatchProviderBottomSheet(context, ref, movieId);
                     }
                   },
                   child: Container(
@@ -71,7 +71,7 @@ class SliverMovieDetailList extends HookConsumerWidget {
                     ),
                   ),
                 ),
-                if (_castList != null) _castList
+                if (castList != null) castList
               ],
             ),
           ),

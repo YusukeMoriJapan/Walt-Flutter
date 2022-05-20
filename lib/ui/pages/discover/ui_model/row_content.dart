@@ -36,14 +36,14 @@ class DiscoverRowContentUiModel {
       required this.posterImageUrl});
 
   Widget buildRowContent() {
-    final _movieList = moviesState;
+    final moviesState = this.moviesState;
 
-    if (_movieList == null) {
+    if (moviesState == null) {
       return const SizedBox();
     }
 
-    final stream = _movieList.movieListStream;
-    final oldMovies = _movieList.currentMovieList;
+    final stream = moviesState.movieListStream;
+    final oldMovies = moviesState.currentMovieList;
     // final onNextPageRequested = () => _movieList.requestNextPageMovieList();
 
     return Column(

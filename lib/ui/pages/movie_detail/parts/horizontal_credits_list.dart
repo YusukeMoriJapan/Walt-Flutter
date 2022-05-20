@@ -17,18 +17,18 @@ class HorizontalCreditsList extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final _casts = useRef(credits.cast).value;
+    final casts = useRef(credits.cast).value;
     final baseImageUrl = ref.watch(profileImagePathProvider(342));
 
     /// TODO FIX エラーハンドリング
-    if (_casts == null || _casts.isEmpty) return const Text("出演者が存在しません");
+    if (casts == null || casts.isEmpty) return const Text("出演者が存在しません");
 
     return ListView.builder(
-      itemCount: _casts.length,
+      itemCount: casts.length,
       scrollDirection: Axis.horizontal,
       itemBuilder: (BuildContext context, int i) {
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: _imageHPadding(i, _casts)),
+          padding: EdgeInsets.symmetric(horizontal: _imageHPadding(i, casts)),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12.0),
             child: InkWell(
@@ -52,7 +52,7 @@ class HorizontalCreditsList extends HookConsumerWidget {
                         image:
                             // "https://image.tmdb.org/t/p/w342${_casts[i].profilePath}",
                             baseImageUrl +
-                                _getProfilePath(_casts[i].profilePath),
+                                _getProfilePath(casts[i].profilePath),
                         imageErrorBuilder: (context, error, stackTrace) {
                           return ConstrainedBox(
                             constraints: BoxConstraints.loose(
@@ -61,7 +61,7 @@ class HorizontalCreditsList extends HookConsumerWidget {
                                 alignment: Alignment.bottomLeft,
                                 padding: const EdgeInsets.all(8),
                                 child: Text(
-                                  _casts[i].name ?? '',
+                                  casts[i].name ?? '',
                                   style: const TextStyle(color: Colors.white),
                                 )),
                           );
@@ -78,7 +78,7 @@ class HorizontalCreditsList extends HookConsumerWidget {
                           alignment: Alignment.bottomLeft,
                           padding: const EdgeInsets.all(8),
                           child: Text(
-                            _casts[i].name ?? '',
+                            casts[i].name ?? '',
                             style: const TextStyle(color: Colors.white),
                           )),
                     )

@@ -274,19 +274,19 @@ class MovieContentPage extends HookConsumerWidget {
                             height: 72,
                             child: HookConsumer(builder: (context, ref, child) {
                               final isDarkMode = useDarkModeState();
-                              Color _color;
+                              Color color;
                               if (isDarkMode) {
-                                _color =
+                                color =
                                     Theme.of(context).colorScheme.secondary;
                               } else {
-                                _color = Theme.of(context).colorScheme.primary;
+                                color = Theme.of(context).colorScheme.primary;
                               }
 
                               return CircularProgressIndicator(
                                   strokeWidth: 4,
                                   backgroundColor:
                                       const Color.fromARGB(102, 158, 158, 158),
-                                  color: _color,
+                                  color: color,
                                   value: selectedMovie
                                       .getVoteAverageForIndicator());
                             }),

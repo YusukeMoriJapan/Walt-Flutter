@@ -80,11 +80,10 @@ String _extractTargetImageSizePath(List<String>? sizeList, int targetWidth) {
   int? lastDiff;
 
   for (var sizeString in sizeList) {
-    final _lastDiff = lastDiff;
-    final int _diff;
+    final int diff;
 
     try {
-      _diff =
+      diff =
           (int.parse(sizeString.replaceAll(RegExp('[^0-9]'), '')) - targetWidth)
               .abs();
     } catch (e) {
@@ -92,26 +91,25 @@ String _extractTargetImageSizePath(List<String>? sizeList, int targetWidth) {
       continue;
     }
 
-    if (_lastDiff == null) {
+    if (lastDiff == null) {
       matchedSizeString = sizeString;
-      lastDiff = _diff;
+      lastDiff = diff;
       continue;
     }
 
-    if (_diff < _lastDiff) {
+    if (diff < lastDiff) {
       matchedSizeString = sizeString;
-      lastDiff = _diff;
+      lastDiff = diff;
       continue;
     } else {
       continue;
     }
   }
 
-  final _matchedSizeString = matchedSizeString;
-  if (_matchedSizeString == null) {
+  if (matchedSizeString == null) {
     logger.e("Any matched image size is matched.");
     return defaultOriginalImagePath;
   } else {
-    return _matchedSizeString;
+    return matchedSizeString;
   }
 }

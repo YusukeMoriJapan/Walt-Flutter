@@ -71,7 +71,7 @@ class WatchProviderDetail extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final baseImageUrl = ref.watch(baseImageUrlProvider) + "original";
+    final baseImageUrl = "${ref.watch(baseImageUrlProvider)}original";
 
     /// flatrate
     final Iterable<Widget>? flatrateLogoList =

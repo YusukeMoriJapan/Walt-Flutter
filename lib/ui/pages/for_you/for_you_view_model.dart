@@ -101,6 +101,7 @@ class ForYouViewModel {
         return upComingMovies;
         break;
     }
+    return null;
   }
 
   setMoviesStateCurrentIndex(String key, int index) {
@@ -150,10 +151,7 @@ class ForYouViewModelParam {
 
   @override
   String toString() {
-    return 'MovieViewModelParam{' +
-        ' language: $language,' +
-        ' region: $region,' +
-        '}';
+    return 'MovieViewModelParam{ language: $language, region: $region,}';
   }
 
   ForYouViewModelParam copyWith({

@@ -116,10 +116,7 @@ class MovieDetailsWithCredits {
 
   @override
   String toString() {
-    return 'MovieDetailsWithCredits{' +
-        ' movieDetails: $movieDetails,' +
-        ' credits: $credits,' +
-        '}';
+    return 'MovieDetailsWithCredits{ movieDetails: $movieDetails, credits: $credits,}';
   }
 
   MovieDetailsWithCredits copyWith({

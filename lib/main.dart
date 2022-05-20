@@ -63,8 +63,8 @@ launchTmdbApp() async {
             localeResolutionCallback: (locale, supportedLocales) {
               if (locale != null) {
                 /// 国コードでの判別は除外する。文字コードのみでサポート対象有無を判断する。
-                final _localeOnlyLang = Locale(locale.languageCode);
-                if (supportedLocales.contains(_localeOnlyLang)) {
+                final localeOnlyLang = Locale(locale.languageCode);
+                if (supportedLocales.contains(localeOnlyLang)) {
                   return locale;
                 }
               }

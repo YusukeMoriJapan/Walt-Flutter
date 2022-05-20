@@ -85,9 +85,6 @@ class MoviesStateParam {
 
   @override
   String toString() {
-    return 'MoviesStateParam{' +
-        ' key: $key,' +
-        ' getMovieList: $getMovieList,' +
-        '}';
+    return 'MoviesStateParam{ key: $key, getMovieList: $getMovieList,}';
   }
 }
