@@ -39,8 +39,8 @@ class AppHome extends HookConsumerWidget {
                     icon: SizedBox(width: 0, height: 0), label: "FOR YOU"),
                 BottomNavigationBarItem(
                     icon: SizedBox(width: 0, height: 0), label: "DISCOVER"),
-                BottomNavigationBarItem(
-                    icon: SizedBox(width: 0, height: 0), label: "FAVORITE"),
+                // BottomNavigationBarItem(
+                //     icon: SizedBox(width: 0, height: 0), label: "FAVORITE"),
               ]);
         }),
       ),
