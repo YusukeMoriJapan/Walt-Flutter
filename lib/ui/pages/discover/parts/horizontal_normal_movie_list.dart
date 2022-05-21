@@ -33,7 +33,6 @@ class NormalMoviesHorizontalList extends HookConsumerWidget {
                   onClickMovieImage(i);
                 },
 
-                ///TODO FIX 画像サイズをInjectするべき
                 child: Container(
                   color: const Color.fromARGB(255, 165, 165, 165),
                   child: FadeInImage.memoryNetwork(

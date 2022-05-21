@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:walt/constants/movie_constant.dart';
+import 'package:walt/ui/view_model/movies_state_view_model.dart';
 
 import '../../../models/entity/movie/movie.dart';
 import '../../../models/entity/watch_provider/provider_metadata.dart';
@@ -14,20 +15,14 @@ import '../../../utils/network/paging/paging_result.dart';
 import '../../../utils/network/result.dart';
 import '../../states/movies_state.dart';
 
-//TODO FIX onDisposeでStreamの購読解除を行う
 final forYouViewModelProvider = Provider.autoDispose
     .family<ForYouViewModel, ForYouViewModelParam>(
         (ref, param) => ForYouViewModel(ref.watch, param.language, param.region));
 
-class ForYouViewModel {
+class ForYouViewModel with MoviesStateViewModel {
   final Reader _read;
   final Language lang;
   final Region region;
-
-  late final MoviesState trendingMovies;
-  late final MoviesState upComingMovies;
-  late final MoviesState popularMovies;
-  late final MoviesState topRatedMovies;
 
   ForYouViewModel(this._read, this.lang, this.region) {
     trendingMovies = _read(movieStateProvider(
@@ -84,41 +79,6 @@ class ForYouViewModel {
         timeWindow: TimeWindow.day,
         oldMovieList: oldMovieList,
         cancelToken: CancelToken());
-  }
-
-  MoviesState? getMoviesStateFromKey(String key) {
-    switch (key) {
-      case trendingMovieListKey:
-        return trendingMovies;
-        break;
-      case popularMovieListKey:
-        return popularMovies;
-        break;
-      case topRatedMovieListKey:
-        return topRatedMovies;
-        break;
-      case upComingMovieListKey:
-        return upComingMovies;
-        break;
-    }
-    return null;
-  }
-
-  setMoviesStateCurrentIndex(String key, int index) {
-    switch (key) {
-      case trendingMovieListKey:
-        trendingMovies.currentIndex = index;
-        break;
-      case popularMovieListKey:
-        popularMovies.currentIndex = index;
-        break;
-      case topRatedMovieListKey:
-        topRatedMovies.currentIndex = index;
-        break;
-      case upComingMovieListKey:
-        upComingMovies.currentIndex = index;
-        break;
-    }
   }
 
   Future<Result<ProviderMetadataList>> getMovieWatchProvider(int movieId) =>

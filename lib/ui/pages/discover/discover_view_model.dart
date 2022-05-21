@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:walt/constants/movie_constant.dart';
+import 'package:walt/ui/view_model/movies_state_view_model.dart';
 
 import '../../../models/entity/movie/movie.dart';
 import '../../../models/region/region.dart';
@@ -16,17 +17,10 @@ final discoverViewModelProvider = Provider.autoDispose
     .family<DiscoverViewModel, DiscoverViewModelParam>((ref, param) =>
         DiscoverViewModel(ref.watch, param.language, param.region));
 
-class DiscoverViewModel {
+class DiscoverViewModel with MoviesStateViewModel {
   final Reader _read;
   final Language lang;
   final Region region;
-
-  late final MoviesState trendingMovies;
-  late final MoviesState upComingMovies;
-  late final MoviesState popularMovies;
-  late final MoviesState topRatedMovies;
-
-  late final Map<String, MoviesState> _customMoviesMap;
 
   DiscoverViewModel(this._read, this.lang, this.region) {
     trendingMovies = _read(movieStateProvider(
@@ -38,43 +32,7 @@ class DiscoverViewModel {
     topRatedMovies = _read(movieStateProvider(
         MoviesStateParam(topRatedMovieListKey, _requestTopRatedMovies)));
 
-    _customMoviesMap = _read(customMovieStateMapProvider);
-  }
-
-  requestNextPageMovies(String key) {
-    switch (key) {
-      case trendingMovieListKey:
-        trendingMovies.requestNextPageMovieList();
-        break;
-      case popularMovieListKey:
-        popularMovies.requestNextPageMovieList();
-        break;
-      case topRatedMovieListKey:
-        topRatedMovies.requestNextPageMovieList();
-        break;
-      case upComingMovieListKey:
-        upComingMovies.requestNextPageMovieList();
-        break;
-    }
-    _customMoviesMap[key]?.requestNextPageMovieList();
-  }
-
-  setMoviesStateCurrentIndex(String key, int index) {
-    switch (key) {
-      case trendingMovieListKey:
-        trendingMovies.currentIndex = index;
-        break;
-      case popularMovieListKey:
-        popularMovies.currentIndex = index;
-        break;
-      case topRatedMovieListKey:
-        topRatedMovies.currentIndex = index;
-        break;
-      case upComingMovieListKey:
-        upComingMovies.currentIndex = index;
-        break;
-    }
-    _customMoviesMap[key]?.currentIndex = index;
+    customMoviesMap = _read(customMovieStateMapProvider);
   }
 
   Future<PagingResult<Movie>> _requestTrendingMovies(
@@ -161,10 +119,10 @@ class DiscoverViewModel {
     String? withGenres,
     String sortBy,
   ) {
-    final matchedList = _customMoviesMap[key];
+    final matchedList = customMoviesMap[key];
 
     if (matchedList == null) {
-      _customMoviesMap[key] = MoviesState(
+      customMoviesMap[key] = MoviesState(
           (page, oldMovieList) => _requestCustomDiscoveredMovies(
               listKey: key,
               sortBy: sortBy,
@@ -177,24 +135,6 @@ class DiscoverViewModel {
     } else {
       return false;
     }
-  }
-
-  MoviesState? getMoviesStateFromKey(String key) {
-    switch (key) {
-      case trendingMovieListKey:
-        return trendingMovies;
-        break;
-      case popularMovieListKey:
-        return popularMovies;
-        break;
-      case topRatedMovieListKey:
-        return topRatedMovies;
-        break;
-      case upComingMovieListKey:
-        return upComingMovies;
-        break;
-    }
-    return _customMoviesMap[key];
   }
 }
 
