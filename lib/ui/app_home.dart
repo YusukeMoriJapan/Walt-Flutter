@@ -20,7 +20,7 @@ class AppHome extends HookConsumerWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBody: true,
-      body: currentScreen(navigation.index),
+      body: currentScreen(navigation),
       bottomNavigationBar: SizedBox(
         child: HookConsumer(builder: (context, ref, child) {
           return BottomNavigationBar(
@@ -47,13 +47,13 @@ class AppHome extends HookConsumerWidget {
     );
   }
 
-  Widget currentScreen(int index) {
-    switch (index) {
-      case 0:
+  Widget currentScreen(PageModel pageModel) {
+    switch (pageModel.page) {
+      case NavigationBarEvent.forYou:
         return const ForYouPage();
-      case 1:
+      case NavigationBarEvent.discover:
         return const DiscoverPage();
-      case 2:
+      case NavigationBarEvent.favorite:
         return const FavoritePage();
       default:
         return const ForYouPage();
