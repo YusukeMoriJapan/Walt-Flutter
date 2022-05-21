@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:walt/ui/components/watch_provder_bottom_sheet.dart';
+import 'package:walt/ui/components/bottom_sheet/wath_provider/watch_provder_bottom_sheet.dart';
 
 class SliverMovieDetailList extends HookConsumerWidget {
   const SliverMovieDetailList(this.overView, this.movieId, this.castList,

@@ -9,5 +9,6 @@
   "flatrate": "Flatrate",
   "buy": "Buy",
   "rent": "Rent",
-  "close": "Close"
+  "close": "Close",
+  "noProvider": "There are no providers."
 }

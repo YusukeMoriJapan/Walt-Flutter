@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../models/entity/watch_provider/provider_metadata.dart';
-import '../../../models/region/region.dart';
-import '../../../use_cases/get_watch_provider_use_case.dart';
-import '../../../utils/network/result.dart';
+import '../../../../../models/entity/watch_provider/provider_metadata.dart';
+import '../../../../../models/region/region.dart';
+import '../../../../../use_cases/get_watch_provider_use_case.dart';
+import '../../../../../utils/network/result.dart';
 
 final watchProviderViewModelProvider = Provider.autoDispose
     .family<WatchProviderBottomSheetViewModel, WatchProviderViewModelParam>((ref, param) =>

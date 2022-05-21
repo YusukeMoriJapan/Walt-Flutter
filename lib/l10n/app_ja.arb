@@ -9,5 +9,6 @@
   "flatrate": "定額制",
   "buy": "購入",
   "rent": "レンタル",
-  "close": "閉じる"
+  "close": "閉じる",
+  "noProvider": "配信が存在しません"
 }
