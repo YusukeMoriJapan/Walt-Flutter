@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:walt/repository/movie_repository.dart';
+import 'package:walt/use_cases/create_paging_result_use_case.dart';
 
 import '../models/entity/movie/movie.dart';
 import '../models/region/region.dart';
@@ -23,16 +24,8 @@ final getTrendingMoviesPagingUseCase = Provider((ref) {
             timeWindow: timeWindow,
             cancelToken: cancelToken)
         .then<PagingResult<Movie>>((result) {
-      /// TODO FIX 処理の共通化必要
-      return result.when(success: (newMovieList) {
-        if (oldMovieList != null) {
-          return PagingSuccess([...oldMovieList, ...newMovieList]);
-        } else {
-          return PagingSuccess(newMovieList);
-        }
-      }, failure: (e) {
-        return PagingFailure(e, oldMovieList);
-      });
+      return ref.watch(createPagingResultUseCase)(
+          result: result, oldMovieList: oldMovieList);
     });
   };
 });
@@ -54,16 +47,8 @@ final getTopRatedMoviesPagingUseCase = Provider((ref) {
             region: region,
             cancelToken: cancelToken)
         .then<PagingResult<Movie>>((result) {
-      /// TODO FIX 処理の共通化必要
-      return result.when(success: (newMovieList) {
-        if (oldMovieList != null) {
-          return PagingSuccess([...oldMovieList, ...newMovieList]);
-        } else {
-          return PagingSuccess(newMovieList);
-        }
-      }, failure: (e) {
-        return PagingFailure(e, oldMovieList);
-      });
+      return ref.watch(createPagingResultUseCase)(
+          result: result, oldMovieList: oldMovieList);
     });
   };
 });
@@ -86,16 +71,8 @@ final getPopularMoviesPagingUseCase = Provider((ref) {
             region: region,
             cancelToken: cancelToken)
         .then<PagingResult<Movie>>((result) {
-      /// TODO FIX 処理の共通化必要
-      return result.when(success: (newMovieList) {
-        if (oldMovieList != null) {
-          return PagingSuccess([...oldMovieList, ...newMovieList]);
-        } else {
-          return PagingSuccess(newMovieList);
-        }
-      }, failure: (e) {
-        return PagingFailure(e, oldMovieList);
-      });
+      return ref.watch(createPagingResultUseCase)(
+          result: result, oldMovieList: oldMovieList);
     });
   };
 });
@@ -118,16 +95,8 @@ final getUpComingMoviesPagingUseCase = Provider((ref) {
             region: region,
             cancelToken: cancelToken)
         .then<PagingResult<Movie>>((result) {
-      /// TODO FIX 処理の共通化必要
-      return result.when(success: (newMovieList) {
-        if (oldMovieList != null) {
-          return PagingSuccess([...oldMovieList, ...newMovieList]);
-        } else {
-          return PagingSuccess(newMovieList);
-        }
-      }, failure: (e) {
-        return PagingFailure(e, oldMovieList);
-      });
+      return ref.watch(createPagingResultUseCase)(
+          result: result, oldMovieList: oldMovieList);
     });
   };
 });
@@ -170,16 +139,8 @@ final getDiscoveredMoviesPagingUseCase = Provider((ref) {
             withWatchMonetizationTypes: withWatchMonetizationTypes,
             watchRegion: watchRegion)
         .then<PagingResult<Movie>>((result) {
-      /// TODO FIX 処理の共通化必要
-      return result.when(success: (newMovieList) {
-        if (oldMovieList != null) {
-          return PagingSuccess([...oldMovieList, ...newMovieList]);
-        } else {
-          return PagingSuccess(newMovieList);
-        }
-      }, failure: (e) {
-        return PagingFailure(e, oldMovieList);
-      });
+      return ref.watch(createPagingResultUseCase)(
+          result: result, oldMovieList: oldMovieList);
     });
   };
 });
