@@ -28,47 +28,52 @@ class HighlightedMoviesHorizontalList extends HookConsumerWidget {
           key: ValueKey(i),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: _imageHPadding(i)),
-            child: InkWell(
-                onTap: () {
-                  onClickMovieImage(i);
-                },
-                child: Stack(
-                  children: [
-                    Container(
-                      foregroundDecoration: const BoxDecoration(
-                          gradient: LinearGradient(
-                              begin: Alignment.center,
-                              end: Alignment.bottomCenter,
-                              colors: <Color>[
-                            Colors.transparent,
-                            Colors.black,
-                          ])),
-                      child: Container(
-                        color: const Color.fromARGB(255, 165, 165, 165),
-                        child: FadeInImage.memoryNetwork(
-                          placeholder: kTransparentImage,
-                          image: baseImageUrl +
-                              _getProfilePath(movies[i].backdropPath),
-                          height: 150,
-                          width: 150 * 1.78,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+            child: Stack(
+              children: [
+                Container(
+                  foregroundDecoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.center,
+                          end: Alignment.bottomCenter,
+                          colors: <Color>[
+                        Colors.transparent,
+                        Colors.black,
+                      ])),
+                  child: Container(
+                    color: const Color.fromARGB(255, 165, 165, 165),
+                    child: FadeInImage.memoryNetwork(
+                      placeholder: kTransparentImage,
+                      image: baseImageUrl +
+                          _getProfilePath(movies[i].backdropPath),
+                      height: 150,
+                      width: 150 * 1.78,
+                      fit: BoxFit.cover,
                     ),
-                    ConstrainedBox(
-                      constraints: BoxConstraints.loose(
-                          const Size(200, double.infinity)),
-                      child: Container(
-                          alignment: Alignment.bottomLeft,
-                          padding: const EdgeInsets.all(8),
-                          child: Text(
-                            movies[i].title ?? '',
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(color: Colors.white),
-                          )),
-                    )
-                  ],
-                )),
+                  ),
+                ),
+                ConstrainedBox(
+                  constraints:
+                      BoxConstraints.loose(const Size(200, double.infinity)),
+                  child: Container(
+                      alignment: Alignment.bottomLeft,
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        movies[i].title ?? '',
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(color: Colors.white),
+                      )),
+                ),
+                Positioned.fill(
+                    child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          // splashColor: Colors.lightGreenAccent,
+                          onTap: () {
+                            onClickMovieImage(i);
+                          },
+                        ))),
+              ],
+            ),
           ),
         );
       },

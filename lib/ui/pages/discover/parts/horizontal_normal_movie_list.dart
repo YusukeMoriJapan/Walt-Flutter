@@ -28,21 +28,30 @@ class NormalMoviesHorizontalList extends HookConsumerWidget {
           key: ValueKey(i),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: _imageHPadding(i)),
-            child: InkWell(
-                onTap: () {
-                  onClickMovieImage(i);
-                },
-
-                child: Container(
+            child: Stack(
+              children: [
+                Container(
                   color: const Color.fromARGB(255, 165, 165, 165),
                   child: FadeInImage.memoryNetwork(
                     placeholder: kTransparentImage,
-                    image: baseImageUrl + _getProfilePath(movies[i].posterPath),
+                    image: baseImageUrl +
+                        _getProfilePath(movies[i].posterPath),
                     fit: BoxFit.cover,
                     height: 150,
                     width: 150 * 0.71,
                   ),
-                )),
+                ),
+                Positioned.fill(
+                    child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          // splashColor: Colors.lightGreenAccent,
+                          onTap: () {
+                            onClickMovieImage(i);
+                          },
+                        ))),
+              ],
+            ),
           ),
         );
       },

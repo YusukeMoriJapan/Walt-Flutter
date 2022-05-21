@@ -38,8 +38,10 @@ class SliverMovieDetailList extends HookConsumerWidget {
                   child: Container(
                     padding: const EdgeInsets.all(16),
                     height: 56,
-                    child: Image.network(
-                        "https://www.justwatch.com/appassets/img/logo/JustWatch-logo-large.webp"),
+                    child: Ink.image(
+                      image: const NetworkImage(
+                          "https://www.justwatch.com/appassets/img/logo/JustWatch-logo-large.webp"),
+                    ),
                   ),
                 ),
                 Align(
