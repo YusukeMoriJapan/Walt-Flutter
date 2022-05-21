@@ -84,7 +84,7 @@ class ForYouPagerContentState extends ConsumerState<ConsumerStatefulWidget>
                 default:
 
                   ///TODO FIX エラーハンドリング必須
-                  return const Text("何か投げる");
+                  return const Text("error");
               }
             }),
 
