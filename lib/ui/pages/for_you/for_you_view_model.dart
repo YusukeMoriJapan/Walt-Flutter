@@ -19,7 +19,7 @@ final forYouViewModelProvider = Provider.autoDispose
     .family<ForYouViewModel, ForYouViewModelParam>(
         (ref, param) => ForYouViewModel(ref.watch, param.language, param.region));
 
-class ForYouViewModel with MoviesStateViewModel {
+class ForYouViewModel with MoviesStateViewModelMixIn {
   final Reader _read;
   final Language lang;
   final Region region;

@@ -17,7 +17,7 @@ final discoverViewModelProvider = Provider.autoDispose
     .family<DiscoverViewModel, DiscoverViewModelParam>((ref, param) =>
         DiscoverViewModel(ref.watch, param.language, param.region));
 
-class DiscoverViewModel with MoviesStateViewModel {
+class DiscoverViewModel with MoviesStateViewModelMixIn {
   final Reader _read;
   final Language lang;
   final Region region;

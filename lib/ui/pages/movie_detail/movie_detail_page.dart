@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:preload_page_view/preload_page_view.dart';
+import 'package:walt/models/entity/combined_entity/movie_details_with_credits.dart';
 import 'package:walt/repository/movie_repository.dart';
 import 'package:walt/ui/pages/movie_detail/parts/movie_detail_page_content.dart';
 import 'package:walt/utils/network/async_snapshot.dart';

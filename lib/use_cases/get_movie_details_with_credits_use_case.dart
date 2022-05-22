@@ -1,10 +1,10 @@
 import 'package:async/async.dart' as async;
 import 'package:dio/dio.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:walt/models/entity/combined_entity/movie_details_with_credits.dart';
 import 'package:walt/models/entity/movie/movie_detail/movie_details.dart';
 import 'package:walt/models/entity/people/credits.dart';
 import 'package:walt/repository/credits_repository.dart';
-import 'package:walt/ui/pages/movie_detail/movie_detail_view_model.dart';
 import 'package:walt/utils/network/result.dart';
 
 import '../models/request/append_to_response.dart';

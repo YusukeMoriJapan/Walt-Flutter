@@ -3,7 +3,7 @@ import 'package:walt/constants/movie_constant.dart';
 import 'package:walt/ui/states/movies_state.dart';
 
 
-mixin MoviesStateViewModel {
+mixin MoviesStateViewModelMixIn {
   late final MoviesState trendingMovies;
   late final MoviesState upComingMovies;
   late final MoviesState popularMovies;
