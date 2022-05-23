@@ -6,6 +6,7 @@ import 'package:walt/models/entity/combined_entity/movie_details_with_credits.da
 import 'package:walt/repository/movie_repository.dart';
 import 'package:walt/ui/pages/movie_detail/parts/movie_detail_page_content.dart';
 import 'package:walt/utils/network/async_snapshot.dart';
+import 'package:walt/utils/ui/hard_spring_page_view_scroll_physics.dart';
 
 import '../../../utils/network/result.dart';
 import '../../../utils/ui/icons.dart';
@@ -38,6 +39,7 @@ class MovieDetailPage extends HookConsumerWidget {
     return PreloadPageView.builder(
         itemCount: currentMovies?.length ?? 1,
         controller: pageController,
+        physics: const HardSpringPageViewScrollPhysics(),
         preloadPagesCount: 3,
         onPageChanged: (index) => movieDetailViewModel
             .setMoviesStateCurrentIndex(moviesStateKey, index),
