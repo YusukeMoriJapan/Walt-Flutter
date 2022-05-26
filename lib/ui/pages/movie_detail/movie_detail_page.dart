@@ -4,23 +4,32 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:preload_page_view/preload_page_view.dart';
 import 'package:walt/models/entity/combined_entity/movie_details_with_credits.dart';
 import 'package:walt/repository/movie_repository.dart';
+import 'package:walt/ui/pages/movie_detail/parts/app_bar/movie_detail_app_bar.dart';
+import 'package:walt/ui/pages/movie_detail/parts/app_bar/movie_detail_app_bar_flex_space.dart';
+import 'package:walt/ui/pages/movie_detail/parts/horizontal_credits_list.dart';
 import 'package:walt/ui/pages/movie_detail/parts/movie_detail_page_content.dart';
+import 'package:walt/ui/pages/movie_detail/parts/sliver_movie_detail_list.dart';
 import 'package:walt/utils/network/async_snapshot.dart';
 import 'package:walt/utils/ui/hard_spring_page_view_scroll_physics.dart';
 
+import '../../../providers/tmdb_config_provider.dart';
 import '../../../utils/network/result.dart';
 import '../../../utils/ui/icons.dart';
 import 'movie_detail_view_model.dart';
 
 class MovieDetailPage extends HookConsumerWidget {
-  const MovieDetailPage(this.moviesStateKey, {Key? key}) : super(key: key);
+  MovieDetailPage(this.moviesStateKey, {Key? key}) : super(key: key);
 
   final String moviesStateKey;
+  final maxAppBarHeight = 350.0;
+  final flexibleSpaceBerKey = GlobalKey();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final lang =
         ianaCodeToLanguage(Localizations.localeOf(context).languageCode);
+
+    final state = useRef(MovieDetailPageState()).value;
 
     final movieDetailViewModel = ref.watch(movieDetailViewModelProvider(lang));
 
@@ -94,10 +103,29 @@ class MovieDetailPage extends HookConsumerWidget {
                         ))),
               );
             } else {
-              return movieSnapshot.buildWidget(onSuccess: (movie) {
+              return movieSnapshot.buildWidget(
+                  onSuccess: (movieDetailsWithCredits) {
+                final movieDetails = movieDetailsWithCredits.movieDetails;
                 return MovieDetailPageContent(
-                  movieDetailsWithCredits: movie,
-                );
+                    videoDetailAppBar: VideoDetailAppBar(
+                        VideoDetailAppBarFlexSpace(
+                            appBarHeight: state.appBarHeight,
+                            maxAppBarHeight: maxAppBarHeight + 20,
+                            onAppBarHeightChanged: (heightValue) {
+                              state.updateAppBarHeight(heightValue);
+                            },
+                            posterPath: movieDetails.posterPath,
+                            backDropPath: movieDetails.backdropPath,
+                            title: movieDetails.title,
+                            baseBackdropImageUrl:
+                                ref.watch(backdropImagePathProvider(780)),
+                            basePosterImageUrl:
+                                ref.watch(posterImagePathProvider(500)),
+                            flexibleSpaceBerKey: flexibleSpaceBerKey)),
+                    sliverMovieDetailList: SliverMovieDetailList(
+                        movieDetailsWithCredits.movieDetails.overview,
+                        movieDetailsWithCredits.movieDetails.id,
+                        _buildHorizontalCreditList(movieDetailsWithCredits)));
               }, onError: (e) {
                 ///TODO FIX エラーハンドリング必要
                 return const Center(
@@ -110,6 +138,21 @@ class MovieDetailPage extends HookConsumerWidget {
           });
         });
   }
+
+  Widget _buildHorizontalCreditList(
+      MovieDetailsWithCredits movieDetailsWithCredits) {
+    final credits = movieDetailsWithCredits.credits;
+
+    if (credits != null) {
+      return SizedBox(
+        height: 220,
+        child: HorizontalCreditsList(credits, (id) {}),
+      );
+    } else {
+      ///TODO FIX エラーハンドリング
+      return const Text("読み込みに失敗しました");
+    }
+  }
 }
 
 class MovieDetailPageArguments {
@@ -118,4 +161,12 @@ class MovieDetailPageArguments {
   const MovieDetailPageArguments({
     required this.moviesStateKey,
   });
+}
+
+class MovieDetailPageState {
+  final appBarHeight = ValueNotifier<double?>(null);
+
+  updateAppBarHeight(double? height) {
+    appBarHeight.value = height;
+  }
 }

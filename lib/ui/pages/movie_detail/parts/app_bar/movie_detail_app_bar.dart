@@ -1,23 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:walt/providers/tmdb_config_provider.dart';
-import 'package:walt/ui/pages/movie_detail/parts/app_bar/movie_detail_app_bar_flex_space.dart';
 import 'package:walt/utils/hooks/system_hooks.dart';
 
-import '../../../../../models/entity/movie/movie_detail/movie_details.dart';
 import '../../../../../utils/ui/icons.dart';
 
 class VideoDetailAppBar extends HookConsumerWidget {
-  VideoDetailAppBar(
-      this.appBarHeight, this.onAppBarHeightChanged, this.movieDetail,
-      {Key? key})
+  const VideoDetailAppBar(this.videoDetailAppBarFlexSpace, {Key? key})
       : super(key: key);
 
-  final void Function(double? height) onAppBarHeightChanged;
-  final ValueNotifier<double?> appBarHeight;
   final maxAppBarHeight = 350.0;
-  final MovieDetails movieDetail;
-  final flexibleSpaceBerKey = GlobalKey();
+  final Widget videoDetailAppBarFlexSpace;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -40,17 +32,7 @@ class VideoDetailAppBar extends HookConsumerWidget {
       pinned: true,
       stretch: true,
       expandedHeight: maxAppBarHeight,
-      flexibleSpace: VideoDetailAppBarFlexSpace(
-        appBarHeight: appBarHeight,
-        maxAppBarHeight: maxAppBarHeight + 20,
-        onAppBarHeightChanged: onAppBarHeightChanged,
-        posterPath: movieDetail.posterPath,
-        backDropPath: movieDetail.backdropPath,
-        title: movieDetail.title,
-        baseBackdropImageUrl: ref.watch(backdropImagePathProvider(780)),
-        basePosterImageUrl: ref.watch(posterImagePathProvider(500)),
-        flexibleSpaceBerKey: flexibleSpaceBerKey,
-      ),
+      flexibleSpace: videoDetailAppBarFlexSpace,
       floating: false,
     );
   }
