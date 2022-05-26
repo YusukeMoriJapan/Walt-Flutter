@@ -39,8 +39,6 @@ class ForYouMovieContentPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final pagerIndicatorActiveIndex = useState(0);
-
     final snapshot = useStream(useRef(moviesStream).value);
     final data = snapshot.data;
     final error = snapshot.error;
@@ -63,18 +61,7 @@ class ForYouMovieContentPage extends HookConsumerWidget {
 
     if (data != null) {
       return data.when(success: (allMovies) {
-        const rangedMoviesLastIndex = 4;
-        final rangedMovies =
-            useRef(allMovies.getRange(0, rangedMoviesLastIndex + 1).toList())
-                .value;
-
-        final selectedMovie =
-            useValueNotifier(rangedMovies[pagerIndicatorActiveIndex.value]);
-
-        useEffect(() {
-          selectedMovie.value = rangedMovies[pagerIndicatorActiveIndex.value];
-          return null;
-        }, [pagerIndicatorActiveIndex.value]);
+        final state = useRef(ForYouMovieContentPageState(allMovies)).value;
 
         return Stack(
           children: [
@@ -84,20 +71,21 @@ class ForYouMovieContentPage extends HookConsumerWidget {
               child: PreloadPageView.builder(
                   controller: controller,
                   preloadPagesCount: 3,
-                  itemCount: rangedMovies.length,
+                  itemCount: state.rangedMovies.length,
                   scrollDirection: Axis.vertical,
                   onPageChanged: (i) {
-                    pagerIndicatorActiveIndex.value = i;
+                    state.changePagerIndicatorActiveIndex(i);
                   },
                   itemBuilder: (BuildContext context, int index) {
-                    final posterPath = rangedMovies[index].posterPath ?? "";
+                    final posterPath =
+                        state.rangedMovies[index].posterPath ?? "";
                     return Center(
                         child: ForYouMovieImage(
                             index: index,
                             onTapImage: (index) => _onMovieImageTap(
                                 index,
-                                rangedMoviesLastIndex,
-                                pagerIndicatorActiveIndex,
+                                state.rangedMoviesLastIndex,
+                                state.pagerIndicatorActiveIndex,
                                 context),
                             posterPath: posterPath));
                   }),
@@ -111,8 +99,8 @@ class ForYouMovieContentPage extends HookConsumerWidget {
                   Container(
                     alignment: Alignment.bottomRight,
                     padding: const EdgeInsets.fromLTRB(0, 0, 16, 40),
-                    child: ForYouPagerIndicator(
-                        pagerIndicatorActiveIndex, rangedMovies.length),
+                    child: ForYouPagerIndicator(state.pagerIndicatorActiveIndex,
+                        state.rangedMovies.length),
                   ),
 
                   /// VoteAverage
@@ -120,7 +108,7 @@ class ForYouMovieContentPage extends HookConsumerWidget {
                     alignment: Alignment.bottomLeft,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(24, 8, 8, 16),
-                      child: VoteAverageGauge(selectedMovie),
+                      child: VoteAverageGauge(state.selectedMovie),
                     ),
                   ),
 
@@ -128,7 +116,7 @@ class ForYouMovieContentPage extends HookConsumerWidget {
                   Container(
                     padding: const EdgeInsets.fromLTRB(8, 48, 8, 8),
                     alignment: Alignment.topCenter,
-                    child: ForYouMovieTitle(selectedMovie),
+                    child: ForYouMovieTitle(state.selectedMovie),
                   )
                 ],
               ),
@@ -161,4 +149,23 @@ class ForYouMovieContentPage extends HookConsumerWidget {
       }
     });
   }
+}
+
+class ForYouMovieContentPageState {
+  final List<Movie> allMovies;
+  final pagerIndicatorActiveIndex = ValueNotifier(0);
+  final rangedMoviesLastIndex = 4;
+
+  late final rangedMovies =
+      allMovies.getRange(0, rangedMoviesLastIndex + 1).toList();
+
+  late final selectedMovie =
+      ValueNotifier(rangedMovies[pagerIndicatorActiveIndex.value]);
+
+  changePagerIndicatorActiveIndex(int index) {
+    pagerIndicatorActiveIndex.value = index;
+    selectedMovie.value = rangedMovies[index];
+  }
+
+  ForYouMovieContentPageState(this.allMovies);
 }

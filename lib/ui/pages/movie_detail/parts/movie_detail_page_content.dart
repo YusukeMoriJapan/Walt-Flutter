@@ -15,13 +15,13 @@ class MovieDetailPageContent extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final appBarHeight = useState<double?>(null);
+    final state = useRef(MovieDetailPageContentState()).value;
 
     return Scaffold(
       body: CustomScrollView(
         slivers: <Widget>[
-          VideoDetailAppBar(appBarHeight.value, (heightValue) {
-            appBarHeight.value = heightValue;
+          VideoDetailAppBar(state.appBarHeight, (heightValue) {
+            state.updateAppBarHeight(heightValue);
           }, movieDetailsWithCredits.movieDetails),
           SliverMovieDetailList(
               movieDetailsWithCredits.movieDetails.overview,
@@ -44,5 +44,13 @@ class MovieDetailPageContent extends HookConsumerWidget {
       ///TODO FIX エラーハンドリング
       return const Text("読み込みに失敗しました");
     }
+  }
+}
+
+class MovieDetailPageContentState {
+  final appBarHeight = ValueNotifier<double?>(null);
+
+  updateAppBarHeight(double? height) {
+    appBarHeight.value = height;
   }
 }

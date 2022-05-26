@@ -14,7 +14,7 @@ class VideoDetailAppBar extends HookConsumerWidget {
       : super(key: key);
 
   final void Function(double? height) onAppBarHeightChanged;
-  final double? appBarHeight;
+  final ValueNotifier<double?> appBarHeight;
   final maxAppBarHeight = 350.0;
   final MovieDetails movieDetail;
   final flexibleSpaceBerKey = GlobalKey();

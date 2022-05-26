@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
@@ -16,7 +17,7 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
       : super(key: key);
 
   final void Function(double? height) onAppBarHeightChanged;
-  final double? appBarHeight;
+  final ValueNotifier<double?> appBarHeight;
   final String? posterPath;
   final String? backDropPath;
   final String? title;
@@ -29,6 +30,7 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final posterPath = this.posterPath;
     final backDropPath = this.backDropPath;
+    final appBarHeightValue = useValueListenable(appBarHeight);
 
     return NotificationListener<SizeChangedLayoutNotification>(
         onNotification: (layout) {
@@ -80,7 +82,7 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
                             end: Alignment(
                                 0.0,
                                 _calculateGradiantHeight(
-                                    appBarHeight, maxAppBarHeight)),
+                                    appBarHeightValue, maxAppBarHeight)),
                             colors: <Color>[
                           Colors.transparent,
                           Theme.of(context).scaffoldBackgroundColor,
@@ -94,9 +96,9 @@ class VideoDetailAppBarFlexSpace extends HookConsumerWidget {
                           padding: const EdgeInsets.fromLTRB(0, 16, 0, 0),
                           child: SizedBox(
                             width: _calculatePosterHeight(
-                                appBarHeight, maxAppBarHeight),
+                                appBarHeightValue, maxAppBarHeight),
                             height: _calculatePosterHeight(
-                                appBarHeight, maxAppBarHeight),
+                                appBarHeightValue, maxAppBarHeight),
                             child:
                                 Image.network(basePosterImageUrl + posterPath),
                           ),
