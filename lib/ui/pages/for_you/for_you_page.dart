@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:preload_page_view/preload_page_view.dart';
@@ -12,7 +13,6 @@ import 'package:walt/ui/pages/for_you/parts/for_you_movie_title.dart';
 import 'package:walt/ui/pages/for_you/parts/for_you_pager_indocator.dart';
 import 'package:walt/ui/pages/for_you/parts/vote_average_gauge.dart';
 import 'package:walt/ui/states/event_store.dart';
-import 'package:walt/utils/hooks/system_hooks.dart';
 import 'package:walt/utils/log/logger.dart';
 import 'package:walt/utils/network/paging/paging_result.dart';
 
@@ -29,8 +29,6 @@ class ForYouPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    useFullScreenUntilDispose([true]);
-
     return const Center(
       child: ForYouPagerContent(),
     );
@@ -69,6 +67,8 @@ class ForYouPagerContentState extends ConsumerState<ConsumerStatefulWidget>
       onVisibilityChanged: (VisibilityInfo info) {
         if (info.visibleFraction != 0.0) {
           logger.d("ForYouPage is currently visible.");
+          SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+              overlays: []);
           if (eventStore.isRefreshInvoked) {
             for (var element in stateList) {
               element.refreshState();
@@ -77,6 +77,8 @@ class ForYouPagerContentState extends ConsumerState<ConsumerStatefulWidget>
           }
         } else {
           logger.d("ForYouPage is currently invisible.");
+          SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
+              overlays: SystemUiOverlay.values);
         }
       },
       key: const Key(forYouPageKey),
