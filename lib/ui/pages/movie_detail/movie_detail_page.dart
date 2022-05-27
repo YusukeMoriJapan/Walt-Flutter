@@ -28,8 +28,6 @@ class MovieDetailPage extends HookConsumerWidget {
     final lang =
         ianaCodeToLanguage(Localizations.localeOf(context).languageCode);
 
-    final state = useRef(MovieDetailPageState()).value;
-
     final movieDetailViewModel = ref.watch(movieDetailViewModelProvider(lang));
 
     final pageController = useRef(PreloadPageController(
@@ -57,6 +55,7 @@ class MovieDetailPage extends HookConsumerWidget {
             WidgetRef ref,
             Widget? child,
           ) {
+            final state = useRef(MovieDetailPageState()).value;
             final id = currentMovies?[index].id?.toInt();
 
             if (id == null) {
