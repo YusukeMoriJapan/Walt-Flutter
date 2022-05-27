@@ -20,8 +20,8 @@ launchTmdbApp() async {
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       // statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-      statusBarBrightness: Brightness.light,
+      // statusBarIconBrightness: Brightness.light,
+      // statusBarBrightness: Brightness.light,
       // systemNavigationBarColor: Colors.transparent,
       // systemNavigationBarDividerColor: Colors.transparent,
       // systemNavigationBarIconBrightness: Brightness.light
