@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:walt/ui/pages/discover/discover_page.dart';
-import 'package:walt/ui/pages/favorite/favorite_page.dart';
 import 'package:walt/ui/pages/for_you/for_you_page.dart';
 import 'package:walt/utils/hooks/system_hooks.dart';
 
@@ -20,7 +19,10 @@ class AppHome extends HookConsumerWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBody: true,
-      body: currentScreen(navigation),
+      body: IndexedStack(
+        index: navigation.index,
+        children: const [ForYouPage(), DiscoverPage()],
+      ),
       bottomNavigationBar: SizedBox(
         child: HookConsumer(builder: (context, ref, child) {
           return BottomNavigationBar(
@@ -47,18 +49,18 @@ class AppHome extends HookConsumerWidget {
     );
   }
 
-  Widget currentScreen(PageModel pageModel) {
-    switch (pageModel.page) {
-      case NavigationBarEvent.forYou:
-        return const ForYouPage();
-      case NavigationBarEvent.discover:
-        return const DiscoverPage();
-      case NavigationBarEvent.favorite:
-        return const FavoritePage();
-      default:
-        return const ForYouPage();
-    }
-  }
+  // Widget currentScreen(PageModel pageModel) {
+  //   switch (pageModel.page) {
+  //     case NavigationBarEvent.forYou:
+  //       return const ForYouPage();
+  //     case NavigationBarEvent.discover:
+  //       return const DiscoverPage();
+  //     case NavigationBarEvent.favorite:
+  //       return const FavoritePage();
+  //     default:
+  //       return const ForYouPage();
+  //   }
+  // }
 
   double _getBottomNavigationElevation(PageModel navigation) {
     if (navigation.page == NavigationBarEvent.forYou) {
