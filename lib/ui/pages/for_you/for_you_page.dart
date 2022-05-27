@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:preload_page_view/preload_page_view.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 import 'package:walt/constants/movie_constant.dart';
 import 'package:walt/models/entity/movie/movie.dart';
 import 'package:walt/ui/pages/for_you/for_you_movie_content_page.dart';
@@ -10,7 +11,9 @@ import 'package:walt/ui/pages/for_you/parts/for_you_movie_image.dart';
 import 'package:walt/ui/pages/for_you/parts/for_you_movie_title.dart';
 import 'package:walt/ui/pages/for_you/parts/for_you_pager_indocator.dart';
 import 'package:walt/ui/pages/for_you/parts/vote_average_gauge.dart';
+import 'package:walt/ui/states/event_store.dart';
 import 'package:walt/utils/hooks/system_hooks.dart';
+import 'package:walt/utils/log/logger.dart';
 import 'package:walt/utils/network/paging/paging_result.dart';
 
 import '../../../models/region/region.dart';
@@ -18,6 +21,8 @@ import '../../../repository/movie_repository.dart';
 import '../../../utils/ui/hard_spring_page_view_scroll_physics.dart';
 import '../movie_detail/movie_detail_page.dart';
 import 'parts/colored_tab_bar.dart';
+
+const forYouPageKey = "forYourPageKey";
 
 class ForYouPage extends HookConsumerWidget {
   const ForYouPage({Key? key}) : super(key: key);
@@ -58,74 +63,93 @@ class ForYouPagerContentState extends ConsumerState<ConsumerStatefulWidget>
     final forYouViewModel = ref.watch(forYouViewModelProvider(
         ForYouViewModelParam(language: lang, region: region)));
 
-    return Stack(
-      children: [
-        Container(color: Colors.black),
-        PreloadPageView.builder(
-            physics: const HardSpringPageViewScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            itemCount: 3,
-            controller: controllerParent,
-            preloadPagesCount: 3,
-            onPageChanged: (i) {
-              tabController.value.index = i;
-            },
-            itemBuilder: (BuildContext context, int indexParent) {
-              switch (indexParent) {
-                case 0:
-                  return _buildForYouMovieContentPage(
-                      forYouViewModel.trendingMovies.movieListStream,
-                      trendingMovieListKey,
-                      forYouViewModel,
-                      stateList[0]);
+    final eventStore = ref.watch(eventStoreProvider);
 
-                case 1:
-                  return _buildForYouMovieContentPage(
-                      forYouViewModel.popularMovies.movieListStream,
-                      popularMovieListKey,
-                      forYouViewModel,
-                      stateList[1]);
+    return VisibilityDetector(
+      onVisibilityChanged: (VisibilityInfo info) {
+        if (info.visibleFraction != 0.0) {
+          logger.d("ForYouPage is currently visible.");
+          if (eventStore.isRefreshInvoked) {
+            for (var element in stateList) {
+              element.refreshState();
+            }
+            eventStore.isRefreshInvoked = false;
+          }
+        } else {
+          logger.d("ForYouPage is currently invisible.");
+        }
+      },
+      key: const Key(forYouPageKey),
+      child: Stack(
+        children: [
+          Container(color: Colors.black),
+          PreloadPageView.builder(
+              physics: const HardSpringPageViewScrollPhysics(),
+              scrollDirection: Axis.horizontal,
+              itemCount: 3,
+              controller: controllerParent,
+              preloadPagesCount: 3,
+              onPageChanged: (i) {
+                tabController.value.index = i;
+              },
+              itemBuilder: (BuildContext context, int indexParent) {
+                switch (indexParent) {
+                  case 0:
+                    return _buildForYouMovieContentPage(
+                        forYouViewModel.trendingMovies.movieListStream,
+                        trendingMovieListKey,
+                        forYouViewModel,
+                        stateList[0]);
 
-                case 2:
-                  return _buildForYouMovieContentPage(
-                      forYouViewModel.topRatedMovies.movieListStream,
-                      topRatedMovieListKey,
-                      forYouViewModel,
-                      stateList[2]);
-                default:
+                  case 1:
+                    return _buildForYouMovieContentPage(
+                        forYouViewModel.popularMovies.movieListStream,
+                        popularMovieListKey,
+                        forYouViewModel,
+                        stateList[1]);
 
-                  ///TODO FIX エラーハンドリング必須
-                  return const Text("error");
-              }
-            }),
+                  case 2:
+                    return _buildForYouMovieContentPage(
+                        forYouViewModel.topRatedMovies.movieListStream,
+                        topRatedMovieListKey,
+                        forYouViewModel,
+                        stateList[2]);
+                  default:
 
-        /// Tabインジケータ
-        SafeArea(
-          child: ColoredTabBar(
-              Colors.transparent,
-              TabBar(
-                controller: tabController.value,
-                tabs: const [
-                  Tab(text: 'Trending'),
-                  Tab(text: 'Popular'),
-                  Tab(text: 'Top Rated'),
-                ],
-                onTap: (i) {
-                  controllerParent.animateToPage(i,
-                      duration: const Duration(milliseconds: 250),
-                      curve: Curves.ease);
-                },
-              )),
-        ),
-        Container(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            alignment: Alignment.centerLeft,
-            child: const Icon(Icons.arrow_back_ios, color: Colors.white60)),
-        Container(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            alignment: Alignment.centerRight,
-            child: const Icon(Icons.arrow_forward_ios, color: Colors.white60)),
-      ],
+                    ///TODO FIX エラーハンドリング必須
+                    return const Text("error");
+                }
+              }),
+
+          /// Tabインジケータ
+          SafeArea(
+            child: ColoredTabBar(
+                Colors.transparent,
+                TabBar(
+                  controller: tabController.value,
+                  tabs: const [
+                    Tab(text: 'Trending'),
+                    Tab(text: 'Popular'),
+                    Tab(text: 'Top Rated'),
+                  ],
+                  onTap: (i) {
+                    controllerParent.animateToPage(i,
+                        duration: const Duration(milliseconds: 250),
+                        curve: Curves.ease);
+                  },
+                )),
+          ),
+          Container(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              alignment: Alignment.centerLeft,
+              child: const Icon(Icons.arrow_back_ios, color: Colors.white60)),
+          Container(
+              padding: const EdgeInsets.symmetric(horizontal: 4),
+              alignment: Alignment.centerRight,
+              child:
+                  const Icon(Icons.arrow_forward_ios, color: Colors.white60)),
+        ],
+      ),
     );
   }
 
@@ -138,6 +162,9 @@ class ForYouPagerContentState extends ConsumerState<ConsumerStatefulWidget>
     return Builder(builder: (context) {
       return RefreshIndicator(
         onRefresh: () async {
+          for (var element in stateList) {
+            element.refreshState();
+          }
           forYouViewModel.trendingMovies.refreshMovieList();
           forYouViewModel.popularMovies.refreshMovieList();
           forYouViewModel.topRatedMovies.refreshMovieList();

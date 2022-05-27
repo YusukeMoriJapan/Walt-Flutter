@@ -122,12 +122,12 @@ class ForYouMovieContentPage extends HookConsumerWidget {
 
     return const Center(
         child: SizedBox(
-          width: 200,
-          child: LinearProgressIndicator(
-            backgroundColor: Colors.grey,
-            color: Colors.black54,
-          ),
-        ));
+      width: 200,
+      child: LinearProgressIndicator(
+        backgroundColor: Colors.grey,
+        color: Colors.black54,
+      ),
+    ));
   }
 }
 
@@ -155,6 +155,13 @@ class ForYouMovieContentPageState {
 
     final rangedMovies = _rangedMovies;
     if (rangedMovies != null) selectedMovie.value = rangedMovies[index];
+  }
+
+  refreshState() {
+    pagerIndicatorActiveIndex.value = 0;
+    controller.jumpToPage(0);
+    final rangedMovies = _rangedMovies;
+    if (rangedMovies != null) selectedMovie.value = rangedMovies[0];
   }
 
   ForYouMovieContentPageState();

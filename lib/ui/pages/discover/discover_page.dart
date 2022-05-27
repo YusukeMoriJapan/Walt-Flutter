@@ -8,6 +8,7 @@ import 'package:walt/providers/tmdb_config_provider.dart';
 import 'package:walt/ui/pages/discover/discover_view_model.dart';
 import 'package:walt/ui/pages/discover/ui_model/row_content.dart';
 import 'package:walt/ui/pages/movie_detail/movie_detail_page.dart';
+import 'package:walt/ui/states/event_store.dart';
 
 import '../../../models/region/region.dart';
 import '../../../repository/movie_repository.dart';
@@ -25,6 +26,8 @@ class DiscoverPage extends HookConsumerWidget {
 
     final discoverViewModel = ref.watch(discoverViewModelProvider(
         DiscoverViewModelParam(language: lang, region: region)));
+
+    final eventStore = ref.watch(eventStoreProvider);
 
     useEffect(() {
       discoverViewModel.registerCustomDiscoveredMovieList(
@@ -161,6 +164,7 @@ class DiscoverPage extends HookConsumerWidget {
         bucket: PageStorageBucket(),
         child: RefreshIndicator(
           onRefresh: () async {
+            eventStore.isRefreshInvoked = true;
             for (var element in allRowContents) {
               element.scrollController.jumpTo(0);
               element.moviesState?.refreshMovieList();
