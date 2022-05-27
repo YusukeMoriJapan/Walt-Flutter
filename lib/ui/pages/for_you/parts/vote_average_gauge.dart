@@ -7,7 +7,7 @@ import '../../../../utils/hooks/system_hooks.dart';
 
 class VoteAverageGauge extends HookConsumerWidget {
   const VoteAverageGauge(this.selectedMovie, {Key? key}) : super(key: key);
-  final ValueNotifier<Movie> selectedMovie;
+  final ValueNotifier<Movie?> selectedMovie;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -32,14 +32,14 @@ class VoteAverageGauge extends HookConsumerWidget {
                 strokeWidth: 4,
                 backgroundColor: const Color.fromARGB(102, 158, 158, 158),
                 color: color,
-                value: selectedMovieValue.getVoteAverageForIndicator());
+                value: selectedMovieValue?.getVoteAverageForIndicator());
           }),
         ),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              selectedMovieValue.getVoteAverageForText().toString(),
+              selectedMovieValue?.getVoteAverageForText().toString() ?? "",
               style: const TextStyle(
                 fontSize: 24,
                 color: Colors.white,

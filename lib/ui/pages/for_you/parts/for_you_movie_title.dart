@@ -6,7 +6,7 @@ import 'package:walt/models/entity/movie/movie.dart';
 class ForYouMovieTitle extends HookConsumerWidget {
   const ForYouMovieTitle(this.selectedMovieNotifier, {Key? key})
       : super(key: key);
-  final ValueNotifier<Movie> selectedMovieNotifier;
+  final ValueNotifier<Movie?> selectedMovieNotifier;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -15,7 +15,7 @@ class ForYouMovieTitle extends HookConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         const SizedBox(height: 8),
-        Text(selectedMovie.title ?? "",
+        Text(selectedMovie?.title ?? "",
             textAlign: TextAlign.center,
             style: const TextStyle(
               fontSize: 24,

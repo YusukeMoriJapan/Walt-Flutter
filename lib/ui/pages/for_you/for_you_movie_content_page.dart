@@ -2,22 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:preload_page_view/preload_page_view.dart';
-import 'package:walt/ui/pages/for_you/for_you_view_model.dart';
-import 'package:walt/ui/pages/for_you/parts/for_you_movie_image.dart';
-import 'package:walt/ui/pages/for_you/parts/for_you_movie_title.dart';
-import 'package:walt/ui/pages/for_you/parts/for_you_pager_indocator.dart';
-import 'package:walt/ui/pages/for_you/parts/vote_average_gauge.dart';
 import 'package:walt/utils/network/async_snapshot.dart';
 
 import '../../../models/entity/movie/movie.dart';
 import '../../../utils/network/paging/paging_result.dart';
-import '../movie_detail/movie_detail_page.dart';
 
 class ForYouMovieContentPage extends HookConsumerWidget {
   final Stream<PagingResult<Movie>> moviesStream;
-  final controller = PreloadPageController();
-  final String moviesStateKey;
-  final ForYouViewModel forYouViewModel;
+
+  final Widget Function(int index, Movie movie) buildMovieImage;
+  final Widget Function() buildPageIndicator;
+  final Widget Function() buildMovieTitle;
+  final Widget Function() buildVoteAverageGauge;
+  final ForYouMovieContentPageState state;
 
   final _topToBottomGradient = const LinearGradient(
       begin: Alignment.topCenter,
@@ -32,9 +29,14 @@ class ForYouMovieContentPage extends HookConsumerWidget {
         Color(0xCC000000),
       ]);
 
-  ForYouMovieContentPage(
-      this.moviesStream, this.moviesStateKey, this.forYouViewModel,
-      {Key? key})
+  const ForYouMovieContentPage(
+      {required this.state,
+      required this.moviesStream,
+      required this.buildMovieImage,
+      required this.buildMovieTitle,
+      required this.buildPageIndicator,
+      required this.buildVoteAverageGauge,
+      Key? key})
       : super(key: key);
 
   @override
@@ -61,33 +63,23 @@ class ForYouMovieContentPage extends HookConsumerWidget {
 
     if (data != null) {
       return data.when(success: (allMovies) {
-        final state = useRef(ForYouMovieContentPageState(allMovies)).value;
-
+        final rangedMovies = state.setMovieList(allMovies);
         return Stack(
           children: [
             Container(
               foregroundDecoration:
                   BoxDecoration(gradient: _topToBottomGradient),
               child: PreloadPageView.builder(
-                  controller: controller,
+                  controller: state.controller,
                   preloadPagesCount: 3,
-                  itemCount: state.rangedMovies.length,
+                  itemCount: rangedMovies.length,
                   scrollDirection: Axis.vertical,
                   onPageChanged: (i) {
                     state.changePagerIndicatorActiveIndex(i);
                   },
                   itemBuilder: (BuildContext context, int index) {
-                    final posterPath =
-                        state.rangedMovies[index].posterPath ?? "";
                     return Center(
-                        child: ForYouMovieImage(
-                            index: index,
-                            onTapImage: (index) => _onMovieImageTap(
-                                index,
-                                state.rangedMoviesLastIndex,
-                                state.pagerIndicatorActiveIndex,
-                                context),
-                            posterPath: posterPath));
+                        child: buildMovieImage(index, rangedMovies[index]));
                   }),
             ),
 
@@ -99,8 +91,7 @@ class ForYouMovieContentPage extends HookConsumerWidget {
                   Container(
                     alignment: Alignment.bottomRight,
                     padding: const EdgeInsets.fromLTRB(0, 0, 16, 40),
-                    child: ForYouPagerIndicator(state.pagerIndicatorActiveIndex,
-                        state.rangedMovies.length),
+                    child: buildPageIndicator(),
                   ),
 
                   /// VoteAverage
@@ -108,7 +99,7 @@ class ForYouMovieContentPage extends HookConsumerWidget {
                     alignment: Alignment.bottomLeft,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(24, 8, 8, 16),
-                      child: VoteAverageGauge(state.selectedMovie),
+                      child: buildVoteAverageGauge(),
                     ),
                   ),
 
@@ -116,7 +107,7 @@ class ForYouMovieContentPage extends HookConsumerWidget {
                   Container(
                     padding: const EdgeInsets.fromLTRB(8, 48, 8, 8),
                     alignment: Alignment.topCenter,
-                    child: ForYouMovieTitle(state.selectedMovie),
+                    child: buildMovieTitle(),
                   )
                 ],
               ),
@@ -132,40 +123,33 @@ class ForYouMovieContentPage extends HookConsumerWidget {
     //TODO FIX エラーハンドリング 再読み込み処理を追加
     return TextButton(onPressed: () {}, child: const Text("もう一度読み込む"));
   }
-
-  _onMovieImageTap(int index, int rangedMoviesLastIndex,
-      ValueNotifier pagerIndicatorActiveIndex, BuildContext context) {
-    forYouViewModel.getMoviesStateFromKey(moviesStateKey)?.currentIndex = index;
-    Navigator.of(context)
-        .pushNamed("/movieDetail",
-            arguments: MovieDetailPageArguments(moviesStateKey: moviesStateKey))
-        .then((_) {
-      final index =
-          forYouViewModel.getMoviesStateFromKey(moviesStateKey)?.currentIndex;
-
-      if (index != null && index <= rangedMoviesLastIndex) {
-        controller.jumpToPage(index);
-        pagerIndicatorActiveIndex.value = index;
-      }
-    });
-  }
 }
 
 class ForYouMovieContentPageState {
-  final List<Movie> allMovies;
   final pagerIndicatorActiveIndex = ValueNotifier(0);
   final rangedMoviesLastIndex = 4;
+  final controller = PreloadPageController();
 
-  late final rangedMovies =
-      allMovies.getRange(0, rangedMoviesLastIndex + 1).toList();
+  List<Movie>? _rangedMovies;
 
-  late final selectedMovie =
-      ValueNotifier(rangedMovies[pagerIndicatorActiveIndex.value]);
+  late final selectedMovie = ValueNotifier<Movie?>(null);
+
+  List<Movie> setMovieList(List<Movie> allMovies) {
+    final rangedMovies =
+        allMovies.getRange(0, rangedMoviesLastIndex + 1).toList();
+    selectedMovie.value = rangedMovies[pagerIndicatorActiveIndex.value];
+    _rangedMovies = rangedMovies;
+    return rangedMovies;
+  }
+
+  List<Movie>? getMovieList() => _rangedMovies;
 
   changePagerIndicatorActiveIndex(int index) {
     pagerIndicatorActiveIndex.value = index;
-    selectedMovie.value = rangedMovies[index];
+
+    final rangedMovies = _rangedMovies;
+    if (rangedMovies != null) selectedMovie.value = rangedMovies[index];
   }
 
-  ForYouMovieContentPageState(this.allMovies);
+  ForYouMovieContentPageState();
 }
