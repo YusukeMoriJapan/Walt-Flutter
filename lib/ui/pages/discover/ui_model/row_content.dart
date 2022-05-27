@@ -63,7 +63,7 @@ class DiscoverRowContentUiModel {
             child: StreamBuilder(
               key: key,
               stream: stream,
-              builder: (context, AsyncSnapshot<PagingResult<Movie>> snapshot) {
+              builder: (context, AsyncSnapshot<PagingResult<Movie>?> snapshot) {
                 if (snapshot.isFetchingData) {
                   if (oldMovies != null) {
                     return _showRowContent(oldMovies, onNextPageRequested);
@@ -101,7 +101,14 @@ class DiscoverRowContentUiModel {
                       });
                 }
 
-                return const Text("データが存在しません");
+                return const Center(
+                    child: SizedBox(
+                  width: 200,
+                  child: LinearProgressIndicator(
+                    backgroundColor: Colors.grey,
+                    color: Colors.black54,
+                  ),
+                ));
               },
             ),
           ),

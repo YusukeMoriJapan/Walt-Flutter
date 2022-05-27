@@ -30,12 +30,13 @@ class MoviesState {
   bool _newMovieListIsRequested = false;
 
   /// useStreamで初期値を与える時は、必ずuseStreamを実行した後にcontroller.addを実行すること
-  final _pagingController = BehaviorSubject<PagingResult<Movie>>();
+  final _movieListBehaviorSubject =
+      BehaviorSubject<PagingResult<Movie>?>.seeded(null);
   List<Movie>? currentMovieList;
-  late final Stream<PagingResult<Movie>> movieListStream;
+  late final Stream<PagingResult<Movie>?> movieListStream;
 
   MoviesState(this._getMovieList, this.key) {
-    movieListStream = _pagingController.stream;
+    movieListStream = _movieListBehaviorSubject.stream;
   }
 
   _requestMovieList() async {
@@ -45,7 +46,7 @@ class MoviesState {
         ?.call(currentPage, currentMovieList)
         .whenComplete(() => {_newMovieListIsRequested = false})
         .then((value) {
-      _pagingController.value = value;
+      _movieListBehaviorSubject.value = value;
       currentMovieList = value.when(
           success: (data) => data,
           failure: (reason, oldList) {
@@ -58,6 +59,8 @@ class MoviesState {
   refreshMovieList() {
     currentPage = 1;
     currentMovieList = null;
+    currentIndex = 0;
+    _movieListBehaviorSubject.value = null;
     _requestMovieList();
   }
 

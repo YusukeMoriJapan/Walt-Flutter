@@ -108,8 +108,8 @@ class DiscoverPage extends HookConsumerWidget {
           headerName: "Romance",
           key: const PageStorageKey(romancePopularMovieListKey),
           listKey: const ValueKey(romancePopularMovieListKey),
-          moviesState:
-              discoverViewModel.getMoviesStateFromKey(romancePopularMovieListKey),
+          moviesState: discoverViewModel
+              .getMoviesStateFromKey(romancePopularMovieListKey),
           onClickMovieImage: (id, controller) => _navigateToMovieDetailPage(
               context,
               id,
@@ -125,8 +125,8 @@ class DiscoverPage extends HookConsumerWidget {
           headerName: "Thriller",
           key: const PageStorageKey(thrillerPopularMovieListKey),
           listKey: const ValueKey(thrillerPopularMovieListKey),
-          moviesState:
-              discoverViewModel.getMoviesStateFromKey(thrillerPopularMovieListKey),
+          moviesState: discoverViewModel
+              .getMoviesStateFromKey(thrillerPopularMovieListKey),
           onClickMovieImage: (id, controller) => _navigateToMovieDetailPage(
               context,
               id,
@@ -159,11 +159,19 @@ class DiscoverPage extends HookConsumerWidget {
 
     return PageStorage(
         bucket: PageStorageBucket(),
-        child: ListView.builder(
-            itemCount: allRowContents.length,
-            itemBuilder: (context, i) {
-              return allRowContents[i].buildRowContent();
-            }));
+        child: RefreshIndicator(
+          onRefresh: () async {
+            for (var element in allRowContents) {
+              element.scrollController.jumpTo(0);
+              element.moviesState?.refreshMovieList();
+            }
+          },
+          child: ListView.builder(
+              itemCount: allRowContents.length,
+              itemBuilder: (context, i) {
+                return allRowContents[i].buildRowContent();
+              }),
+        ));
   }
 
   _navigateToMovieDetailPage(

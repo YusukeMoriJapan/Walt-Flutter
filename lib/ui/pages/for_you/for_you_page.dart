@@ -130,53 +130,61 @@ class ForYouPagerContentState extends ConsumerState<ConsumerStatefulWidget>
   }
 
   Widget _buildForYouMovieContentPage(
-    Stream<PagingResult<Movie>> moviesStream,
+    Stream<PagingResult<Movie>?> moviesStream,
     String moviesStateKey,
     ForYouViewModel forYouViewModel,
     ForYouMovieContentPageState state,
   ) {
     return Builder(builder: (context) {
-      return ForYouMovieContentPage(
-          state: state,
-          moviesStream: moviesStream,
-          buildMovieImage: (index, movie) {
-            return ForYouMovieImage(
-                index: index,
-                onTapImage: (i) {
-                  forYouViewModel
-                      .getMoviesStateFromKey(moviesStateKey)
-                      ?.currentIndex = index;
-                  Navigator.of(context)
-                      .pushNamed("/movieDetail",
-                          arguments: MovieDetailPageArguments(
-                              moviesStateKey: moviesStateKey))
-                      .then((_) {
-                    final index = forYouViewModel
+      return RefreshIndicator(
+        onRefresh: () async {
+          forYouViewModel.trendingMovies.refreshMovieList();
+          forYouViewModel.popularMovies.refreshMovieList();
+          forYouViewModel.topRatedMovies.refreshMovieList();
+        },
+        child: ForYouMovieContentPage(
+            state: state,
+            moviesStream: moviesStream,
+            buildMovieImage: (index, movie) {
+              return ForYouMovieImage(
+                  index: index,
+                  onTapImage: (i) {
+                    forYouViewModel
                         .getMoviesStateFromKey(moviesStateKey)
-                        ?.currentIndex;
+                        ?.currentIndex = index;
+                    Navigator.of(context)
+                        .pushNamed("/movieDetail",
+                            arguments: MovieDetailPageArguments(
+                                moviesStateKey: moviesStateKey))
+                        .then((_) {
+                      final index = forYouViewModel
+                          .getMoviesStateFromKey(moviesStateKey)
+                          ?.currentIndex;
 
-                    if (index != null && index <= state.rangedMoviesLastIndex) {
-                      state.controller.jumpToPage(index);
-                      state.pagerIndicatorActiveIndex.value = index;
-                    }
-                  });
-                },
-                posterPath: movie.posterPath ?? "");
-          },
-          buildMovieTitle: () => ForYouMovieTitle(state.selectedMovie),
-          buildPageIndicator: () {
-            final movieListLength = state.getMovieList()?.length;
-            if (movieListLength != null) {
-              return ForYouPagerIndicator(
-                  state.pagerIndicatorActiveIndex, movieListLength);
-            } else {
-              return const SizedBox(
-                width: 0,
-                height: 0,
-              );
-            }
-          },
-          buildVoteAverageGauge: () => VoteAverageGauge(state.selectedMovie));
+                      if (index != null &&
+                          index <= state.rangedMoviesLastIndex) {
+                        state.controller.jumpToPage(index);
+                        state.pagerIndicatorActiveIndex.value = index;
+                      }
+                    });
+                  },
+                  posterPath: movie.posterPath ?? "");
+            },
+            buildMovieTitle: () => ForYouMovieTitle(state.selectedMovie),
+            buildPageIndicator: () {
+              final movieListLength = state.getMovieList()?.length;
+              if (movieListLength != null) {
+                return ForYouPagerIndicator(
+                    state.pagerIndicatorActiveIndex, movieListLength);
+              } else {
+                return const SizedBox(
+                  width: 0,
+                  height: 0,
+                );
+              }
+            },
+            buildVoteAverageGauge: () => VoteAverageGauge(state.selectedMovie)),
+      );
     });
   }
 }

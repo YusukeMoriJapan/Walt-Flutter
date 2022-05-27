@@ -8,7 +8,7 @@ import '../../../models/entity/movie/movie.dart';
 import '../../../utils/network/paging/paging_result.dart';
 
 class ForYouMovieContentPage extends HookConsumerWidget {
-  final Stream<PagingResult<Movie>> moviesStream;
+  final Stream<PagingResult<Movie>?> moviesStream;
 
   final Widget Function(int index, Movie movie) buildMovieImage;
   final Widget Function() buildPageIndicator;
@@ -120,8 +120,14 @@ class ForYouMovieContentPage extends HookConsumerWidget {
       });
     }
 
-    //TODO FIX エラーハンドリング 再読み込み処理を追加
-    return TextButton(onPressed: () {}, child: const Text("もう一度読み込む"));
+    return const Center(
+        child: SizedBox(
+          width: 200,
+          child: LinearProgressIndicator(
+            backgroundColor: Colors.grey,
+            color: Colors.black54,
+          ),
+        ));
   }
 }
 
