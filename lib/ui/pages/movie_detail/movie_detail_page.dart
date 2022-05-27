@@ -18,11 +18,10 @@ import '../../../utils/ui/icons.dart';
 import 'movie_detail_view_model.dart';
 
 class MovieDetailPage extends HookConsumerWidget {
-  MovieDetailPage(this.moviesStateKey, {Key? key}) : super(key: key);
+  const MovieDetailPage(this.moviesStateKey, {Key? key}) : super(key: key);
 
   final String moviesStateKey;
   final maxAppBarHeight = 350.0;
-  final flexibleSpaceBerKey = GlobalKey();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -121,7 +120,7 @@ class MovieDetailPage extends HookConsumerWidget {
                                 ref.watch(backdropImagePathProvider(780)),
                             basePosterImageUrl:
                                 ref.watch(posterImagePathProvider(500)),
-                            flexibleSpaceBerKey: flexibleSpaceBerKey)),
+                            flexibleSpaceBerKey: GlobalKey())),
                     sliverMovieDetailList: SliverMovieDetailList(
                         movieDetailsWithCredits.movieDetails.overview,
                         movieDetailsWithCredits.movieDetails.id,
