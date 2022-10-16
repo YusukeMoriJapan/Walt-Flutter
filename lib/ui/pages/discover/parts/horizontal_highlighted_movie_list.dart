@@ -28,6 +28,7 @@ class _HighlightedMoviesHorizontalListState
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ListView.builder(
       itemCount: widget.movies.length,
       scrollDirection: Axis.horizontal,
