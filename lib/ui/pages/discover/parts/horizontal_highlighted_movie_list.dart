@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:walt/models/entity/movie/movie.dart';
 
-class HighlightedMoviesHorizontalList extends HookConsumerWidget {
+class HighlightedMoviesHorizontalList extends StatefulWidget {
   const HighlightedMoviesHorizontalList(this.movies, this.onClickMovieImage,
       this._scrollController, this.baseImageUrl,
       {Key? key})
@@ -16,14 +15,26 @@ class HighlightedMoviesHorizontalList extends HookConsumerWidget {
   final String baseImageUrl;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  State<StatefulWidget> createState() => _HighlightedMoviesHorizontalListState();
+}
+
+class _HighlightedMoviesHorizontalListState
+    extends State<HighlightedMoviesHorizontalList>
+    with AutomaticKeepAliveClientMixin {
+  _HighlightedMoviesHorizontalListState();
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: movies.length,
+      itemCount: widget.movies.length,
       scrollDirection: Axis.horizontal,
-      controller: _scrollController,
+      controller: widget._scrollController,
       itemBuilder: (BuildContext context, int i) {
         return AutoScrollTag(
-          controller: _scrollController,
+          controller: widget._scrollController,
           index: i,
           key: ValueKey(i),
           child: Padding(
@@ -43,8 +54,8 @@ class HighlightedMoviesHorizontalList extends HookConsumerWidget {
                     color: const Color.fromARGB(255, 165, 165, 165),
                     child: FadeInImage.memoryNetwork(
                       placeholder: kTransparentImage,
-                      image: baseImageUrl +
-                          _getProfilePath(movies[i].backdropPath),
+                      image: widget.baseImageUrl +
+                          _getProfilePath(widget.movies[i].backdropPath),
                       height: 150,
                       width: 150 * 1.78,
                       fit: BoxFit.cover,
@@ -58,7 +69,7 @@ class HighlightedMoviesHorizontalList extends HookConsumerWidget {
                       alignment: Alignment.bottomLeft,
                       padding: const EdgeInsets.all(8),
                       child: Text(
-                        movies[i].title ?? '',
+                        widget.movies[i].title ?? '',
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(color: Colors.white),
                       )),
@@ -69,7 +80,7 @@ class HighlightedMoviesHorizontalList extends HookConsumerWidget {
                         child: InkWell(
                           // splashColor: Colors.lightGreenAccent,
                           onTap: () {
-                            onClickMovieImage(i);
+                            widget.onClickMovieImage(i);
                           },
                         ))),
               ],
@@ -83,7 +94,7 @@ class HighlightedMoviesHorizontalList extends HookConsumerWidget {
   String _getProfilePath(String? path) => path ?? "";
 
   _imageHPadding(int i) {
-    if (i != 0 || i != movies.length - 1) {
+    if (i != 0 || i != widget.movies.length - 1) {
       return 4.0;
     } else {
       return 0.0;

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:scroll_to_index/scroll_to_index.dart';
 import 'package:transparent_image/transparent_image.dart';
 import 'package:walt/models/entity/movie/movie.dart';
 
-class NormalMoviesHorizontalList extends HookConsumerWidget {
+class NormalMoviesHorizontalList extends StatefulWidget {
   const NormalMoviesHorizontalList(this.movies, this.onClickMovieImage,
       this._scrollController, this.baseImageUrl,
       {Key? key})
@@ -16,15 +15,28 @@ class NormalMoviesHorizontalList extends HookConsumerWidget {
   final String baseImageUrl;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  State<StatefulWidget> createState() {
+    return _NormalMoviesHorizontalListState();
+  }
+}
+
+class _NormalMoviesHorizontalListState extends State<NormalMoviesHorizontalList>
+    with AutomaticKeepAliveClientMixin {
+  _NormalMoviesHorizontalListState();
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: movies.length,
+      itemCount: widget.movies.length,
       scrollDirection: Axis.horizontal,
-      controller: _scrollController,
+      controller: widget._scrollController,
       itemBuilder: (BuildContext context, int i) {
         return AutoScrollTag(
           index: i,
-          controller: _scrollController,
+          controller: widget._scrollController,
           key: ValueKey(i),
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: _imageHPadding(i)),
@@ -34,8 +46,8 @@ class NormalMoviesHorizontalList extends HookConsumerWidget {
                   color: const Color.fromARGB(255, 165, 165, 165),
                   child: FadeInImage.memoryNetwork(
                     placeholder: kTransparentImage,
-                    image: baseImageUrl +
-                        _getProfilePath(movies[i].posterPath),
+                    image: widget.baseImageUrl +
+                        _getProfilePath(widget.movies[i].posterPath),
                     fit: BoxFit.cover,
                     height: 150,
                     width: 150 * 0.71,
@@ -47,7 +59,7 @@ class NormalMoviesHorizontalList extends HookConsumerWidget {
                         child: InkWell(
                           // splashColor: Colors.lightGreenAccent,
                           onTap: () {
-                            onClickMovieImage(i);
+                            widget.onClickMovieImage(i);
                           },
                         ))),
               ],
@@ -61,7 +73,7 @@ class NormalMoviesHorizontalList extends HookConsumerWidget {
   String _getProfilePath(String? path) => path ?? "";
 
   _imageHPadding(int i) {
-    if (i != 0 || i != movies.length - 1) {
+    if (i != 0 || i != widget.movies.length - 1) {
       return 4.0;
     } else {
       return 0.0;
