@@ -13,6 +13,12 @@ class NormalMoviesHorizontalList extends StatefulWidget {
   final void Function(int index) onClickMovieImage;
   final AutoScrollController _scrollController;
   final String baseImageUrl;
+  final double imageHeight = 150;
+
+  double get imageWidth => imageHeight * 0.71;
+  final itemPadding = const EdgeInsets.symmetric(horizontal: 4);
+
+  double get itemExtent => imageWidth + itemPadding.horizontal;
 
   @override
   State<StatefulWidget> createState() {
@@ -32,6 +38,9 @@ class _NormalMoviesHorizontalListState extends State<NormalMoviesHorizontalList>
     super.build(context);
     return ListView.builder(
       itemCount: widget.movies.length,
+      /// itemExtentを指定しないと縦スクロールでかくつくため、itemExtentは指定必須
+      itemExtent: widget.itemExtent,
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       scrollDirection: Axis.horizontal,
       controller: widget._scrollController,
       itemBuilder: (BuildContext context, int i) {
@@ -40,7 +49,7 @@ class _NormalMoviesHorizontalListState extends State<NormalMoviesHorizontalList>
           controller: widget._scrollController,
           key: ValueKey(i),
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: _imageHPadding(i)),
+            padding: widget.itemPadding,
             child: Stack(
               children: [
                 Container(
@@ -50,8 +59,8 @@ class _NormalMoviesHorizontalListState extends State<NormalMoviesHorizontalList>
                     image: widget.baseImageUrl +
                         _getProfilePath(widget.movies[i].posterPath),
                     fit: BoxFit.cover,
-                    height: 150,
-                    width: 150 * 0.71,
+                    height: widget.imageHeight,
+                    width: widget.imageWidth,
                   ),
                 ),
                 Positioned.fill(
@@ -72,12 +81,4 @@ class _NormalMoviesHorizontalListState extends State<NormalMoviesHorizontalList>
   }
 
   String _getProfilePath(String? path) => path ?? "";
-
-  _imageHPadding(int i) {
-    if (i != 0 || i != widget.movies.length - 1) {
-      return 4.0;
-    } else {
-      return 0.0;
-    }
-  }
 }
