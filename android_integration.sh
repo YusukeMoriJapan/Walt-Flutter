@@ -2,7 +2,7 @@ pushd android
 flutter build apk
 ./gradlew app:assembleAndroidTest
 # androidでintegration testを実行
-./gradlew app:assembleDebug -Ptarget=integration_test/app_test.dart
+./gradlew app:assembleDebug -Ptarget=integration_test/sample_test.dart
 popd
 
 # firebase test android runコマンドのドキュメント
