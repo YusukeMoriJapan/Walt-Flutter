@@ -1,0 +1,47 @@
+name: run firebase test lab
+
+on:
+  pull_request:
+    types: [ opened, synchronize ]
+
+jobs:
+  run_firebase_test_lab:
+    runs-on: macos-latest
+    steps:
+      - name: Setup Repo
+        uses: actions/checkout@v3
+
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+
+      - name: Read Fvm Config
+        uses: kuhnroyal/flutter-fvm-config-action@v1
+
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: ${{ env.FLUTTER_CHANNEL }}
+
+      - name: pub get
+        run: flutter pub get
+
+      - name: Set up GCP credential
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Run Android integration tests
+        run: ./android_integration.sh
+
+      - name: Run iOS integration tests
+        run: ./ios_integration.sh
+
+
