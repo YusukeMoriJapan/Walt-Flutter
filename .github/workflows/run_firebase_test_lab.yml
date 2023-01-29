@@ -11,6 +11,9 @@ jobs:
       - name: Setup Repo
         uses: actions/checkout@v3
 
+      - name: create dot env file
+        run: echo ${{ secrets.DOT_ENV_BASE64 }} | base64 --decode> ./.env
+
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
@@ -27,6 +30,9 @@ jobs:
 
       - name: pub get
         run: flutter pub get
+
+      - name: build_auto_generated_files
+        run: flutter pub run build_runner build --delete-conflicting-outputs
 
       - name: Set up GCP credential
         uses: google-github-actions/auth@v1

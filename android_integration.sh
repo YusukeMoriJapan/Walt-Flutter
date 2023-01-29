@@ -2,7 +2,7 @@ pushd android
 flutter build apk
 ./gradlew app:assembleAndroidTest
 # androidでintegration testを実行
-./gradlew app:assembleDebug -Ptarget=integration_test/app_test.dart
+./gradlew app:assembleDebug -Ptarget=integration_test/sample_test.dart
 popd
 
 # firebase test android runコマンドのドキュメント
@@ -26,7 +26,7 @@ gcloud firebase test android run --type instrumentation \
   --app build/app/outputs/apk/debug/app-debug.apk \
   --test build/app/outputs/apk/androidTest/debug/app-debug-androidTest.apk \
   --device-ids=blueline \
-  --os-version-ids=30 \
+  --os-version-ids=28 \
   --locales=ja_JP \
   --use-orchestrator \
   --timeout 3m

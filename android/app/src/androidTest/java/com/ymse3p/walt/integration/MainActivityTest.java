@@ -1,6 +1,9 @@
 package com.ymse3p.walt.integration;
 
 import androidx.test.rule.ActivityTestRule;
+
+import com.ymse3p.walt.MainActivity;
+
 import dev.flutter.plugins.integration_test.FlutterTestRunner;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
