@@ -49,5 +49,3 @@ jobs:
 
       - name: Run iOS integration tests
         run: ./ios_integration.sh
-
-
